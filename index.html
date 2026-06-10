@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1a1d21">
+<title>Carnet Recompo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;800&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --fonte:#1a1d21;        /* fond — fonte d'acier */
+    --plaque:#23272d;       /* surfaces */
+    --plaque-2:#2b3038;     /* surfaces relevées */
+    --trait:#3a4049;        /* bordures */
+    --craie:#e8e4da;        /* texte principal — craie chaude */
+    --craie-2:#9aa0a8;      /* texte secondaire */
+    --laiton:#d9a441;       /* accent — laiton de vieux haltères */
+    --ok:#7fb069;
+    --alerte:#c8553d;
+    --info:#6f9ceb;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%;overflow-x:hidden}
+  body{
+    background:var(--fonte);
+    color:var(--craie);
+    font-family:'Barlow',system-ui,sans-serif;
+    font-size:16px;line-height:1.5;
+    min-height:100vh;
+    overflow-x:hidden;
+    padding-bottom:calc(90px + env(safe-area-inset-bottom));
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums}
+
+  /* ---------- entête ---------- */
+  header{
+    border-bottom:1px solid var(--trait);
+    padding:20px 16px 14px;
+    background:linear-gradient(180deg,#1e2126 0%,var(--fonte) 100%);
+  }
+  .titre,.sous-titre{max-width:680px;margin-left:auto;margin-right:auto}
+  .titre{
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:800;font-size:30px;letter-spacing:.06em;
+    text-transform:uppercase;line-height:1;
+  }
+  .titre span{color:var(--laiton)}
+  .sous-titre{color:var(--craie-2);font-size:13px;margin-top:4px}
+
+  .bandeau{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    gap:1px;background:var(--trait);
+    border:1px solid var(--trait);border-radius:8px;
+    overflow:hidden;
+    width:calc(100% - 32px);max-width:680px;
+    margin:14px auto 0;
+  }
+  .stat{background:var(--plaque);padding:10px 8px;text-align:center}
+  .stat .v{font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:600}
+  .stat .l{font-size:11px;color:var(--craie-2);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+  .stat .d{font-size:11px;margin-top:2px}
+  .up{color:var(--alerte)} .down{color:var(--ok)} .flat{color:var(--craie-2)}
+  .up.bon{color:var(--ok)}
+
+  /* ---------- navigation ---------- */
+  nav{
+    position:fixed;bottom:0;left:0;right:0;z-index:10;
+    display:flex;background:var(--plaque);
+    border-top:1px solid var(--trait);
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  nav button{
+    flex:1;background:none;border:none;color:var(--craie-2);
+    font-family:'Barlow Condensed',sans-serif;font-weight:600;
+    font-size:15px;letter-spacing:.08em;text-transform:uppercase;
+    padding:14px 4px 12px;cursor:pointer;
+    border-top:3px solid transparent;margin-top:-1px;
+  }
+  nav button.actif{color:var(--laiton);border-top-color:var(--laiton)}
+  nav button:focus-visible{outline:2px solid var(--laiton);outline-offset:-2px}
+
+  main{max-width:680px;margin:0 auto;padding:16px}
+  .onglet{display:none}
+  .onglet.actif{display:block;animation:app .18s ease-out}
+  @keyframes app{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.onglet.actif{animation:none}}
+
+  /* ---------- cartes & formulaires ---------- */
+  .carte{
+    background:var(--plaque);border:1px solid var(--trait);
+    border-radius:10px;padding:16px;margin-bottom:16px;
+  }
+  h2{
+    font-family:'Barlow Condensed',sans-serif;font-weight:800;
+    font-size:19px;letter-spacing:.07em;text-transform:uppercase;
+    margin-bottom:12px;color:var(--craie);
+    display:flex;align-items:center;gap:8px;
+  }
+  h2::before{content:"";width:14px;height:3px;background:var(--laiton);border-radius:2px}
+  label{display:block;font-size:13px;color:var(--craie-2);margin-bottom:4px}
+  input[type=number],input[type=date]{
+    width:100%;background:var(--fonte);border:1px solid var(--trait);
+    border-radius:6px;color:var(--craie);padding:10px 12px;font-size:16px;
+    font-family:'IBM Plex Mono',monospace;
+    min-height:44px;
+  }
+  input[type=date]{-webkit-appearance:none;appearance:none}
+  input:focus{outline:2px solid var(--laiton);outline-offset:-1px;border-color:var(--laiton)}
+  .ligne{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;align-items:end}
+  .ligne-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;align-items:end}
+  .champ{margin-bottom:10px}
+
+  .btn{
+    display:inline-block;width:100%;
+    background:var(--laiton);color:#1a1408;border:none;border-radius:6px;
+    font-family:'Barlow Condensed',sans-serif;font-weight:800;
+    font-size:17px;letter-spacing:.08em;text-transform:uppercase;
+    padding:12px;cursor:pointer;margin-top:4px;
+  }
+  .btn:active{transform:translateY(1px)}
+  .btn:focus-visible{outline:2px solid var(--craie);outline-offset:2px}
+  .btn-2{background:var(--plaque-2);color:var(--craie);border:1px solid var(--trait)}
+  .btn-danger{background:none;border:1px solid var(--alerte);color:var(--alerte)}
+
+  /* ---------- historique ---------- */
+  #hist-poids,#hist-mens{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th{
+    text-align:left;color:var(--craie-2);font-weight:500;font-size:12px;
+    text-transform:uppercase;letter-spacing:.06em;
+    padding:6px 8px;border-bottom:1px solid var(--trait);
+  }
+  td{padding:8px;border-bottom:1px solid #2a2e35}
+  /* nowrap réservé aux historiques (scrollables) — pas à l'arbre de décision qui doit pouvoir wrapper */
+  #hist-poids th,#hist-poids td,#hist-mens th,#hist-mens td{white-space:nowrap}
+  td.n{font-family:'IBM Plex Mono',monospace}
+  .suppr{
+    background:none;border:none;color:var(--craie-2);cursor:pointer;
+    font-size:15px;padding:8px 10px;min-width:40px;min-height:40px;border-radius:4px;
+  }
+  .suppr:hover{color:var(--alerte)}
+  .vide{color:var(--craie-2);font-size:14px;padding:10px 0}
+
+  .graph-box{position:relative;height:240px;margin-top:8px}
+
+  /* ---------- cartes-scénarios (arbre de décision) ---------- */
+  .scenarios{list-style:none;display:flex;flex-direction:column;gap:10px}
+  .sc{
+    background:var(--fonte);border:1px solid var(--trait);
+    border-left-width:4px;border-radius:8px;padding:12px 14px;
+  }
+  .sc-ok{border-left-color:var(--ok)}
+  .sc-baisse{border-left-color:var(--alerte)}
+  .sc-hausse{border-left-color:var(--info)}
+  .sc-cond{display:flex;flex-wrap:wrap;gap:4px 10px;margin-bottom:8px}
+  .cond-p{font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--craie);font-weight:600}
+  .cond-t{font-size:14px;color:var(--craie-2)}
+  .cond-t::before{content:"·\00a0";color:var(--trait)}
+  .sc-verdict{
+    font-family:'Barlow Condensed',sans-serif;font-weight:600;
+    font-size:18px;letter-spacing:.02em;line-height:1.15;
+  }
+  .sc-ok .sc-verdict{color:var(--ok)}
+  .sc-baisse .sc-verdict{color:var(--alerte)}
+  .sc-hausse .sc-verdict{color:var(--info)}
+
+  /* ---------- onglet repas ---------- */
+  .obj-ligne{display:flex;align-items:stretch;gap:10px}
+  .obj-pas{
+    width:52px;flex:none;background:var(--plaque-2);border:1px solid var(--trait);
+    border-radius:8px;color:var(--laiton);font-size:26px;font-weight:600;
+    cursor:pointer;line-height:1;
+  }
+  .obj-pas:active{transform:translateY(1px)}
+  .obj-pas:focus-visible{outline:2px solid var(--laiton);outline-offset:1px}
+  .obj-val{
+    flex:1;display:flex;align-items:baseline;justify-content:center;gap:6px;
+    background:var(--fonte);border:1px solid var(--trait);border-radius:8px;padding:6px 8px;
+  }
+  .obj-val input{
+    width:100%;background:none;border:none;text-align:right;
+    font-family:'IBM Plex Mono',monospace;font-size:30px;font-weight:600;color:var(--craie);
+    padding:0;min-height:auto;
+  }
+  .obj-val input:focus{outline:none}
+  .obj-val span{color:var(--craie-2);font-size:14px;flex:none}
+
+  .progression{position:sticky;top:0;z-index:5}
+  .prog-haut{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+  .prog-titre{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;letter-spacing:.05em;text-transform:uppercase}
+  .prog-kcal{font-size:15px;color:var(--craie-2)}
+  .prog-barre{height:10px;background:var(--fonte);border:1px solid var(--trait);border-radius:6px;overflow:hidden}
+  .prog-rempli{height:100%;width:0;background:linear-gradient(90deg,var(--laiton),#e8b85a);border-radius:5px;transition:width .35s ease}
+  @media (prefers-reduced-motion:reduce){.prog-rempli{transition:none}}
+  .prog-macros{font-size:13px;color:var(--craie-2);margin-top:8px;display:flex;gap:16px;flex-wrap:wrap}
+  .prog-macros b{color:var(--craie);font-weight:600}
+
+  .repas-carte{
+    background:var(--plaque);border:1px solid var(--trait);border-left-width:4px;
+    border-left-color:var(--trait);border-radius:10px;padding:14px 16px;margin-bottom:12px;
+    cursor:pointer;-webkit-user-select:none;user-select:none;transition:border-color .2s,background .2s;
+  }
+  .repas-carte:focus-visible{outline:2px solid var(--laiton);outline-offset:2px}
+  .repas-carte.pris{border-left-color:var(--ok);background:#1f2620}
+  .repas-haut{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+  .repas-coche{
+    width:28px;height:28px;flex:none;border-radius:8px;border:2px solid var(--trait);
+    display:flex;align-items:center;justify-content:center;color:#1a1408;font-weight:800;font-size:18px;
+  }
+  .repas-carte.pris .repas-coche{background:var(--ok);border-color:var(--ok)}
+  .repas-nom{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:19px;letter-spacing:.04em;text-transform:uppercase;flex:1;line-height:1}
+  .repas-kcal{font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--craie-2);flex:none}
+  .repas-annuler{
+    flex:none;background:none;border:1px solid var(--trait);border-radius:999px;
+    color:var(--craie-2);font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;
+    padding:5px 14px;cursor:pointer;min-height:34px;
+  }
+  .repas-annuler:active{transform:translateY(1px)}
+  .repas-annuler:focus-visible{outline:2px solid var(--laiton);outline-offset:1px}
+  .repas-carte.pris .repas-nom{color:var(--craie-2);text-decoration:line-through;text-decoration-color:var(--trait)}
+  .repas-items{list-style:none;display:flex;flex-direction:column;gap:3px}
+  .repas-items li{font-size:14px;color:var(--craie);display:flex;justify-content:space-between;gap:10px}
+  .repas-items .qte{font-family:'IBM Plex Mono',monospace;color:var(--craie-2);flex:none}
+  .repas-items .qte.flex{color:var(--laiton)}
+
+  /* ---------- VERDICT (élément signature) ---------- */
+  .verdict{
+    border:2px solid var(--laiton);border-radius:10px;
+    background:
+      radial-gradient(circle at 12px 12px, var(--trait) 3px, transparent 3.5px),
+      radial-gradient(circle at calc(100% - 12px) 12px, var(--trait) 3px, transparent 3.5px),
+      radial-gradient(circle at 12px calc(100% - 12px), var(--trait) 3px, transparent 3.5px),
+      radial-gradient(circle at calc(100% - 12px) calc(100% - 12px), var(--trait) 3px, transparent 3.5px),
+      var(--plaque-2);
+    padding:22px 18px;text-align:center;margin-bottom:16px;
+  }
+  .verdict .tampon{
+    font-family:'Barlow Condensed',sans-serif;font-weight:800;
+    font-size:34px;line-height:1.05;letter-spacing:.05em;text-transform:uppercase;
+  }
+  .verdict.v-ok .tampon{color:var(--ok)}
+  .verdict.v-baisse .tampon{color:var(--alerte)}
+  .verdict.v-hausse .tampon{color:var(--info)}
+  .verdict.v-neutre .tampon{color:var(--craie-2)}
+  .verdict .explication{color:var(--craie-2);font-size:14px;margin-top:10px}
+  .verdict .donnees{
+    font-family:'IBM Plex Mono',monospace;font-size:13px;
+    color:var(--craie);margin-top:14px;
+    display:flex;justify-content:center;gap:18px;flex-wrap:wrap;
+  }
+  .verdict .donnees b{color:var(--laiton);font-weight:600}
+
+  .note{font-size:13px;color:var(--craie-2);margin-top:10px}
+  .note b{color:var(--craie)}
+  .avert{
+    background:#3a2f1d;border:1px solid var(--laiton);border-radius:8px;
+    padding:10px 12px;font-size:13px;color:var(--craie);margin-bottom:16px;
+  }
+  .cache{display:none !important}
+
+  /* ---------- responsive ---------- */
+  .verdict .tampon{overflow-wrap:break-word}
+  @media (max-width:400px){
+    .ligne-3{grid-template-columns:1fr 1fr}
+    .verdict .tampon{font-size:27px}
+    .titre{font-size:26px}
+    .stat .v{font-size:16px}
+    nav button{font-size:13px;letter-spacing:.04em}
+  }
+  @media (min-width:600px){
+    .graph-box{height:320px}
+    nav{justify-content:center}
+    nav button{flex:0 1 170px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="titre">Carnet <span>Recompo</span></div>
+  <div class="sous-titre">Pesée le dimanche · mensurations le 1er du mois · le tour de taille dit la vérité</div>
+</header>
+
+<div class="bandeau" id="bandeau">
+  <div class="stat"><div class="v mono" id="st-poids">—</div><div class="l">Moy. 7j (kg)</div><div class="d" id="st-poids-d"></div></div>
+  <div class="stat"><div class="v mono" id="st-taille">—</div><div class="l">Taille (cm)</div><div class="d" id="st-taille-d"></div></div>
+  <div class="stat"><div class="v mono" id="st-bras">—</div><div class="l">Bras (cm)</div><div class="d" id="st-bras-d"></div></div>
+</div>
+
+<div id="storage-warn" class="avert cache" style="margin:14px 16px 0">
+  ⚠ Stockage local indisponible dans cet environnement : les données ne survivront pas à la fermeture de l'onglet. Utilise Exporter/Importer. (Sur GitHub Pages, la sauvegarde sera automatique.)
+</div>
+
+<main>
+
+  <!-- ===== ONGLET VERDICT ===== -->
+  <section class="onglet actif" id="ong-verdict">
+    <div class="verdict v-neutre" id="verdict-box">
+      <div class="tampon" id="verdict-tampon">Données insuffisantes</div>
+      <div class="explication" id="verdict-expl">Entre au moins 2 semaines de pesées et 2 relevés de taille pour obtenir un verdict.</div>
+      <div class="donnees" id="verdict-data"></div>
+    </div>
+
+    <div class="carte">
+      <h2>L'arbre de décision</h2>
+      <ul class="scenarios">
+        <li class="sc sc-ok">
+          <div class="sc-cond"><span class="cond-p">Poids 0 à +0,3 kg/mois</span><span class="cond-t">taille stable ou ↓</span></div>
+          <div class="sc-verdict">Continue — ne change rien</div>
+        </li>
+        <li class="sc sc-baisse">
+          <div class="sc-cond"><span class="cond-p">Poids &gt; +0,5 kg/mois</span><span class="cond-t">taille ↑</span></div>
+          <div class="sc-verdict">−150 kcal — retire 30 g de riz cru</div>
+        </li>
+        <li class="sc sc-hausse">
+          <div class="sc-cond"><span class="cond-p">Poids &lt; −0,5 kg/mois</span><span class="cond-t">taille ↓</span></div>
+          <div class="sc-verdict">+150 kcal — ajoute du riz ou 1 banane</div>
+        </li>
+        <li class="sc sc-hausse">
+          <div class="sc-cond"><span class="cond-p">Poids stable</span><span class="cond-t">taille stable, bras stagne 6 sem.</span></div>
+          <div class="sc-verdict">+100-150 kcal</div>
+        </li>
+      </ul>
+      <p class="note"><b>Un seul ajustement à la fois</b>, puis 4 semaines d'observation. Jamais calories ET programme en même temps.</p>
+    </div>
+  </section>
+
+  <!-- ===== ONGLET REPAS ===== -->
+  <section class="onglet" id="ong-repas">
+    <div class="carte">
+      <h2>Objectif du jour</h2>
+      <div class="obj-ligne">
+        <button class="obj-pas" onclick="ajusterObjectif(-50)" aria-label="−50 kcal">−</button>
+        <div class="obj-val"><input type="number" id="obj-kcal" step="50" inputmode="numeric" onchange="majObjectif()"><span>kcal</span></div>
+        <button class="obj-pas" onclick="ajusterObjectif(50)" aria-label="+50 kcal">+</button>
+      </div>
+      <p class="note">Protéines et lipides restent fixés à leurs cibles : seuls le riz et l'avoine s'ajustent, comme le dit ton onglet Verdict. <b>Quand le verdict te dit ±150 kcal, change ce nombre ici.</b></p>
+    </div>
+
+    <div class="carte progression">
+      <div class="prog-haut">
+        <span class="prog-titre" id="prog-repas">0 / 5 repas</span>
+        <span class="prog-kcal mono" id="prog-kcal">0 / 0 kcal</span>
+      </div>
+      <div class="prog-barre"><div class="prog-rempli" id="prog-rempli"></div></div>
+      <div class="prog-macros mono" id="prog-macros"></div>
+    </div>
+
+    <div id="liste-repas"></div>
+
+    <p class="note" style="text-align:center">Les repas se décochent seuls à minuit. Touche « Annuler » sur un repas pris pour revenir en arrière.</p>
+  </section>
+
+  <!-- ===== ONGLET POIDS ===== -->
+  <section class="onglet" id="ong-poids">
+    <div class="carte">
+      <h2>Nouvelle pesée</h2>
+      <div class="ligne">
+        <div><label for="p-date">Date</label><input type="date" id="p-date"></div>
+        <div><label for="p-kg">Poids (kg)</label><input type="number" id="p-kg" step="0.1" min="40" max="150" inputmode="decimal" placeholder="72.0"></div>
+      </div>
+      <button class="btn" onclick="ajouterPoids()">Enregistrer la pesée</button>
+      <p class="note">À jeun, après les toilettes, avant de boire. La moyenne hebdo lisse les ±1 kg d'eau.</p>
+    </div>
+
+    <div class="carte">
+      <h2>Courbe</h2>
+      <div class="graph-box"><canvas id="graph-poids"></canvas></div>
+    </div>
+
+    <div class="carte">
+      <h2>Historique</h2>
+      <div id="hist-poids"></div>
+    </div>
+  </section>
+
+  <!-- ===== ONGLET MENSURATIONS ===== -->
+  <section class="onglet" id="ong-mens">
+    <div class="carte">
+      <h2>Relevé du 1er du mois</h2>
+      <div class="champ"><label for="m-date">Date</label><input type="date" id="m-date"></div>
+      <div class="ligne">
+        <div><label for="m-taille">Taille contractée (cm)</label><input type="number" id="m-taille" step="0.1" inputmode="decimal" placeholder="86.0"></div>
+        <div><label for="m-tailler">Taille relâchée (cm)</label><input type="number" id="m-tailler" step="0.1" inputmode="decimal"></div>
+      </div>
+      <div class="ligne-3">
+        <div><label for="m-bras">Bras (cm)</label><input type="number" id="m-bras" step="0.1" inputmode="decimal" placeholder="32.3"></div>
+        <div><label for="m-cuisse">Cuisse (cm)</label><input type="number" id="m-cuisse" step="0.1" inputmode="decimal"></div>
+        <div><label for="m-torse">Torse (cm)</label><input type="number" id="m-torse" step="0.1" inputmode="decimal" placeholder="95"></div>
+      </div>
+      <button class="btn" onclick="ajouterMens()">Enregistrer le relevé</button>
+      <p class="note">Toujours le même point : bras contracté au plus large (repère ton tatouage), taille au nombril debout. <b>+ 2 photos même lumière même pose.</b></p>
+    </div>
+
+    <div class="carte">
+      <h2>Taille vs bras</h2>
+      <div class="graph-box"><canvas id="graph-mens"></canvas></div>
+    </div>
+
+    <div class="carte">
+      <h2>Historique</h2>
+      <div id="hist-mens"></div>
+    </div>
+  </section>
+
+  <!-- ===== ONGLET DONNÉES ===== -->
+  <section class="onglet" id="ong-data">
+    <div class="carte">
+      <h2>Sauvegarde & synchro</h2>
+      <p class="note" style="margin:0 0 12px">Les données sont enregistrées automatiquement dans ce navigateur. Le JSON sert de <b>sauvegarde</b> et de <b>synchro PC ↔ mobile</b> : exporte ici, importe là-bas. L'import fusionne par date (le fichier importé gagne en cas de doublon).</p>
+      <button class="btn" onclick="exporterJSON()">⬇ Exporter le JSON</button>
+      <div style="height:10px"></div>
+      <button class="btn btn-2" onclick="document.getElementById('fichier-import').click()">⬆ Importer un JSON</button>
+      <input type="file" id="fichier-import" accept=".json,application/json" class="cache" onchange="importerJSON(event)">
+    </div>
+    <div class="carte">
+      <h2>Zone rouge</h2>
+      <button class="btn btn-danger" onclick="toutEffacer()">Effacer toutes les données</button>
+      <p class="note">Irréversible. Exporte d'abord.</p>
+    </div>
+  </section>
+
+</main>
+
+<nav>
+  <button class="actif" data-ong="verdict" onclick="changerOnglet('verdict')">Verdict</button>
+  <button data-ong="repas" onclick="changerOnglet('repas')">Repas</button>
+  <button data-ong="poids" onclick="changerOnglet('poids')">Poids</button>
+  <button data-ong="mens" onclick="changerOnglet('mens')">Mensur.</button>
+  <button data-ong="data" onclick="changerOnglet('data')">Données</button>
+</nav>
+
+<script>
+/* ================= ÉTAT & PERSISTANCE ================= */
+const CLE = 'carnet-recompo-v1';
+const OBJ_DEFAUT = 2545; /* référence du plan de la bible nutrition */
+let etat = { poids: [], mensurations: [], repas: null, objectifKcal: OBJ_DEFAUT };
+let storageOK = true;
+
+/* date locale au format AAAA-MM-JJ (jamais UTC : "minuit" = minuit local) */
+function jourLocal(d=new Date()){
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function chargerEtat(){
+  try{
+    const brut = localStorage.getItem(CLE);
+    if(brut){ const e = JSON.parse(brut); if(e && Array.isArray(e.poids)) etat = e; }
+  }catch(err){
+    storageOK = false;
+    document.getElementById('storage-warn').classList.remove('cache');
+  }
+  /* migrations / valeurs par défaut pour les anciens enregistrements */
+  if(!Array.isArray(etat.mensurations)) etat.mensurations = [];
+  if(typeof etat.objectifKcal !== 'number') etat.objectifKcal = OBJ_DEFAUT;
+  if(!etat.repas || typeof etat.repas !== 'object') etat.repas = { jour: jourLocal(), coches: {} };
+  if(!etat.repas.coches) etat.repas.coches = {};
+}
+function sauverEtat(){
+  if(!storageOK) return;
+  try{ localStorage.setItem(CLE, JSON.stringify(etat)); }
+  catch(err){ storageOK = false; document.getElementById('storage-warn').classList.remove('cache'); }
+}
+
+/* ================= UTILITAIRES ================= */
+const fmtDate = d => new Date(d+'T12:00:00').toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'2-digit'});
+const triDate = (a,b) => a.date.localeCompare(b.date);
+function aujourdHui(){ return jourLocal(); }
+function fleche(delta, inverse=false){
+  if(delta===null||isNaN(delta)) return '';
+  const eps = 0.05;
+  if(Math.abs(delta)<eps) return `<span class="flat">=</span>`;
+  const monte = delta>0;
+  const bon = inverse ? !monte : monte;
+  const cls = monte ? (bon?'up bon':'up') : (bon?'down':'down');
+  return `<span class="${cls}">${monte?'▲':'▼'} ${Math.abs(delta).toFixed(1)}</span>`;
+}
+
+/* ================= SAISIE ================= */
+function ajouterPoids(){
+  const date = document.getElementById('p-date').value;
+  const kg = parseFloat(document.getElementById('p-kg').value);
+  if(!date || isNaN(kg)){ alert('Date et poids requis.'); return; }
+  etat.poids = etat.poids.filter(p=>p.date!==date);
+  etat.poids.push({date, kg}); etat.poids.sort(triDate);
+  sauverEtat(); toutAfficher();
+  document.getElementById('p-kg').value='';
+}
+function ajouterMens(){
+  const date = document.getElementById('m-date').value;
+  if(!date){ alert('Date requise.'); return; }
+  const champ = id => { const v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; };
+  const rel = {date, taille:champ('m-taille'), tailleRelache:champ('m-tailler'),
+               bras:champ('m-bras'), cuisse:champ('m-cuisse'), torse:champ('m-torse')};
+  if(rel.taille===null && rel.bras===null){ alert('Renseigne au moins la taille ou le bras.'); return; }
+  etat.mensurations = etat.mensurations.filter(m=>m.date!==date);
+  etat.mensurations.push(rel); etat.mensurations.sort(triDate);
+  sauverEtat(); toutAfficher();
+  ['m-taille','m-tailler','m-bras','m-cuisse','m-torse'].forEach(i=>document.getElementById(i).value='');
+}
+function supprimerPoids(date){ etat.poids = etat.poids.filter(p=>p.date!==date); sauverEtat(); toutAfficher(); }
+function supprimerMens(date){ etat.mensurations = etat.mensurations.filter(m=>m.date!==date); sauverEtat(); toutAfficher(); }
+
+/* ================= CALCULS ================= */
+/* moyenne hebdo glissante : groupe par semaine ISO approx (blocs de 7 jours depuis la 1re pesée) */
+function moyennesHebdo(){
+  if(etat.poids.length===0) return [];
+  const t0 = new Date(etat.poids[0].date+'T12:00:00').getTime();
+  const sem = {};
+  etat.poids.forEach(p=>{
+    const i = Math.floor((new Date(p.date+'T12:00:00').getTime()-t0)/(7*864e5));
+    (sem[i] = sem[i]||[]).push(p.kg);
+  });
+  return Object.keys(sem).map(Number).sort((a,b)=>a-b)
+    .map(i=>({sem:i, kg: sem[i].reduce((s,x)=>s+x,0)/sem[i].length}));
+}
+/* rythme en kg/mois : régression simple sur les 4 dernières moyennes hebdo */
+function rythmeMensuel(){
+  const m = moyennesHebdo();
+  if(m.length<2) return null;
+  const der = m.slice(-4);
+  const n = der.length;
+  const mx = der.reduce((s,p)=>s+p.sem,0)/n, my = der.reduce((s,p)=>s+p.kg,0)/n;
+  let num=0, den=0;
+  der.forEach(p=>{ num += (p.sem-mx)*(p.kg-my); den += (p.sem-mx)**2; });
+  if(den===0) return null;
+  return (num/den) * 4.345; /* pente kg/semaine -> kg/mois */
+}
+function tendanceTaille(){
+  const avecTaille = etat.mensurations.filter(m=>m.taille!==null);
+  if(avecTaille.length<2) return null;
+  const a = avecTaille[avecTaille.length-2], b = avecTaille[avecTaille.length-1];
+  return b.taille - a.taille;
+}
+function tendanceBras(){
+  const avec = etat.mensurations.filter(m=>m.bras!==null);
+  if(avec.length<2) return null;
+  return avec[avec.length-1].bras - avec[avec.length-2].bras;
+}
+
+/* ================= VERDICT ================= */
+function calculerVerdict(){
+  const box = document.getElementById('verdict-box');
+  const tampon = document.getElementById('verdict-tampon');
+  const expl = document.getElementById('verdict-expl');
+  const data = document.getElementById('verdict-data');
+  const rythme = rythmeMensuel();
+  const dTaille = tendanceTaille();
+  const dBras = tendanceBras();
+
+  const seuilTaille = 0.5; /* cm — en dessous : bruit de mesure */
+  let cls='v-neutre', t='Données insuffisantes',
+      e='Entre au moins 2 semaines de pesées et 2 relevés de taille pour obtenir un verdict.';
+
+  if(rythme!==null && dTaille===null){
+    cls='v-neutre'; t='Taille manquante';
+    e='Le poids seul ne suffit pas : c\u2019est le tour de taille qui dit la vérité. Ajoute un 2e relevé mensuel.';
+  }
+  if(rythme!==null && dTaille!==null){
+    const tailleMonte = dTaille >  seuilTaille;
+    const tailleBaisse = dTaille < -seuilTaille;
+    if(rythme > 0.5 && tailleMonte){
+      cls='v-baisse'; t='−150 kcal · sur le riz';
+      e='La balance monte trop vite et la taille suit : tu stockes du gras. Retire 30 g de riz cru au déjeuner. Réévalue dans 4 semaines.';
+    } else if(rythme < -0.5){
+      cls='v-hausse'; t='+150 kcal';
+      e='Déficit trop agressif pour une recompo : tu risques le muscle. Ajoute 30 g de riz cru ou 1 banane. Réévalue dans 4 semaines.';
+    } else if(Math.abs(rythme) <= 0.5 && !tailleMonte && dBras!==null && dBras <= 0 && etat.mensurations.length >= 2){
+      cls='v-hausse'; t='+100-150 kcal · si bras stagne 6 sem.';
+      e='Poids et taille stables mais le bras ne progresse pas sur le dernier relevé. Si ça se confirme au prochain : petit surplus, et vérifie sommeil + progression des charges au carnet.';
+    } else if(rythme <= 0.3 && !tailleMonte){
+      cls='v-ok'; t='RAS — Continue';
+      e='Recompo sur les rails : poids maîtrisé, taille stable ou en baisse. Ne change rien, ni calories ni programme.';
+    } else {
+      cls='v-neutre'; t='Zone grise — Observe';
+      e='Légère prise sans hausse nette de taille : probablement muscle + bruit de mesure. Pas d\u2019ajustement, re-verdict au prochain relevé mensuel.';
+    }
+  }
+  box.className = 'verdict '+cls;
+  tampon.textContent = t;
+  expl.textContent = e;
+  let html='';
+  if(rythme!==null) html += `<span>Rythme <b>${(rythme>=0?'+':'')+rythme.toFixed(2)} kg/mois</b></span>`;
+  if(dTaille!==null) html += `<span>Taille <b>${(dTaille>=0?'+':'')+dTaille.toFixed(1)} cm</b></span>`;
+  if(dBras!==null) html += `<span>Bras <b>${(dBras>=0?'+':'')+dBras.toFixed(1)} cm</b></span>`;
+  data.innerHTML = html;
+}
+
+/* ================= AFFICHAGE ================= */
+let chPoids=null, chMens=null;
+const optCommun = {
+  responsive:true, maintainAspectRatio:false,
+  plugins:{ legend:{labels:{color:'#9aa0a8',font:{family:'Barlow'}}} },
+  scales:{
+    x:{ticks:{color:'#9aa0a8',maxRotation:45,font:{size:11}},grid:{color:'#2a2e35'}},
+    y:{ticks:{color:'#9aa0a8',font:{family:'IBM Plex Mono',size:11}},grid:{color:'#2a2e35'}}
+  }
+};
+
+function dessinerPoids(){
+  const ctx = document.getElementById('graph-poids');
+  const labels = etat.poids.map(p=>fmtDate(p.date));
+  const moy = moyennesHebdo();
+  /* projeter la moyenne hebdo sur l'axe des pesées : valeur de la semaine de chaque point */
+  const t0 = etat.poids.length? new Date(etat.poids[0].date+'T12:00:00').getTime() : 0;
+  const moyParSem = {}; moy.forEach(m=>moyParSem[m.sem]=m.kg);
+  const serieMoy = etat.poids.map(p=>{
+    const i = Math.floor((new Date(p.date+'T12:00:00').getTime()-t0)/(7*864e5));
+    return moyParSem[i] ?? null;
+  });
+  if(chPoids) chPoids.destroy();
+  chPoids = new Chart(ctx,{type:'line',data:{labels,datasets:[
+    {label:'Pesées',data:etat.poids.map(p=>p.kg),borderColor:'#5a626d',backgroundColor:'#5a626d',pointRadius:3,borderWidth:1.5,tension:.2},
+    {label:'Moyenne hebdo',data:serieMoy,borderColor:'#d9a441',backgroundColor:'#d9a441',pointRadius:0,borderWidth:2.5,tension:.3,stepped:true}
+  ]},options:optCommun});
+}
+function dessinerMens(){
+  const ctx = document.getElementById('graph-mens');
+  const m = etat.mensurations;
+  if(chMens) chMens.destroy();
+  chMens = new Chart(ctx,{type:'line',data:{labels:m.map(x=>fmtDate(x.date)),datasets:[
+    {label:'Taille (cm)',data:m.map(x=>x.taille),borderColor:'#c8553d',backgroundColor:'#c8553d',borderWidth:2,pointRadius:4,tension:.25,spanGaps:true},
+    {label:'Bras (cm)',data:m.map(x=>x.bras),borderColor:'#7fb069',backgroundColor:'#7fb069',borderWidth:2,pointRadius:4,tension:.25,spanGaps:true,yAxisID:'y2'}
+  ]},options:{...optCommun,scales:{...optCommun.scales,
+    y2:{position:'right',ticks:{color:'#7fb069',font:{family:'IBM Plex Mono',size:11}},grid:{display:false}}
+  }}});
+}
+function afficherHistPoids(){
+  const c = document.getElementById('hist-poids');
+  if(etat.poids.length===0){ c.innerHTML='<p class="vide">Aucune pesée. La première est la plus importante : elle ancre la série.</p>'; return; }
+  const lignes = [...etat.poids].reverse().slice(0,20).map(p=>
+    `<tr><td>${fmtDate(p.date)}</td><td class="n">${p.kg.toFixed(1)} kg</td>
+     <td style="text-align:right"><button class="suppr" aria-label="Supprimer" onclick="supprimerPoids('${p.date}')">✕</button></td></tr>`).join('');
+  c.innerHTML = `<table><tr><th>Date</th><th>Poids</th><th></th></tr>${lignes}</table>`;
+}
+function afficherHistMens(){
+  const c = document.getElementById('hist-mens');
+  if(etat.mensurations.length===0){ c.innerHTML='<p class="vide">Aucun relevé. Rendez-vous le 1er du mois.</p>'; return; }
+  const f = v => v===null||v===undefined ? '·' : v.toFixed(1);
+  const lignes = [...etat.mensurations].reverse().map(m=>
+    `<tr><td>${fmtDate(m.date)}</td><td class="n">${f(m.taille)}</td><td class="n">${f(m.bras)}</td><td class="n">${f(m.cuisse)}</td><td class="n">${f(m.torse)}</td>
+     <td style="text-align:right"><button class="suppr" aria-label="Supprimer" onclick="supprimerMens('${m.date}')">✕</button></td></tr>`).join('');
+  c.innerHTML = `<table><tr><th>Date</th><th>Taille</th><th>Bras</th><th>Cuisse</th><th>Torse</th><th></th></tr>${lignes}</table>`;
+}
+function afficherBandeau(){
+  const moy = moyennesHebdo();
+  const stP = document.getElementById('st-poids'), stPd = document.getElementById('st-poids-d');
+  if(moy.length){ stP.textContent = moy[moy.length-1].kg.toFixed(1);
+    stPd.innerHTML = moy.length>1 ? fleche(moy[moy.length-1].kg-moy[moy.length-2].kg) : '';
+  } else { stP.textContent='—'; stPd.innerHTML=''; }
+  const t = etat.mensurations.filter(m=>m.taille!==null);
+  const b = etat.mensurations.filter(m=>m.bras!==null);
+  document.getElementById('st-taille').textContent = t.length? t[t.length-1].taille.toFixed(1) : '—';
+  document.getElementById('st-taille-d').innerHTML = t.length>1? fleche(t[t.length-1].taille-t[t.length-2].taille) : '';
+  document.getElementById('st-bras').textContent = b.length? b[b.length-1].bras.toFixed(1) : '—';
+  document.getElementById('st-bras-d').innerHTML = b.length>1? fleche(b[b.length-1].bras-b[b.length-2].bras, true) : '';
+}
+function toutAfficher(){
+  afficherBandeau(); afficherHistPoids(); afficherHistMens();
+  dessinerPoids(); dessinerMens(); calculerVerdict(); afficherRepas();
+}
+
+/* ================= REPAS ================= */
+/* Valeurs nutritionnelles approximatives (par 100 g, sauf 'unite'). Les bases de données varient de ±10 %. */
+const ALIMENTS = {
+  avoine:  {nom:"Flocons d'avoine",            kcal100:380, prot100:13,  flex:true},
+  riz:     {nom:"Riz (cru)",                   kcal100:350, prot100:7,   flex:true},
+  poulet:  {nom:"Haut de cuisse poulet (cru)", kcal100:130, prot100:19},
+  skyr:    {nom:"Skyr nature",                 kcal100:63,  prot100:11},
+  pb:      {nom:"Beurre de cacahuète",         kcal100:600, prot100:25},
+  pois:    {nom:"Petits pois-carottes",        kcal100:60,  prot100:3.5},
+  amandes: {nom:"Amandes",                     kcal100:600, prot100:21},
+  noix:    {nom:"Noix",                         kcal100:650, prot100:15},
+  whey:    {nom:"Whey",      unite:"shaker",   kcalU:115,   protU:23},
+  banane:  {nom:"Banane",    unite:"",          kcalU:105,   protU:1.3},
+  choco:   {nom:"Chocolat noir 85%", unite:"carré", kcalU:30, protU:0.5},
+};
+const PLAN = [
+  {id:'pdej',  nom:'Petit-déjeuner',     items:[['avoine',100],['whey',1],['banane',1],['pb',15]]},
+  {id:'dej',   nom:'Déjeuner',           items:[['poulet',220],['riz',140],['pois',190]]},
+  {id:'coll',  nom:'Collation aprèm',    items:[['skyr',240],['banane',1],['amandes',30]]},
+  {id:'post',  nom:'Post-training',      items:[['whey',1],['banane',1]]},
+  {id:'diner', nom:'Dîner',              items:[['skyr',240],['noix',15],['choco',2]]},
+];
+
+function kcalItem(cle, q){ const a=ALIMENTS[cle]; return a.unite!==undefined ? a.kcalU*q : a.kcal100*q/100; }
+function protItem(cle, q){ const a=ALIMENTS[cle]; return a.unite!==undefined ? a.protU*q : a.prot100*q/100; }
+
+/* base de calories des aliments non-flex (protéines/lipides fixés) et des aliments flex (glucides ajustables) */
+function basesKcal(){
+  let fixe=0, flex=0;
+  PLAN.forEach(r=>r.items.forEach(([cle,q])=>{
+    (ALIMENTS[cle].flex ? (flex+=kcalItem(cle,q)) : (fixe+=kcalItem(cle,q)));
+  }));
+  return {fixe, flex};
+}
+/* facteur appliqué aux aliments flex pour atteindre l'objectif, borné pour rester réaliste */
+function facteurFlex(){
+  const {fixe, flex} = basesKcal();
+  if(flex<=0) return 1;
+  const f = (etat.objectifKcal - fixe) / flex;
+  return Math.max(0.4, Math.min(1.8, f));
+}
+/* quantité affichée d'un item après ajustement */
+function qteAjustee(cle, qBase){
+  if(!ALIMENTS[cle].flex) return qBase;
+  const q = qBase * facteurFlex();
+  return Math.round(q/5)*5; /* arrondi à 5 g */
+}
+function repasKcal(r){ return r.items.reduce((s,[cle,q])=>s+kcalItem(cle, qteAjustee(cle,q)),0); }
+function repasProt(r){ return r.items.reduce((s,[cle,q])=>s+protItem(cle, qteAjustee(cle,q)),0); }
+
+/* ---- reset par tampon de date : le cœur du "décochage à minuit" ---- */
+function resetSiNouveauJour(){
+  const j = jourLocal();
+  if(etat.repas.jour !== j){
+    etat.repas.jour = j;
+    etat.repas.coches = {};
+    sauverEtat();
+    return true;
+  }
+  return false;
+}
+
+/* ---- cochage : un tap prend le repas (ne décoche jamais) ; bouton Annuler explicite pour revenir ---- */
+function prendreRepas(id){
+  resetSiNouveauJour();
+  if(!etat.repas.coches[id]){ etat.repas.coches[id] = true; sauverEtat(); afficherRepas(); }
+}
+function annulerRepas(id){
+  resetSiNouveauJour();
+  if(etat.repas.coches[id]){ delete etat.repas.coches[id]; sauverEtat(); afficherRepas(); }
+}
+
+function afficherRepas(){
+  resetSiNouveauJour();
+  const obj = document.getElementById('obj-kcal');
+  if(document.activeElement!==obj) obj.value = etat.objectifKcal;
+
+  /* cartes repas */
+  const cont = document.getElementById('liste-repas');
+  cont.innerHTML = PLAN.map(r=>{
+    const pris = !!etat.repas.coches[r.id];
+    const items = r.items.map(([cle,qBase])=>{
+      const a=ALIMENTS[cle]; const q=qteAjustee(cle,qBase);
+      const lib = a.unite!==undefined
+        ? `${q} ${a.unite}${q>1&&a.unite?'s':''}`.trim()
+        : `${q} g`;
+      return `<li><span>${a.nom}</span><span class="qte${a.flex?' flex':''}">${lib}</span></li>`;
+    }).join('');
+    return `<div class="repas-carte${pris?' pris':''}" role="button" tabindex="0" aria-pressed="${pris}"
+       onclick="prendreRepas('${r.id}')"
+       onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();prendreRepas('${r.id}')}">
+       <div class="repas-haut">
+         <span class="repas-coche">${pris?'✓':''}</span>
+         <span class="repas-nom">${r.nom}</span>
+         ${pris
+            ? `<button type="button" class="repas-annuler" onclick="event.stopPropagation();annulerRepas('${r.id}')">Annuler</button>`
+            : `<span class="repas-kcal">${Math.round(repasKcal(r))} kcal</span>`}
+       </div>
+       <ul class="repas-items">${items}</ul>
+    </div>`;
+  }).join('');
+
+  /* progression */
+  const total = PLAN.length;
+  const prisN = PLAN.filter(r=>etat.repas.coches[r.id]).length;
+  const kcalTot = PLAN.reduce((s,r)=>s+repasKcal(r),0);
+  const protTot = PLAN.reduce((s,r)=>s+repasProt(r),0);
+  const kcalPris = PLAN.filter(r=>etat.repas.coches[r.id]).reduce((s,r)=>s+repasKcal(r),0);
+  const protPris = PLAN.filter(r=>etat.repas.coches[r.id]).reduce((s,r)=>s+repasProt(r),0);
+  document.getElementById('prog-repas').textContent = `${prisN} / ${total} repas`;
+  document.getElementById('prog-kcal').textContent = `${Math.round(kcalPris)} / ${Math.round(kcalTot)} kcal`;
+  document.getElementById('prog-rempli').style.width = kcalTot? (100*kcalPris/kcalTot).toFixed(0)+'%' : '0%';
+  document.getElementById('prog-macros').innerHTML =
+    `<span>Protéines <b>${Math.round(protPris)} / ${Math.round(protTot)} g</b></span>`+
+    `<span>Objectif <b>${etat.objectifKcal} kcal</b></span>`;
+}
+
+function majObjectif(){
+  const v = parseInt(document.getElementById('obj-kcal').value,10);
+  if(!isNaN(v)) etat.objectifKcal = Math.max(1600, Math.min(4000, v));
+  sauverEtat(); afficherRepas();
+}
+function ajusterObjectif(delta){
+  etat.objectifKcal = Math.max(1600, Math.min(4000, etat.objectifKcal + delta));
+  sauverEtat(); afficherRepas();
+}
+
+
+function changerOnglet(nom){
+  document.querySelectorAll('.onglet').forEach(o=>o.classList.remove('actif'));
+  document.getElementById('ong-'+nom).classList.add('actif');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('actif', b.dataset.ong===nom));
+}
+
+/* ================= EXPORT / IMPORT ================= */
+function exporterJSON(){
+  const blob = new Blob([JSON.stringify({version:1, exporte:new Date().toISOString(), ...etat}, null, 2)],
+                        {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `carnet-recompo-${aujourdHui()}.json`;
+  a.click(); URL.revokeObjectURL(a.href);
+}
+function importerJSON(ev){
+  const f = ev.target.files[0]; if(!f) return;
+  const lecteur = new FileReader();
+  lecteur.onload = () => {
+    try{
+      const imp = JSON.parse(lecteur.result);
+      if(!Array.isArray(imp.poids) || !Array.isArray(imp.mensurations)) throw new Error('format');
+      /* fusion par date, l'import gagne */
+      const fusion = (locale, importee) => {
+        const map = {}; locale.forEach(x=>map[x.date]=x); importee.forEach(x=>map[x.date]=x);
+        return Object.values(map).sort(triDate);
+      };
+      etat.poids = fusion(etat.poids, imp.poids);
+      etat.mensurations = fusion(etat.mensurations, imp.mensurations);
+      /* objectif kcal : l'import gagne s'il est présent */
+      if(typeof imp.objectifKcal === 'number') etat.objectifKcal = imp.objectifKcal;
+      /* repas : seulement si le fichier importé concerne aujourd'hui ; fusion OR (coché sur un appareil = coché) */
+      if(imp.repas && imp.repas.jour === jourLocal()){
+        if(etat.repas.jour !== jourLocal()){ etat.repas = {jour:jourLocal(), coches:{}}; }
+        Object.keys(imp.repas.coches||{}).forEach(k=>{ if(imp.repas.coches[k]) etat.repas.coches[k]=true; });
+      }
+      sauverEtat(); toutAfficher();
+      alert(`Import réussi : ${etat.poids.length} pesées, ${etat.mensurations.length} relevés au total.`);
+    }catch(err){ alert('Fichier invalide : ce n\u2019est pas un export du carnet.'); }
+    ev.target.value='';
+  };
+  lecteur.readAsText(f);
+}
+function toutEffacer(){
+  if(confirm('Tout effacer ? As-tu exporté d\u2019abord ?')){
+    etat = {poids:[], mensurations:[], repas:{jour:jourLocal(), coches:{}}, objectifKcal:OBJ_DEFAUT};
+    sauverEtat(); toutAfficher();
+  }
+}
+
+/* ================= INIT ================= */
+chargerEtat();
+resetSiNouveauJour();
+document.getElementById('p-date').value = aujourdHui();
+document.getElementById('m-date').value = aujourdHui();
+toutAfficher();
+
+/* décochage automatique à minuit, robuste : */
+/* 1) au retour sur l'onglet/appli (cas le plus fréquent : app rouverte un nouveau jour) */
+document.addEventListener('visibilitychange', () => {
+  if(!document.hidden && resetSiNouveauJour()) afficherRepas();
+});
+window.addEventListener('focus', () => { if(resetSiNouveauJour()) afficherRepas(); });
+/* 2) si l'appli reste ouverte au passage de minuit : contrôle chaque minute */
+setInterval(() => { if(resetSiNouveauJour()) afficherRepas(); }, 60000);
+
+</script>
+</body>
+</html>
