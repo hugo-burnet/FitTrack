@@ -260,6 +260,80 @@
   }
   .cache{display:none !important}
 
+  /* ---------- champs texte & select (ajout muscu/courses) ---------- */
+  input[type=text]{
+    width:100%;background:var(--fonte);border:1px solid var(--trait);
+    border-radius:6px;color:var(--craie);padding:10px 12px;font-size:16px;
+    font-family:'Barlow',sans-serif;min-height:44px;
+  }
+  input[type=text]:focus{outline:2px solid var(--laiton);outline-offset:-1px;border-color:var(--laiton)}
+  select{
+    width:100%;background:var(--fonte);border:1px solid var(--trait);border-radius:6px;
+    color:var(--craie);padding:10px 12px;font-size:16px;min-height:44px;
+    font-family:'Barlow',sans-serif;-webkit-appearance:none;appearance:none;
+  }
+  select:focus{outline:2px solid var(--laiton);outline-offset:-1px;border-color:var(--laiton)}
+
+  /* ---------- chips de sélection (jours / programme) ---------- */
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px}
+  .chip{
+    background:var(--plaque-2);border:1px solid var(--trait);border-radius:999px;
+    color:var(--craie-2);font-family:'Barlow Condensed',sans-serif;font-weight:600;
+    font-size:15px;letter-spacing:.05em;text-transform:uppercase;
+    padding:8px 14px;cursor:pointer;min-height:40px;
+  }
+  .chip.actif{background:var(--laiton);color:#1a1408;border-color:var(--laiton)}
+  .chip:active{transform:translateY(1px)}
+  .chip:focus-visible{outline:2px solid var(--laiton);outline-offset:1px}
+
+  /* ---------- bloc exercice (saisie de séance) ---------- */
+  .exo-bloc{background:var(--fonte);border:1px solid var(--trait);border-radius:8px;padding:12px;margin-bottom:10px}
+  .exo-tete{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:4px}
+  .exo-nom{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:17px;letter-spacing:.03em;text-transform:uppercase;line-height:1.1}
+  .exo-presc{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--craie-2);flex:none;white-space:nowrap}
+  .exo-derniere{font-size:12px;color:var(--craie-2);margin-bottom:8px}
+  .exo-derniere b{color:var(--laiton);font-family:'IBM Plex Mono',monospace}
+  .sets{display:flex;flex-direction:column;gap:6px}
+  .set-ligne{display:grid;grid-template-columns:24px 1fr 1fr;gap:8px;align-items:center}
+  .set-n{font-family:'IBM Plex Mono',monospace;color:var(--craie-2);font-size:13px;text-align:center}
+  .set-ligne input{padding:8px 10px;min-height:40px;font-size:15px}
+  .set-add{
+    background:none;border:1px dashed var(--trait);border-radius:6px;color:var(--craie-2);
+    font-size:13px;padding:6px;cursor:pointer;margin-top:6px;width:100%;
+  }
+  .set-add:active{transform:translateY(1px)}
+
+  /* ---------- séances enregistrées ---------- */
+  .seance-carte{background:var(--plaque);border:1px solid var(--trait);border-left:4px solid var(--laiton);border-radius:8px;padding:12px 14px;margin-bottom:10px}
+  .seance-haut{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:6px}
+  .seance-jour{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:17px;letter-spacing:.04em;text-transform:uppercase}
+  .seance-date{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--craie-2);white-space:nowrap}
+  .seance-exos{list-style:none;display:flex;flex-direction:column;gap:3px}
+  .seance-exos li{font-size:13px;color:var(--craie);display:flex;justify-content:space-between;gap:10px}
+  .seance-exos .perf{font-family:'IBM Plex Mono',monospace;color:var(--craie-2);flex:none}
+
+  /* ---------- éditeur de programme ---------- */
+  .ed-jour{background:var(--fonte);border:1px solid var(--trait);border-radius:8px;padding:12px;margin-bottom:10px}
+  .ed-jour-tete{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+  .ed-jour-tete input{flex:1}
+  .ed-exo{display:grid;grid-template-columns:1fr 52px 70px 36px;gap:6px;margin-top:6px;align-items:center}
+  .ed-exo input{padding:7px 8px;min-height:38px;font-size:14px}
+  .ed-exo .suppr{padding:6px;min-width:36px;min-height:36px}
+
+  /* ---------- liste de courses ---------- */
+  .course-cat{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:15px;letter-spacing:.07em;text-transform:uppercase;color:var(--laiton);margin:14px 0 6px}
+  .course-cat:first-child{margin-top:0}
+  .course-item{
+    display:flex;align-items:center;gap:12px;background:var(--plaque);border:1px solid var(--trait);
+    border-radius:8px;padding:10px 12px;margin-bottom:6px;cursor:pointer;-webkit-user-select:none;user-select:none;
+  }
+  .course-item:focus-visible{outline:2px solid var(--laiton);outline-offset:2px}
+  .course-coche{width:24px;height:24px;flex:none;border-radius:6px;border:2px solid var(--trait);display:flex;align-items:center;justify-content:center;color:#1a1408;font-weight:800;font-size:15px}
+  .course-item.pris .course-coche{background:var(--ok);border-color:var(--ok)}
+  .course-nom{flex:1;font-size:15px}
+  .course-item.pris .course-nom{color:var(--craie-2);text-decoration:line-through;text-decoration-color:var(--trait)}
+  .course-qte{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--craie-2);flex:none;text-align:right}
+
   /* ---------- responsive ---------- */
   .verdict .tampon{overflow-wrap:break-word}
   @media (max-width:400px){
@@ -353,8 +427,47 @@
     <p class="note" style="text-align:center">Les repas se décochent seuls à minuit. Touche « Annuler » sur un repas pris pour revenir en arrière.</p>
   </section>
 
-  <!-- ===== ONGLET POIDS ===== -->
-  <section class="onglet" id="ong-poids">
+  <!-- ===== ONGLET MUSCU ===== -->
+  <section class="onglet" id="ong-muscu">
+    <div class="carte">
+      <h2>Séance du jour</h2>
+      <div class="champ">
+        <label for="muscu-prog">Programme</label>
+        <select id="muscu-prog" onchange="changerProgrammeActif(this.value)"></select>
+      </div>
+      <label>Choisis la séance</label>
+      <div class="chips" id="muscu-jours"></div>
+      <div id="muscu-form"></div>
+      <p class="note">Le placeholder de chaque série rappelle ta <b>dernière performance</b> : double progression = vise le haut de la fourchette, puis +2,5 kg. Une rep avec élan ne compte pas.</p>
+    </div>
+
+    <div class="carte">
+      <h2>Progression par exercice</h2>
+      <div class="champ">
+        <label for="prog-exo">Exercice</label>
+        <select id="prog-exo" onchange="dessinerProgression(this.value)"></select>
+      </div>
+      <div class="graph-box"><canvas id="graph-prog"></canvas></div>
+      <p class="note">Courbe du <b>1RM estimé</b> (Epley, sur ta meilleure série) et du <b>volume</b> total. La pente vers le haut = surcharge progressive réussie.</p>
+    </div>
+
+    <div class="carte">
+      <h2>Programmes & exercices</h2>
+      <button class="btn btn-2" id="btn-editeur" onclick="basculerEditeur()">✎ Modifier les programmes</button>
+      <div id="muscu-editeur" class="cache"></div>
+      <div style="height:12px"></div>
+      <button class="btn btn-2" onclick="document.getElementById('fichier-import').click()">⬆ Importer un JSON de programmes</button>
+      <p class="note">Le JSON importé peut contenir <span class="mono">programmes</span> et/ou <span class="mono">seances</span> — il fusionne avec l'existant (voir l'onglet Données pour le format).</p>
+    </div>
+
+    <div class="carte">
+      <h2>Séances enregistrées</h2>
+      <div id="muscu-hist"></div>
+    </div>
+  </section>
+
+  <!-- ===== ONGLET MESURES (poids + mensurations) ===== -->
+  <section class="onglet" id="ong-mesures">
     <div class="carte">
       <h2>Nouvelle pesée</h2>
       <div class="ligne">
@@ -374,10 +487,7 @@
       <h2>Historique</h2>
       <div id="hist-poids"></div>
     </div>
-  </section>
 
-  <!-- ===== ONGLET MENSURATIONS ===== -->
-  <section class="onglet" id="ong-mens">
     <div class="carte">
       <h2>Relevé du 1er du mois</h2>
       <div class="champ"><label for="m-date">Date</label><input type="date" id="m-date"></div>
@@ -405,11 +515,41 @@
     </div>
   </section>
 
+  <!-- ===== ONGLET COURSES ===== -->
+  <section class="onglet" id="ong-courses">
+    <div class="carte progression">
+      <div class="prog-haut">
+        <span class="prog-titre" id="courses-compte">0 / 0</span>
+        <button class="repas-annuler" onclick="decocherCourses()">Tout décocher</button>
+      </div>
+      <div class="prog-barre"><div class="prog-rempli" id="courses-rempli"></div></div>
+    </div>
+
+    <div class="carte">
+      <h2>Liste de courses</h2>
+      <div id="courses-liste"></div>
+      <p class="note">Coche au fur et à mesure dans les rayons. « Tout décocher » remet la liste à blanc pour la semaine suivante.</p>
+    </div>
+
+    <div class="carte">
+      <h2>Ajouter un article</h2>
+      <div class="champ"><label for="course-nom">Article</label><input type="text" id="course-nom" placeholder="Ex. Fromage blanc 3%"></div>
+      <div class="ligne">
+        <div><label for="course-qte">Quantité</label><input type="text" id="course-qte" placeholder="500 g"></div>
+        <div><label for="course-cat">Rayon</label><select id="course-cat">
+          <option>Frais</option><option>Épicerie</option><option>Stock (2-4 sem)</option><option>Réassort mensuel</option><option>Autre</option>
+        </select></div>
+      </div>
+      <button class="btn" onclick="ajouterCourse()">Ajouter à la liste</button>
+    </div>
+  </section>
+
   <!-- ===== ONGLET DONNÉES ===== -->
   <section class="onglet" id="ong-data">
     <div class="carte">
       <h2>Sauvegarde & synchro</h2>
-      <p class="note" style="margin:0 0 12px">Les données sont enregistrées automatiquement dans ce navigateur. Le JSON sert de <b>sauvegarde</b> et de <b>synchro PC ↔ mobile</b> : exporte ici, importe là-bas. L'import fusionne par date (le fichier importé gagne en cas de doublon).</p>
+      <p class="note" style="margin:0 0 12px">Les données sont enregistrées automatiquement dans ce navigateur. Le JSON sert de <b>sauvegarde</b> et de <b>synchro PC ↔ mobile</b> : exporte ici, importe là-bas. L'export détaille tout : pesées, mensurations, <b>repas réellement mangés (avec quantités)</b>, <b>séances (charge × reps par série)</b>, programmes et liste de courses. L'import fusionne intelligemment (par date / id, le fichier importé gagne).</p>
+      <p class="note" style="margin:0 0 12px">Pour <b>importer un programme</b> seul, le fichier JSON peut ne contenir que la clé <span class="mono">programmes</span> : <span class="mono">[{"id","nom","jours":[{"id","nom","exercices":[{"nom","series","reps","note"}]}]}]</span>.</p>
       <button class="btn" onclick="exporterJSON()">⬇ Exporter le JSON</button>
       <div style="height:10px"></div>
       <button class="btn btn-2" onclick="document.getElementById('fichier-import').click()">⬆ Importer un JSON</button>
@@ -427,8 +567,9 @@
 <nav>
   <button class="actif" data-ong="verdict" onclick="changerOnglet('verdict')">Verdict</button>
   <button data-ong="repas" onclick="changerOnglet('repas')">Repas</button>
-  <button data-ong="poids" onclick="changerOnglet('poids')">Poids</button>
-  <button data-ong="mens" onclick="changerOnglet('mens')">Mensur.</button>
+  <button data-ong="muscu" onclick="changerOnglet('muscu')">Muscu</button>
+  <button data-ong="mesures" onclick="changerOnglet('mesures')">Mesures</button>
+  <button data-ong="courses" onclick="changerOnglet('courses')">Courses</button>
   <button data-ong="data" onclick="changerOnglet('data')">Données</button>
 </nav>
 
@@ -457,6 +598,15 @@ function chargerEtat(){
   if(typeof etat.objectifKcal !== 'number') etat.objectifKcal = OBJ_DEFAUT;
   if(!etat.repas || typeof etat.repas !== 'object') etat.repas = { jour: jourLocal(), coches: {} };
   if(!etat.repas.coches) etat.repas.coches = {};
+  /* nouveaux modules : journal repas, muscu, courses */
+  if(!Array.isArray(etat.journalRepas)) etat.journalRepas = [];
+  if(!Array.isArray(etat.programmes) || !etat.programmes.length) etat.programmes = cloneProfond(PROG_DEFAUT);
+  if(!etat.programmeActif || !etat.programmes.some(p=>p.id===etat.programmeActif)) etat.programmeActif = etat.programmes[0].id;
+  if(!Array.isArray(etat.seances)) etat.seances = [];
+  if(!etat.courses || typeof etat.courses !== 'object') etat.courses = { items:[], coches:{}, maj:null };
+  if(!Array.isArray(etat.courses.items) || !etat.courses.items.length)
+    etat.courses.items = COURSES_DEFAUT.map(c=>({id:slug(c.nom), ...c}));
+  if(!etat.courses.coches) etat.courses.coches = {};
 }
 function sauverEtat(){
   if(!storageOK) return;
@@ -660,6 +810,7 @@ function afficherBandeau(){
 function toutAfficher(){
   afficherBandeau(); afficherHistPoids(); afficherHistMens();
   dessinerPoids(); dessinerMens(); calculerVerdict(); afficherRepas();
+  afficherMuscu(); afficherCourses();
 }
 
 /* ================= REPAS ================= */
@@ -727,11 +878,28 @@ function resetSiNouveauJour(){
 /* ---- cochage : un tap prend le repas (ne décoche jamais) ; bouton Annuler explicite pour revenir ---- */
 function prendreRepas(id){
   resetSiNouveauJour();
-  if(!etat.repas.coches[id]){ etat.repas.coches[id] = true; sauverEtat(); afficherRepas(); }
+  if(!etat.repas.coches[id]){ etat.repas.coches[id] = true; journaliserRepas(id); sauverEtat(); afficherRepas(); }
 }
 function annulerRepas(id){
   resetSiNouveauJour();
-  if(etat.repas.coches[id]){ delete etat.repas.coches[id]; sauverEtat(); afficherRepas(); }
+  if(etat.repas.coches[id]){ delete etat.repas.coches[id]; deJournaliserRepas(id); sauverEtat(); afficherRepas(); }
+}
+/* journal : enregistre CE qui a été mangé et EN QUELLE QUANTITÉ (pas juste "pris") — sert à l'export détaillé */
+function journaliserRepas(id){
+  const r = PLAN.find(x=>x.id===id); if(!r) return;
+  const jour = etat.repas.jour;
+  etat.journalRepas = etat.journalRepas.filter(e=>!(e.date===jour && e.id===id));
+  const items = r.items.map(([cle,qBase])=>{
+    const a = ALIMENTS[cle]; const q = qteAjustee(cle,qBase);
+    return { cle, nom:a.nom, qte:q, unite: a.unite!==undefined ? (a.unite||'unité') : 'g' };
+  });
+  etat.journalRepas.push({ date:jour, id, nom:r.nom,
+    kcal:Math.round(repasKcal(r)), prot:Math.round(repasProt(r)),
+    objectifKcal:etat.objectifKcal, items });
+}
+function deJournaliserRepas(id){
+  const jour = etat.repas.jour;
+  etat.journalRepas = etat.journalRepas.filter(e=>!(e.date===jour && e.id===id));
 }
 
 function afficherRepas(){
@@ -798,7 +966,7 @@ function changerOnglet(nom){
 
 /* ================= EXPORT / IMPORT ================= */
 function exporterJSON(){
-  const blob = new Blob([JSON.stringify({version:1, exporte:new Date().toISOString(), ...etat}, null, 2)],
+  const blob = new Blob([JSON.stringify({version:2, exporte:new Date().toISOString(), ...etat}, null, 2)],
                         {type:'application/json'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -811,23 +979,52 @@ function importerJSON(ev){
   lecteur.onload = () => {
     try{
       const imp = JSON.parse(lecteur.result);
-      if(!Array.isArray(imp.poids) || !Array.isArray(imp.mensurations)) throw new Error('format');
+      const connus = ['poids','mensurations','objectifKcal','repas','journalRepas','programmes','programmeActif','seances','courses'];
+      if(!connus.some(k=>k in imp)) throw new Error('format');
       /* fusion par date, l'import gagne */
-      const fusion = (locale, importee) => {
-        const map = {}; locale.forEach(x=>map[x.date]=x); importee.forEach(x=>map[x.date]=x);
+      const fusionDate = (locale, importee) => {
+        const map = {}; (locale||[]).forEach(x=>map[x.date]=x); (importee||[]).forEach(x=>map[x.date]=x);
         return Object.values(map).sort(triDate);
       };
-      etat.poids = fusion(etat.poids, imp.poids);
-      etat.mensurations = fusion(etat.mensurations, imp.mensurations);
+      if(Array.isArray(imp.poids)) etat.poids = fusionDate(etat.poids, imp.poids);
+      if(Array.isArray(imp.mensurations)) etat.mensurations = fusionDate(etat.mensurations, imp.mensurations);
       /* objectif kcal : l'import gagne s'il est présent */
       if(typeof imp.objectifKcal === 'number') etat.objectifKcal = imp.objectifKcal;
-      /* repas : seulement si le fichier importé concerne aujourd'hui ; fusion OR (coché sur un appareil = coché) */
+      /* repas du jour : fusion OR (coché sur un appareil = coché) */
       if(imp.repas && imp.repas.jour === jourLocal()){
         if(etat.repas.jour !== jourLocal()){ etat.repas = {jour:jourLocal(), coches:{}}; }
         Object.keys(imp.repas.coches||{}).forEach(k=>{ if(imp.repas.coches[k]) etat.repas.coches[k]=true; });
       }
+      /* journal des repas : fusion par date+id */
+      if(Array.isArray(imp.journalRepas)){
+        const map={}; etat.journalRepas.forEach(e=>map[e.date+'|'+e.id]=e); imp.journalRepas.forEach(e=>map[e.date+'|'+e.id]=e);
+        etat.journalRepas = Object.values(map).sort(triDate);
+      }
+      /* programmes : fusion par id (l'import remplace un id existant) */
+      if(Array.isArray(imp.programmes) && imp.programmes.length){
+        const map={}; etat.programmes.forEach(p=>map[p.id]=p);
+        imp.programmes.forEach(p=>{ if(p && p.id && Array.isArray(p.jours)) map[p.id]=p; });
+        etat.programmes = Object.values(map);
+      }
+      if(typeof imp.programmeActif === 'string' && etat.programmes.some(p=>p.id===imp.programmeActif)) etat.programmeActif = imp.programmeActif;
+      /* séances : fusion par date+jourId */
+      if(Array.isArray(imp.seances)){
+        const map={}; etat.seances.forEach(s=>map[s.date+'|'+s.jourId]=s);
+        imp.seances.forEach(s=>{ if(s && s.date) map[s.date+'|'+s.jourId]=s; });
+        etat.seances = Object.values(map).sort(triDate);
+      }
+      /* courses : fusion des articles par id + coches OR */
+      if(imp.courses && typeof imp.courses === 'object'){
+        if(Array.isArray(imp.courses.items)){
+          const map={}; (etat.courses.items||[]).forEach(it=>map[it.id]=it);
+          imp.courses.items.forEach(it=>{ if(it && it.id) map[it.id]=it; });
+          etat.courses.items = Object.values(map);
+        }
+        Object.keys(imp.courses.coches||{}).forEach(k=>{ if(imp.courses.coches[k]) etat.courses.coches[k]=true; });
+      }
+      jourSelectionne = null;
       sauverEtat(); toutAfficher();
-      alert(`Import réussi : ${etat.poids.length} pesées, ${etat.mensurations.length} relevés au total.`);
+      alert(`Import réussi : ${etat.poids.length} pesées, ${etat.mensurations.length} relevés, ${etat.seances.length} séances, ${etat.programmes.length} programme(s).`);
     }catch(err){ alert('Fichier invalide : ce n\u2019est pas un export du carnet.'); }
     ev.target.value='';
   };
@@ -835,9 +1032,374 @@ function importerJSON(ev){
 }
 function toutEffacer(){
   if(confirm('Tout effacer ? As-tu exporté d\u2019abord ?')){
-    etat = {poids:[], mensurations:[], repas:{jour:jourLocal(), coches:{}}, objectifKcal:OBJ_DEFAUT};
+    etat = {poids:[], mensurations:[], repas:{jour:jourLocal(), coches:{}}, objectifKcal:OBJ_DEFAUT,
+            journalRepas:[], programmes:cloneProfond(PROG_DEFAUT), programmeActif:'pplul', seances:[],
+            courses:{items:COURSES_DEFAUT.map(c=>({id:slug(c.nom), ...c})), coches:{}, maj:null}};
+    jourSelectionne = null;
     sauverEtat(); toutAfficher();
   }
+}
+
+/* ================= OUTILS PARTAGÉS ================= */
+function cloneProfond(o){ return JSON.parse(JSON.stringify(o)); }
+function echap(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function slug(s){
+  return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')
+    .replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') || 'item';
+}
+
+/* ================= MUSCU : PROGRAMME PAR DÉFAUT (bible PPLUL) ================= */
+const PROG_DEFAUT = [{
+  id:'pplul', nom:'PPLUL 5 jours',
+  jours:[
+    {id:'push', nom:'Push', exercices:[
+      {nom:'Chest press machine', series:3, reps:'10-12'},
+      {nom:'Développé incliné haltères (30°)', series:3, reps:'10-12'},
+      {nom:'Développé épaules haltères assis', series:3, reps:'10-12', note:'RIR 2'},
+      {nom:'Élévations latérales', series:3, reps:'12-15'},
+      {nom:'Extension triceps poulie', series:3, reps:'12-15'},
+    ]},
+    {id:'pull', nom:'Pull', exercices:[
+      {nom:'Tirage vertical', series:3, reps:'10-12'},
+      {nom:'Rowing unilatéral buste appuyé', series:3, reps:'10-12/côté'},
+      {nom:'Face pull', series:3, reps:'15', note:'RIR 2'},
+      {nom:'Curl incliné haltères', series:3, reps:'10-12'},
+      {nom:'Curl marteau', series:2, reps:'12-15'},
+    ]},
+    {id:'legs', nom:'Legs', exercices:[
+      {nom:'Presse horizontale', series:4, reps:'12-15', note:'RIR 2'},
+      {nom:'Leg curl assis', series:3, reps:'10-12'},
+      {nom:'Leg extension', series:3, reps:'12-15'},
+      {nom:'Mollets assis', series:3, reps:'12-15'},
+      {nom:'Circuit McGill big 3', series:2, reps:'tours', gainage:true},
+    ]},
+    {id:'upper', nom:'Upper', exercices:[
+      {nom:'Développé incliné haltères', series:3, reps:'10-12'},
+      {nom:'Rowing machine appui pectoral', series:3, reps:'10-12'},
+      {nom:'Développé épaules haltères assis', series:2, reps:'12', note:'RIR 2'},
+      {nom:'Tirage vertical prise neutre', series:2, reps:'12'},
+      {nom:'Élévations latérales', series:2, reps:'15'},
+      {nom:'Curl au choix', series:2, reps:'12-15'},
+    ]},
+    {id:'lower', nom:'Lower', exercices:[
+      {nom:'Presse horizontale', series:3, reps:'12-15', note:'RIR 2'},
+      {nom:'Hip thrust', series:3, reps:'12'},
+      {nom:'Leg curl allongé', series:3, reps:'12-15'},
+      {nom:'Mollets assis', series:3, reps:'15'},
+      {nom:'Fentes bulgares haltères', series:2, reps:'12/jambe'},
+      {nom:'Circuit McGill big 3', series:2, reps:'tours', gainage:true},
+    ]},
+  ]
+}];
+
+/* état d'interface (non persisté) */
+let jourSelectionne = null;
+let editeurOuvert = false;
+let exoProgressionSel = null;
+let chProg = null;
+
+function programmeActif(){ return etat.programmes.find(p=>p.id===etat.programmeActif) || etat.programmes[0]; }
+
+/* dernière perf notée pour un exercice (par nom) → prérempli les placeholders */
+function dernierePerf(nom){
+  for(let i=etat.seances.length-1;i>=0;i--){
+    const ex = etat.seances[i].exercices.find(e=>e.nom===nom);
+    if(ex) return { date:etat.seances[i].date, series:ex.series };
+  }
+  return null;
+}
+function fmtPerf(series){
+  const charges = series.map(s=>s.charge).filter(c=>c!=null);
+  const reps = series.map(s=>s.reps).join('/');
+  const c = charges.length ? Math.max(...charges) : null;
+  return (c!=null ? c+' kg · ' : '') + reps;
+}
+
+/* ---- affichage de l'onglet Muscu ---- */
+function afficherMuscu(){
+  const prog = programmeActif();
+  const sel = document.getElementById('muscu-prog');
+  sel.innerHTML = etat.programmes.map(p=>
+    `<option value="${echap(p.id)}"${p.id===prog.id?' selected':''}>${echap(p.nom)}</option>`).join('');
+  const chips = document.getElementById('muscu-jours');
+  chips.innerHTML = prog.jours.length
+    ? prog.jours.map(j=>`<button class="chip${j.id===jourSelectionne?' actif':''}" onclick="choisirJour('${j.id}')">${echap(j.nom)}</button>`).join('')
+    : '<span class="vide">Aucune séance dans ce programme. Ajoute-en via « Modifier les programmes ».</span>';
+  renderSeanceForm();
+  afficherEditeur();
+  majSelectExoProgression();
+  afficherHistMuscu();
+}
+
+function choisirJour(id){ jourSelectionne = id; afficherMuscu(); }
+
+function renderSeanceForm(){
+  const cont = document.getElementById('muscu-form');
+  const prog = programmeActif();
+  const jour = prog.jours.find(j=>j.id===jourSelectionne);
+  if(!jour){ cont.innerHTML = '<p class="vide">Choisis une séance ci-dessus pour noter tes charges et tes reps.</p>'; return; }
+  let html = `<div class="champ" style="margin-top:12px"><label for="muscu-date">Date de la séance</label><input type="date" id="muscu-date" value="${aujourdHui()}"></div>`;
+  html += jour.exercices.map((ex,ei)=>{
+    const presc = `${ex.series} × ${ex.reps}${ex.note?' · '+ex.note:''}`;
+    const last = dernierePerf(ex.nom);
+    const lastLine = last ? `<div class="exo-derniere">Dernière (${fmtDate(last.date)}) : <b>${echap(fmtPerf(last.series))}</b></div>` : '';
+    const n = Math.max(ex.series||1, last ? last.series.length : 0);
+    let rows='';
+    for(let i=0;i<n;i++){
+      const ph = last && last.series[i] ? last.series[i] : null;
+      const phC = ph && ph.charge!=null ? ph.charge+' kg' : (ex.gainage?'—':'kg');
+      const phR = ph ? ph.reps+' reps' : 'reps';
+      rows += `<div class="set-ligne">
+        <span class="set-n">${i+1}</span>
+        <input class="in-charge" type="number" step="0.5" inputmode="decimal" placeholder="${phC}">
+        <input class="in-reps" type="number" inputmode="numeric" placeholder="${phR}">
+      </div>`;
+    }
+    return `<div class="exo-bloc" data-exo="${ei}">
+      <div class="exo-tete"><span class="exo-nom">${echap(ex.nom)}</span><span class="exo-presc">${echap(presc)}</span></div>
+      ${lastLine}
+      <div class="sets">${rows}</div>
+      <button class="set-add" onclick="ajouterSetLigne(this)">+ série</button>
+    </div>`;
+  }).join('');
+  html += `<button class="btn" onclick="enregistrerSeance()" style="margin-top:8px">Enregistrer la séance</button>`;
+  cont.innerHTML = html;
+}
+function ajouterSetLigne(btn){
+  const sets = btn.previousElementSibling;
+  const n = sets.children.length + 1;
+  const div = document.createElement('div');
+  div.className = 'set-ligne';
+  div.innerHTML = `<span class="set-n">${n}</span>
+    <input class="in-charge" type="number" step="0.5" inputmode="decimal" placeholder="kg">
+    <input class="in-reps" type="number" inputmode="numeric" placeholder="reps">`;
+  sets.appendChild(div);
+}
+
+function enregistrerSeance(){
+  const prog = programmeActif();
+  const jour = prog.jours.find(j=>j.id===jourSelectionne);
+  if(!jour) return;
+  const date = document.getElementById('muscu-date').value;
+  if(!date){ alert('Date requise.'); return; }
+  const exercices=[];
+  document.querySelectorAll('#muscu-form .exo-bloc').forEach(bloc=>{
+    const ex = jour.exercices[+bloc.dataset.exo];
+    const series=[];
+    bloc.querySelectorAll('.set-ligne').forEach(row=>{
+      const charge = parseFloat(row.querySelector('.in-charge').value);
+      const reps = parseInt(row.querySelector('.in-reps').value,10);
+      if(!isNaN(reps)) series.push({ charge: isNaN(charge)?null:charge, reps });
+    });
+    if(series.length) exercices.push({ nom:ex.nom, presc:`${ex.series}×${ex.reps}`, series });
+  });
+  if(!exercices.length){ alert('Note au moins une série (reps) sur un exercice.'); return; }
+  etat.seances = etat.seances.filter(s=>!(s.date===date && s.jourId===jour.id));
+  etat.seances.push({ date, programmeId:prog.id, jourId:jour.id, jourNom:jour.nom, exercices });
+  etat.seances.sort(triDate);
+  sauverEtat();
+  alert('Séance enregistrée 💪');
+  afficherMuscu();
+}
+
+function afficherHistMuscu(){
+  const c = document.getElementById('muscu-hist');
+  if(!etat.seances.length){ c.innerHTML = '<p class="vide">Aucune séance enregistrée. Note ta première séance ci-dessus — sans carnet, pas de progression pilotée.</p>'; return; }
+  c.innerHTML = [...etat.seances].reverse().slice(0,30).map(s=>{
+    const exos = s.exercices.map(e=>`<li><span>${echap(e.nom)}</span><span class="perf">${echap(fmtPerf(e.series))}</span></li>`).join('');
+    return `<div class="seance-carte">
+      <div class="seance-haut">
+        <span class="seance-jour">${echap(s.jourNom||'Séance')}</span>
+        <span class="seance-date">${fmtDate(s.date)} <button class="suppr" aria-label="Supprimer" onclick="supprimerSeance('${s.date}','${echap(s.jourId)}')">✕</button></span>
+      </div>
+      <ul class="seance-exos">${exos}</ul>
+    </div>`;
+  }).join('');
+}
+function supprimerSeance(date, jourId){
+  etat.seances = etat.seances.filter(s=>!(s.date===date && s.jourId===jourId));
+  sauverEtat(); afficherMuscu();
+}
+
+/* ---- progression par exercice (1RM estimé Epley + volume) ---- */
+function tousLesExos(){
+  const set = new Set();
+  etat.programmes.forEach(p=>p.jours.forEach(j=>j.exercices.forEach(e=>{ if(e.nom) set.add(e.nom); })));
+  etat.seances.forEach(s=>s.exercices.forEach(e=>set.add(e.nom)));
+  return [...set].sort((a,b)=>a.localeCompare(b,'fr'));
+}
+function majSelectExoProgression(){
+  const sel = document.getElementById('prog-exo');
+  const exos = tousLesExos();
+  if(!exoProgressionSel || !exos.includes(exoProgressionSel)) exoProgressionSel = exos[0]||null;
+  sel.innerHTML = exos.length
+    ? exos.map(n=>`<option value="${echap(n)}"${n===exoProgressionSel?' selected':''}>${echap(n)}</option>`).join('')
+    : '<option>—</option>';
+  dessinerProgression(exoProgressionSel);
+}
+function e1rm(charge, reps){ return charge==null ? null : charge*(1+reps/30); }
+function dessinerProgression(nom){
+  exoProgressionSel = nom;
+  const pts = [];
+  etat.seances.forEach(s=>{
+    const ex = s.exercices.find(e=>e.nom===nom);
+    if(!ex) return;
+    let best=null, vol=0;
+    ex.series.forEach(se=>{
+      vol += (se.charge||0)*se.reps;
+      const e = e1rm(se.charge, se.reps);
+      if(e!=null && (best==null || e>best)) best=e;
+    });
+    pts.push({ date:s.date, e1rm:best, vol });
+  });
+  pts.sort((a,b)=>a.date.localeCompare(b.date));
+  const ctx = document.getElementById('graph-prog');
+  if(chProg) chProg.destroy();
+  chProg = new Chart(ctx,{type:'line',data:{labels:pts.map(p=>fmtDate(p.date)),datasets:[
+    {label:'1RM estimé (kg)', data:pts.map(p=>p.e1rm!=null?Math.round(p.e1rm*10)/10:null), borderColor:'#d9a441',backgroundColor:'#d9a441',borderWidth:2.5,pointRadius:4,tension:.25,spanGaps:true},
+    {label:'Volume (kg·reps)', data:pts.map(p=>Math.round(p.vol)), borderColor:'#6f9ceb',backgroundColor:'#6f9ceb',borderWidth:1.5,pointRadius:3,tension:.25,yAxisID:'y2',spanGaps:true}
+  ]},options:{...optCommun,scales:{...optCommun.scales,
+    y2:{position:'right',ticks:{color:'#6f9ceb',font:{family:'IBM Plex Mono',size:11}},grid:{display:false}}
+  }}});
+}
+
+/* ---- éditeur de programmes / exercices ---- */
+function basculerEditeur(){
+  editeurOuvert = !editeurOuvert;
+  document.getElementById('muscu-editeur').classList.toggle('cache', !editeurOuvert);
+  document.getElementById('btn-editeur').textContent = editeurOuvert ? '✓ Fermer l’éditeur' : '✎ Modifier les programmes';
+  if(editeurOuvert) afficherEditeur();
+}
+function afficherEditeur(){
+  const c = document.getElementById('muscu-editeur');
+  if(!editeurOuvert) return;
+  const prog = programmeActif();
+  let html = `<div class="champ" style="margin-top:12px"><label for="ed-nom">Nom du programme</label><input type="text" id="ed-nom" value="${echap(prog.nom)}" onchange="renommerProgramme(this.value)"></div>`;
+  html += prog.jours.map((j,ji)=>{
+    const exos = j.exercices.map((ex,ei)=>`
+      <div class="ed-exo">
+        <input type="text" value="${echap(ex.nom)}" placeholder="Exercice" onchange="majExo(${ji},${ei},'nom',this.value)">
+        <input type="number" value="${ex.series}" min="1" placeholder="sér." onchange="majExo(${ji},${ei},'series',this.value)">
+        <input type="text" value="${echap(ex.reps)}" placeholder="reps" onchange="majExo(${ji},${ei},'reps',this.value)">
+        <button class="suppr" aria-label="Supprimer l'exercice" onclick="supprimerExo(${ji},${ei})">✕</button>
+      </div>`).join('');
+    return `<div class="ed-jour">
+      <div class="ed-jour-tete">
+        <input type="text" value="${echap(j.nom)}" placeholder="Nom de la séance" onchange="majJour(${ji},this.value)">
+        <button class="suppr" aria-label="Supprimer la séance" onclick="supprimerJour(${ji})">✕</button>
+      </div>
+      ${exos}
+      <button class="set-add" onclick="ajouterExo(${ji})">+ exercice</button>
+    </div>`;
+  }).join('');
+  html += `<button class="btn btn-2" onclick="ajouterJour()">+ séance</button>`;
+  html += `<div style="height:10px"></div><button class="btn btn-2" onclick="nouveauProgramme()">+ nouveau programme</button>`;
+  if(etat.programmes.length>1)
+    html += `<div style="height:10px"></div><button class="btn btn-danger" onclick="supprimerProgramme()">Supprimer ce programme</button>`;
+  c.innerHTML = html;
+}
+function renommerProgramme(v){ programmeActif().nom = v.trim()||'Programme'; sauverEtat(); afficherMuscu(); }
+function majJour(ji, v){ programmeActif().jours[ji].nom = v.trim()||'Séance'; sauverEtat(); }
+function majExo(ji, ei, champ, v){
+  const ex = programmeActif().jours[ji].exercices[ei];
+  if(champ==='series') ex.series = Math.max(1, parseInt(v,10)||1);
+  else ex[champ] = v.trim();
+  sauverEtat();
+}
+function ajouterExo(ji){ programmeActif().jours[ji].exercices.push({nom:'', series:3, reps:'10-12'}); sauverEtat(); afficherEditeur(); }
+function supprimerExo(ji, ei){ programmeActif().jours[ji].exercices.splice(ei,1); sauverEtat(); afficherEditeur(); }
+function ajouterJour(){ programmeActif().jours.push({id:'j'+Date.now(), nom:'Nouvelle séance', exercices:[]}); sauverEtat(); afficherMuscu(); }
+function supprimerJour(ji){
+  const prog = programmeActif();
+  if(!confirm('Supprimer cette séance et tous ses exercices ?')) return;
+  if(prog.jours[ji] && prog.jours[ji].id===jourSelectionne) jourSelectionne=null;
+  prog.jours.splice(ji,1); sauverEtat(); afficherMuscu();
+}
+function nouveauProgramme(){
+  const nom = prompt('Nom du nouveau programme ?','Mon programme');
+  if(nom===null) return;
+  const id = 'p'+Date.now();
+  etat.programmes.push({id, nom:nom.trim()||'Mon programme', jours:[]});
+  etat.programmeActif = id; jourSelectionne=null;
+  sauverEtat(); afficherMuscu();
+}
+function supprimerProgramme(){
+  if(etat.programmes.length<=1) return;
+  if(!confirm('Supprimer ce programme entier ?')) return;
+  etat.programmes = etat.programmes.filter(p=>p.id!==etat.programmeActif);
+  etat.programmeActif = etat.programmes[0].id; jourSelectionne=null;
+  sauverEtat(); afficherMuscu();
+}
+function changerProgrammeActif(id){ etat.programmeActif=id; jourSelectionne=null; sauverEtat(); afficherMuscu(); }
+
+/* ================= LISTE DE COURSES ================= */
+const COURSES_DEFAUT = [
+  {cat:'Frais',              nom:'Skyr nature',                          qte:'3,4 kg'},
+  {cat:'Frais',              nom:'Haut de cuisse de poulet désossé',     qte:'1,6 kg'},
+  {cat:'Frais',              nom:'Bananes',                              qte:'21'},
+  {cat:'Épicerie',           nom:'Riz',                                  qte:'1 kg/sem (sac 5 kg)'},
+  {cat:'Épicerie',           nom:"Flocons d'avoine",                     qte:'700 g'},
+  {cat:'Épicerie',           nom:'Petits pois-carottes',                 qte:'7 boîtes 190 g'},
+  {cat:'Épicerie',           nom:'Chocolat noir 85 %',                   qte:'2 × 100 g'},
+  {cat:'Stock (2-4 sem)',    nom:'Beurre de cacahuète',                  qte:'pot 350 g'},
+  {cat:'Stock (2-4 sem)',    nom:'Amandes natures non salées',           qte:'500 g'},
+  {cat:'Stock (2-4 sem)',    nom:'Cerneaux de noix',                     qte:'250 g'},
+  {cat:'Stock (2-4 sem)',    nom:'Œufs',                                 qte:'si substitution noix'},
+  {cat:'Réassort mensuel',   nom:'Whey',                                 qte:'~1,8 kg/mois'},
+  {cat:'Réassort mensuel',   nom:'Créatine',                             qte:'90-150 g/mois'},
+  {cat:'Réassort mensuel',   nom:'K2-D3 / Oméga-3 / Magnésium / Méla.',  qte:'vérifier piluliers'},
+];
+
+function afficherCourses(){
+  const liste = document.getElementById('courses-liste');
+  const items = etat.courses.items;
+  if(!items.length){
+    liste.innerHTML = '<p class="vide">Liste vide. Ajoute des articles ci-dessous.</p>';
+  } else {
+    const cats = [];
+    items.forEach(it=>{ if(!cats.includes(it.cat)) cats.push(it.cat); });
+    liste.innerHTML = cats.map(cat=>{
+      const rows = items.filter(it=>it.cat===cat).map(it=>{
+        const pris = !!etat.courses.coches[it.id];
+        return `<div class="course-item${pris?' pris':''}" role="button" tabindex="0" aria-pressed="${pris}"
+           onclick="basculerCourse('${echap(it.id)}')"
+           onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();basculerCourse('${echap(it.id)}')}">
+           <span class="course-coche">${pris?'✓':''}</span>
+           <span class="course-nom">${echap(it.nom)}</span>
+           <span class="course-qte">${echap(it.qte||'')}</span>
+           <button class="suppr" aria-label="Supprimer" onclick="event.stopPropagation();supprimerCourse('${echap(it.id)}')">✕</button>
+        </div>`;
+      }).join('');
+      return `<div class="course-cat">${echap(cat)}</div>${rows}`;
+    }).join('');
+  }
+  const n = items.length, pris = items.filter(it=>etat.courses.coches[it.id]).length;
+  document.getElementById('courses-compte').textContent = `${pris} / ${n}`;
+  document.getElementById('courses-rempli').style.width = n ? (100*pris/n).toFixed(0)+'%' : '0%';
+}
+function basculerCourse(id){
+  if(etat.courses.coches[id]) delete etat.courses.coches[id]; else etat.courses.coches[id]=true;
+  sauverEtat(); afficherCourses();
+}
+function ajouterCourse(){
+  const nom = document.getElementById('course-nom').value.trim();
+  if(!nom){ alert('Nom de l’article requis.'); return; }
+  const qte = document.getElementById('course-qte').value.trim();
+  const cat = document.getElementById('course-cat').value;
+  let id = slug(nom);
+  while(etat.courses.items.some(it=>it.id===id)) id += '-'+Math.floor(Math.random()*1000);
+  etat.courses.items.push({id, nom, qte, cat});
+  sauverEtat(); afficherCourses();
+  document.getElementById('course-nom').value=''; document.getElementById('course-qte').value='';
+}
+function supprimerCourse(id){
+  etat.courses.items = etat.courses.items.filter(it=>it.id!==id);
+  delete etat.courses.coches[id];
+  sauverEtat(); afficherCourses();
+}
+function decocherCourses(){
+  etat.courses.coches = {}; etat.courses.maj = jourLocal();
+  sauverEtat(); afficherCourses();
 }
 
 /* ================= INIT ================= */
