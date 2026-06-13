@@ -266,12 +266,12 @@ td.n{font-family:'IBM Plex Mono',monospace}
 .recup-carte pre{white-space:pre-wrap;word-break:break-word;margin-top:8px;color:var(--craie-2)}
 
 /* ---------- champs texte & select (ajout muscu/courses) ---------- */
-input[type=text]{
+input[type=text],input[type=password]{
   width:100%;background:var(--fonte);border:1px solid var(--trait);
   border-radius:6px;color:var(--craie);padding:10px 12px;font-size:16px;
   font-family:'Barlow',sans-serif;min-height:44px;
 }
-input[type=text]:focus{outline:2px solid var(--laiton);outline-offset:-1px;border-color:var(--laiton)}
+input[type=text]:focus,input[type=password]:focus{outline:2px solid var(--laiton);outline-offset:-1px;border-color:var(--laiton)}
 select{
   width:100%;background:var(--fonte);border:1px solid var(--trait);border-radius:6px;
   color:var(--craie);padding:10px 12px;font-size:16px;min-height:44px;
@@ -494,10 +494,44 @@ select:focus{outline:2px solid var(--laiton);outline-offset:-1px;border-color:va
 .rc-tete{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
 .rc-perf{font-size:12px;color:var(--craie-2);margin-top:1px}
 
-/* ---- statut de synchro Gist (specs 2.1) ---- */
-.sync-statut{display:flex;align-items:center;gap:6px;font-weight:500}
-.sync-ok{color:var(--ok)}
-.sync-erreur{color:var(--alerte)}
-.sync-horsligne{color:var(--laiton)}
-.sync-encours,.sync-inactif{color:var(--craie-2)}
-#form-sync .btn-2{margin-top:8px}
+/* ---- synchro Gist : carte de réglages (specs 2.1) ---- */
+.sync-statut{
+  display:flex;align-items:center;gap:8px;
+  font-size:13px;font-weight:600;line-height:1.3;
+  margin:0 0 14px;padding:10px 12px;
+  background:var(--plaque-2);border:1px solid var(--trait);
+  border-left:3px solid var(--trait);border-radius:8px;
+}
+.sync-ok{color:var(--ok);border-left-color:var(--ok)}
+.sync-erreur{color:var(--alerte);border-left-color:var(--alerte)}
+.sync-horsligne{color:var(--laiton);border-left-color:var(--laiton)}
+.sync-encours{color:var(--info);border-left-color:var(--info)}
+.sync-inactif{color:var(--craie-2)}
+
+/* libellé secondaire optionnel à droite du label */
+.lbl-opt{
+  font-size:11px;font-weight:400;color:var(--craie-2);
+  text-transform:none;letter-spacing:0;font-family:'IBM Plex Mono',monospace;
+  background:var(--plaque-2);border:1px solid var(--trait);
+  border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:middle;
+}
+/* champs token / id : monospace pour lire les caractères techniques */
+.champ-mono{font-family:'IBM Plex Mono',monospace !important;font-size:14px !important;letter-spacing:.02em}
+.champ-mono::placeholder{font-family:'IBM Plex Mono',monospace;color:var(--craie-2);opacity:.6}
+
+/* neutralise le fond jaune d'autofill de Chrome/WebKit sur les champs remplis par
+   le gestionnaire de mots de passe (sinon le champ token vire au jaune crème) */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus{
+  -webkit-text-fill-color:var(--craie);
+  -webkit-box-shadow:0 0 0 1000px var(--fonte) inset;
+  box-shadow:0 0 0 1000px var(--fonte) inset;
+  caret-color:var(--craie);
+  border:1px solid var(--trait);
+  transition:background-color 9999s ease-out 0s;
+}
+
+/* actions secondaires côte à côte */
+.sync-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.sync-actions .btn{margin-top:0;font-size:14px;letter-spacing:.05em;padding:11px 8px}

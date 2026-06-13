@@ -225,25 +225,26 @@
       <!-- Vrai <form> + champ password NOMMÉ : le gestionnaire de mots de passe de l'OS
            (Trousseau iCloud / Google) propose de mémoriser le token et l'autofill →
            « saisi une fois, rempli partout ». L'ID de gist sert d'identifiant de compte. -->
-      <form id="form-sync" autocomplete="on">
+      <p class="note sync-statut sync-inactif" id="sync-status">Synchro non configurée.</p>
+      <form id="form-sync" class="sync-form" autocomplete="on">
         <div class="champ">
-          <label for="sync-gist">ID du Gist <span class="note" style="display:inline">(vide = création auto)</span></label>
-          <input type="text" id="sync-gist" name="gist_id" autocomplete="username"
+          <label for="sync-gist">ID du Gist <span class="lbl-opt">vide = création auto</span></label>
+          <input type="text" id="sync-gist" name="gist_id" class="champ-mono" autocomplete="username"
                  inputmode="latin" autocapitalize="off" autocorrect="off" spellcheck="false"
                  placeholder="ex. 3f9a1c…">
         </div>
         <div class="champ">
-          <label for="sync-token">Token d'accès (fine-grained, scope Gists)</label>
-          <input type="password" id="sync-token" name="github_token" autocomplete="current-password"
+          <label for="sync-token">Token d'accès <span class="lbl-opt">fine-grained · scope Gists</span></label>
+          <input type="password" id="sync-token" name="github_token" class="champ-mono" autocomplete="current-password"
                  autocapitalize="off" autocorrect="off" spellcheck="false"
                  placeholder="github_pat_…">
         </div>
         <button class="btn" id="btn-sync-save" type="submit">Enregistrer &amp; synchroniser</button>
-        <div style="height:10px"></div>
-        <button class="btn btn-2" id="btn-sync-now" type="button">↻ Synchroniser maintenant</button>
-        <button class="btn btn-2" id="btn-sync-clear" type="button">Oublier le token (ce navigateur)</button>
+        <div class="sync-actions">
+          <button class="btn btn-2" id="btn-sync-now" type="button">↻ Synchroniser</button>
+          <button class="btn btn-2" id="btn-sync-clear" type="button">Oublier le token</button>
+        </div>
       </form>
-      <p class="note sync-statut" id="sync-status">Synchro non configurée.</p>
       <p class="note">🔒 Le token reste <b>uniquement</b> dans ce navigateur (saisie + stockage local). Il n'est <b>jamais</b> dans le code, le JSON exporté, ni le gist de données. Le dépôt GitHub Pages peut rester public sans risque : aucun secret n'est dans le code. La synchro échoue silencieusement hors-ligne — tes données restent en local et repartent au retour du réseau.</p>
     </div>
 
