@@ -65,13 +65,23 @@ export class DonneesModule {
     lecteur.readAsText(f);
   }
 
-  toutEffacer(){
-    if(confirm('Tout effacer ? As-tu exporté d’abord ?')){
-      this.store.etat = {poids:[], mensurations:[], repas:{jour:jourLocal(), coches:{}}, objectifKcal:OBJ_DEFAUT,
-              journalRepas:[], programmes:cloneProfond(PROG_DEFAUT), programmeActif:'pplul', seances:[],
-              courses:{items:COURSES_DEFAUT.map(c=>({id:slug(c.nom), ...c})), coches:{}, maj:null}};
-      this.app.muscu.jourSelectionne = null;
-      this.store.sauver(); this.app.renderAll();
+  async toutEffacer(){
+    if(!confirm('Tout effacer ? As-tu exporté d’abord ?')) return;
+    this.store.etat = {poids:[], mensurations:[], repas:{jour:jourLocal(), coches:{}}, objectifKcal:OBJ_DEFAUT,
+            journalRepas:[], programmes:cloneProfond(PROG_DEFAUT), programmeActif:'pplul', seances:[],
+            courses:{items:COURSES_DEFAUT.map(c=>({id:slug(c.nom), ...c})), coches:{}, maj:null}, brouillons:{}};
+    this.app.muscu.jourSelectionne = null;
+    this.store.sauver(); this.app.renderAll();
+
+    /* La synchro Gist fusionne par UNION : une suppression locale ne se propage pas
+       seule → sans ça, le gist ré-hydrate les données au prochain démarrage. On écrase
+       donc tout de suite la copie distante avec l'état vide (push immédiat, pas debouncé). */
+    const sync = this.app.sync;
+    if(sync && sync.actif()){
+      await sync.pousser();
+      if(!navigator.onLine)
+        alert('Données locales effacées. ⚠ Hors-ligne : la copie cloud (Gist) n’a pas pu être vidée. '
+            + 'Reviens ici une fois reconnecté et relance « Effacer », sinon les données reviendront à la prochaine synchro.');
     }
   }
 }
