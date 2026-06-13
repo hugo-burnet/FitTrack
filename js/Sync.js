@@ -1,4 +1,5 @@
 import { $ } from './utils.js';
+import { confirmer } from './ui.js';
 import { idbGet, idbSet, idbDel } from './idb.js';
 import { lireGist, ecrireGist, creerGist, messageErreur } from './gist.js';
 import { fusionnerEtat } from './fusion.js';
@@ -182,8 +183,8 @@ export class Sync extends EventTarget {
     }
   }
 
-  _oublierUI(){
-    if(!confirm('Oublier le token et l’ID de gist sur ce navigateur ? Tes données locales sont conservées.')) return;
+  async _oublierUI(){
+    if(!(await confirmer('Oublier le token et l’ID de gist sur ce navigateur ? Tes données locales sont conservées.', {danger:true, okLabel:'Oublier'}))) return;
     const t = $('sync-token'), g = $('sync-gist');
     if(t) t.value = ''; if(g) g.value = '';
     this.oublier();

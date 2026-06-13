@@ -1,4 +1,5 @@
 import { $, qsa, fmtDate, echap, aujourdHui, triDate } from '../utils.js';
+import { toast, confirmer, demander } from '../ui.js';
 import { e1rm } from '../stats.js';
 import { optCommun } from '../charts.js';
 import { RestTimer } from '../RestTimer.js';
@@ -133,15 +134,18 @@ export class MuscuModule {
     const sel = $('muscu-prog');
     sel.innerHTML = this.etat.programmes.map(p=>
       `<option value="${echap(p.id)}"${p.id===prog.id?' selected':''}>${echap(p.nom)}</option>`).join('');
-    const chips = $('muscu-jours');
-    chips.innerHTML = prog.jours.length
-      ? prog.jours.map(j=>`<button class="chip${j.id===this.jourSelectionne?' actif':''}" data-action="choisir-jour" data-id="${echap(j.id)}">${echap(j.nom)}</button>`).join('')
-      : '<span class="vide">Aucune séance dans ce programme. Ajoute-en via « Modifier les programmes ».</span>';
+    this.renderChips(prog);
     this.afficherRecap();
     this.renderSeanceForm();
     this.afficherEditeur();
     this.majSelectExoProgression();
     this.afficherHistMuscu();
+  }
+
+  renderChips(prog = this.programmeActif()){
+    $('muscu-jours').innerHTML = prog.jours.length
+      ? prog.jours.map(j=>`<button class="chip${j.id===this.jourSelectionne?' actif':''}" data-action="choisir-jour" data-id="${echap(j.id)}">${echap(j.nom)}</button>`).join('')
+      : '<span class="vide">Aucune séance dans ce programme. Ajoute-en via « Modifier les programmes ».</span>';
   }
 
   choisirJour(id){ this.jourSelectionne = id; this.histoOuverte.clear(); this._activerWake(); this.render(); }
@@ -342,7 +346,7 @@ export class MuscuModule {
     const jour = this.jourCourant();
     if(!jour) return;
     const date = $('muscu-date').value;
-    if(!date){ alert('Date requise.'); return; }
+    if(!date){ toast('Date requise.', 'erreur'); return; }
     const exercices=[];
     qsa('#muscu-form .exo-bloc').forEach(bloc=>{
       const ex = jour.exercices[+bloc.dataset.exo];
@@ -357,7 +361,7 @@ export class MuscuModule {
       if(series.length) exercices.push({ nom:ex.nom, presc:`${ex.series}×${ex.reps}`, series,
         unilateral:uni, contraction2s:!!ex.contraction2s });
     });
-    if(!exercices.length){ alert('Note au moins une série (reps) sur un exercice.'); return; }
+    if(!exercices.length){ toast('Note au moins une série (reps) sur un exercice.', 'erreur'); return; }
 
     /* recap calculé AVANT insertion (comparé à l'historique existant) */
     const recap = this.construireRecap(date, jour, exercices);
@@ -547,14 +551,21 @@ export class MuscuModule {
     c.innerHTML = html;
   }
   renommerProgramme(v){ this.programmeActif().nom = v.trim()||'Programme'; this.store.sauver(); this.render(); }
-  majJour(ji, v){ this.programmeActif().jours[ji].nom = v.trim()||'Séance'; this.store.sauver(); }
+  majJour(ji, v){
+    this.programmeActif().jours[ji].nom = v.trim()||'Séance';
+    this.store.sauver();
+    this.renderChips();   /* le nom de séance dans les chips se rafraîchit en direct (specs 5) */
+  }
   majExo(ji, ei, champ, v){
     const ex = this.programmeActif().jours[ji].exercices[ei];
     if(champ==='series') ex.series = Math.max(1, parseInt(v,10)||1);
     else if(champ==='pas'){ const n = parseFloat(v); ex.pas = (isNaN(n)||n<=0) ? undefined : n; }
     else ex[champ] = v.trim();
     this.store.sauver();
-    if(champ==='reps' || champ==='pas') this.renderSeanceForm(); /* l'objectif/repos dépendent de reps & pas */
+    /* le formulaire suit (nom, objectif, repos dépendent de nom/reps/pas) sans toucher
+       à l'éditeur → le focus de saisie de l'éditeur n'est pas volé */
+    this.renderSeanceForm();
+    if(champ==='nom') this.majSelectExoProgression();
   }
   basculerFlag(ji, ei, flag){
     const ex = this.programmeActif().jours[ji].exercices[ei];
@@ -566,23 +577,23 @@ export class MuscuModule {
   ajouterExo(ji){ this.programmeActif().jours[ji].exercices.push({nom:'', series:3, reps:'10-12'}); this.store.sauver(); this.afficherEditeur(); }
   supprimerExo(ji, ei){ this.programmeActif().jours[ji].exercices.splice(ei,1); this.store.sauver(); this.afficherEditeur(); this.renderSeanceForm(); }
   ajouterJour(){ this.programmeActif().jours.push({id:'j'+Date.now(), nom:'Nouvelle séance', exercices:[]}); this.store.sauver(); this.render(); }
-  supprimerJour(ji){
+  async supprimerJour(ji){
     const prog = this.programmeActif();
-    if(!confirm('Supprimer cette séance et tous ses exercices ?')) return;
+    if(!(await confirmer('Supprimer cette séance et tous ses exercices ?', {danger:true}))) return;
     if(prog.jours[ji] && prog.jours[ji].id===this.jourSelectionne) this.jourSelectionne=null;
     prog.jours.splice(ji,1); this.store.sauver(); this.render();
   }
-  nouveauProgramme(){
-    const nom = prompt('Nom du nouveau programme ?','Mon programme');
+  async nouveauProgramme(){
+    const nom = await demander('Nom du nouveau programme ?','Mon programme');
     if(nom===null) return;
     const id = 'p'+Date.now();
     this.etat.programmes.push({id, nom:nom.trim()||'Mon programme', jours:[]});
     this.etat.programmeActif = id; this.jourSelectionne=null;
     this.store.sauver(); this.render();
   }
-  supprimerProgramme(){
+  async supprimerProgramme(){
     if(this.etat.programmes.length<=1) return;
-    if(!confirm('Supprimer ce programme entier ?')) return;
+    if(!(await confirmer('Supprimer ce programme entier ?', {danger:true}))) return;
     this.etat.programmes = this.etat.programmes.filter(p=>p.id!==this.etat.programmeActif);
     this.etat.programmeActif = this.etat.programmes[0].id; this.jourSelectionne=null;
     this.store.sauver(); this.render();

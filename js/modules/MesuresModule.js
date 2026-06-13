@@ -1,6 +1,7 @@
 import { $, fmtDate, fleche, triDate } from '../utils.js';
 import { moyennesHebdo } from '../stats.js';
 import { optCommun } from '../charts.js';
+import { toast } from '../ui.js';
 
 /* ================= MESURES : poids + mensurations + bandeau + courbes ================= */
 export class MesuresModule {
@@ -31,7 +32,7 @@ export class MesuresModule {
   ajouterPoids(){
     const date = $('p-date').value;
     const kg = parseFloat($('p-kg').value);
-    if(!date || isNaN(kg)){ alert('Date et poids requis.'); return; }
+    if(!date || isNaN(kg)){ toast('Date et poids requis.', 'erreur'); return; }
     this.etat.poids = this.etat.poids.filter(p=>p.date!==date);
     this.etat.poids.push({date, kg}); this.etat.poids.sort(triDate);
     this.store.sauver(); this.app.renderAll();
@@ -39,11 +40,11 @@ export class MesuresModule {
   }
   ajouterMens(){
     const date = $('m-date').value;
-    if(!date){ alert('Date requise.'); return; }
+    if(!date){ toast('Date requise.', 'erreur'); return; }
     const champ = id => { const v=parseFloat($(id).value); return isNaN(v)?null:v; };
     const rel = {date, taille:champ('m-taille'), tailleRelache:champ('m-tailler'),
                  bras:champ('m-bras'), cuisse:champ('m-cuisse'), torse:champ('m-torse')};
-    if(rel.taille===null && rel.bras===null){ alert('Renseigne au moins la taille ou le bras.'); return; }
+    if(rel.taille===null && rel.bras===null){ toast('Renseigne au moins la taille ou le bras.', 'erreur'); return; }
     this.etat.mensurations = this.etat.mensurations.filter(m=>m.date!==date);
     this.etat.mensurations.push(rel); this.etat.mensurations.sort(triDate);
     this.store.sauver(); this.app.renderAll();

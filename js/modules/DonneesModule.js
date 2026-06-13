@@ -1,6 +1,7 @@
 import { $, jourLocal, aujourdHui, cloneProfond, slug } from '../utils.js';
 import { OBJ_DEFAUT, PROG_DEFAUT, COURSES_DEFAUT } from '../data.js';
 import { fusionnerEtat } from '../fusion.js';
+import { toast, confirmer } from '../ui.js';
 
 /* ================= DONNÉES : export / import / reset ================= */
 export class DonneesModule {
@@ -58,15 +59,15 @@ export class DonneesModule {
         fusionnerEtat(etat, imp);
         this.app.muscu.jourSelectionne = null;
         this.store.sauver(); this.app.renderAll();
-        alert(`Import réussi : ${etat.poids.length} pesées, ${etat.mensurations.length} relevés, ${etat.seances.length} séances, ${etat.programmes.length} programme(s).`);
-      }catch(err){ alert('Fichier invalide : ce n’est pas un export du carnet.'); }
+        toast(`Import réussi : ${etat.poids.length} pesées, ${etat.mensurations.length} relevés, ${etat.seances.length} séances, ${etat.programmes.length} programme(s).`, 'ok');
+      }catch(err){ toast('Fichier invalide : ce n’est pas un export du carnet.', 'erreur'); }
       ev.target.value='';
     };
     lecteur.readAsText(f);
   }
 
   async toutEffacer(){
-    if(!confirm('Tout effacer ? As-tu exporté d’abord ?')) return;
+    if(!(await confirmer('Tout effacer ? As-tu bien exporté d’abord ? C’est irréversible.', {danger:true, okLabel:'Tout effacer'}))) return;
     this.store.etat = {poids:[], mensurations:[], repas:{jour:jourLocal(), coches:{}}, objectifKcal:OBJ_DEFAUT,
             journalRepas:[], programmes:cloneProfond(PROG_DEFAUT), programmeActif:'pplul', seances:[],
             courses:{items:COURSES_DEFAUT.map(c=>({id:slug(c.nom), ...c})), coches:{}, maj:null}, brouillons:{}};
@@ -80,8 +81,7 @@ export class DonneesModule {
     if(sync && sync.actif()){
       await sync.pousser();
       if(!navigator.onLine)
-        alert('Données locales effacées. ⚠ Hors-ligne : la copie cloud (Gist) n’a pas pu être vidée. '
-            + 'Reviens ici une fois reconnecté et relance « Effacer », sinon les données reviendront à la prochaine synchro.');
+        toast('Données locales effacées. Hors-ligne : la copie cloud (Gist) n’a pas pu être vidée — relance « Effacer » une fois reconnecté, sinon les données reviendront.', 'erreur');
     }
   }
 }

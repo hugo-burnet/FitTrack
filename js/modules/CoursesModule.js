@@ -1,6 +1,7 @@
 import { $, echap, slug, jourLocal } from '../utils.js';
 import { ALIMENTS, COURSES_DEFAUT } from '../data.js';
 import { consoQuotidienne } from '../nutrition.js';
+import { toast } from '../ui.js';
 
 /* ================= LISTE DE COURSES ================= */
 export class CoursesModule {
@@ -95,7 +96,7 @@ export class CoursesModule {
   }
   ajouterCourse(){
     const nom = $('course-nom').value.trim();
-    if(!nom){ alert('Nom de l’article requis.'); return; }
+    if(!nom){ toast('Nom de l’article requis.', 'erreur'); return; }
     const qte = $('course-qte').value.trim();
     const cat = $('course-cat').value;
     let id = slug(nom);
