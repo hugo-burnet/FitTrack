@@ -1,4 +1,5 @@
 import { Store } from './Store.js';
+import { Sync } from './Sync.js';
 import { aujourdHui, $, qsa } from './utils.js';
 import { MesuresModule } from './modules/MesuresModule.js';
 import { VerdictModule } from './modules/VerdictModule.js';
@@ -43,6 +44,11 @@ export class App {
       window.addEventListener('focus', () => { if(this.store.resetSiNouveauJour()) this.repas.render(); });
       /* 2) si l'appli reste ouverte au passage de minuit : contrôle chaque minute */
       setInterval(() => { if(this.store.resetSiNouveauJour()) this.repas.render(); }, 60000);
+
+      /* synchro Gist (specs 2.1) : démarrée après le rendu pour ne jamais bloquer
+         l'affichage ; ses erreurs restent internes (l'app fonctionne en local) */
+      this.sync = new Sync(this.store, this);
+      this.sync.init().catch(err => console.error('Init synchro échouée', err));
     }catch(err){
       /* le rendu initial a crashé : on n'empêche jamais l'utilisateur d'exporter ses données */
       this.afficherRecuperation(err);

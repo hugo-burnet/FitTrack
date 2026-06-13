@@ -40,3 +40,16 @@ export async function idbSet(cle, valeur){
     });
   } finally { db.close(); }
 }
+
+export async function idbDel(cle){
+  const db = await ouvrir();
+  try{
+    return await new Promise((resoudre, rejeter) => {
+      const tx = db.transaction(STORE, 'readwrite');
+      tx.objectStore(STORE).delete(cle);
+      tx.oncomplete = () => resoudre();
+      tx.onerror   = () => rejeter(tx.error);
+      tx.onabort   = () => rejeter(tx.error);
+    });
+  } finally { db.close(); }
+}

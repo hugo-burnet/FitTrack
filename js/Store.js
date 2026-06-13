@@ -111,6 +111,9 @@ export class Store extends EventTarget {
       this.storageOK = false;
       this.dispatchEvent(new Event('storage-error'));
     }
+
+    /* notifie la couche de synchro (Gist) qu'il y a du neuf à pousser (cf. specs 2.1) */
+    this.dispatchEvent(new Event('change'));
   }
 
   /* reset par tampon de date : le cœur du "décochage à minuit" */

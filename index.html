@@ -220,8 +220,36 @@
   <!-- ===== ONGLET DONNÉES ===== -->
   <section class="onglet" id="ong-data">
     <div class="carte">
-      <h2>Sauvegarde & synchro</h2>
-      <p class="note" style="margin:0 0 12px">Les données sont enregistrées automatiquement dans ce navigateur. Le JSON sert de <b>sauvegarde</b> et de <b>synchro PC ↔ mobile</b> : exporte ici, importe là-bas. L'export détaille tout : pesées, mensurations, <b>repas réellement mangés (avec quantités)</b>, <b>séances (charge × reps par série)</b>, programmes et liste de courses. L'import fusionne intelligemment (par date / id, le fichier importé gagne).</p>
+      <h2>Synchro automatique (Gist GitHub)</h2>
+      <p class="note" style="margin:0 0 12px">Sauvegarde et synchro <b>PC ↔ mobile automatiques</b> via un <b>Gist GitHub secret</b>. À chaque modif, le carnet l'écrit dans le gist ; au démarrage il le relit et fusionne (par date / id). Crée un <b>token fine-grained avec le seul scope « Gists »</b> sur GitHub, colle-le ci-dessous, laisse l'ID vide pour qu'un gist soit créé automatiquement.</p>
+      <!-- Vrai <form> + champ password NOMMÉ : le gestionnaire de mots de passe de l'OS
+           (Trousseau iCloud / Google) propose de mémoriser le token et l'autofill →
+           « saisi une fois, rempli partout ». L'ID de gist sert d'identifiant de compte. -->
+      <form id="form-sync" autocomplete="on">
+        <div class="champ">
+          <label for="sync-gist">ID du Gist <span class="note" style="display:inline">(vide = création auto)</span></label>
+          <input type="text" id="sync-gist" name="gist_id" autocomplete="username"
+                 inputmode="latin" autocapitalize="off" autocorrect="off" spellcheck="false"
+                 placeholder="ex. 3f9a1c…">
+        </div>
+        <div class="champ">
+          <label for="sync-token">Token d'accès (fine-grained, scope Gists)</label>
+          <input type="password" id="sync-token" name="github_token" autocomplete="current-password"
+                 autocapitalize="off" autocorrect="off" spellcheck="false"
+                 placeholder="github_pat_…">
+        </div>
+        <button class="btn" id="btn-sync-save" type="submit">Enregistrer &amp; synchroniser</button>
+        <div style="height:10px"></div>
+        <button class="btn btn-2" id="btn-sync-now" type="button">↻ Synchroniser maintenant</button>
+        <button class="btn btn-2" id="btn-sync-clear" type="button">Oublier le token (ce navigateur)</button>
+      </form>
+      <p class="note sync-statut" id="sync-status">Synchro non configurée.</p>
+      <p class="note">🔒 Le token reste <b>uniquement</b> dans ce navigateur (saisie + stockage local). Il n'est <b>jamais</b> dans le code, le JSON exporté, ni le gist de données. Le dépôt GitHub Pages peut rester public sans risque : aucun secret n'est dans le code. La synchro échoue silencieusement hors-ligne — tes données restent en local et repartent au retour du réseau.</p>
+    </div>
+
+    <div class="carte">
+      <h2>Export / import manuel (filet de sécurité)</h2>
+      <p class="note" style="margin:0 0 12px">Les données sont enregistrées automatiquement dans ce navigateur. Le JSON est le <b>filet de secours</b> si tu n'utilises pas la synchro Gist : exporte ici, importe là-bas. L'export détaille tout : pesées, mensurations, <b>repas réellement mangés (avec quantités)</b>, <b>séances (charge × reps par série)</b>, programmes et liste de courses. L'import fusionne intelligemment (par date / id, le fichier importé gagne).</p>
       <p class="note" style="margin:0 0 12px">Pour <b>importer un programme</b> seul, le fichier JSON peut ne contenir que la clé <span class="mono">programmes</span> : <span class="mono">[{"id","nom","jours":[{"id","nom","exercices":[{"nom","series","reps","note"}]}]}]</span>.</p>
       <button class="btn" id="btn-export">⬇ Exporter le JSON</button>
       <div style="height:10px"></div>

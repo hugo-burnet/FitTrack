@@ -1,6 +1,6 @@
-import { $, jourLocal, aujourdHui, triDate, cloneProfond, slug } from '../utils.js';
+import { $, jourLocal, aujourdHui, cloneProfond, slug } from '../utils.js';
 import { OBJ_DEFAUT, PROG_DEFAUT, COURSES_DEFAUT } from '../data.js';
-import { assainirEtat } from '../sanitize.js';
+import { fusionnerEtat } from '../fusion.js';
 
 /* ================= DONNÉES : export / import / reset ================= */
 export class DonneesModule {
@@ -52,51 +52,10 @@ export class DonneesModule {
         const imp = JSON.parse(lecteur.result);
         const connus = ['poids','mensurations','objectifKcal','repas','journalRepas','programmes','programmeActif','seances','courses'];
         if(!connus.some(k=>k in imp)) throw new Error('format');
-        /* on ne fait jamais confiance au fichier : purge des formes invalides AVANT la fusion,
-           pour que l'état existant ne soit jamais altéré par une entrée malformée */
-        assainirEtat(imp);
+        /* réconciliation par date/id (assainissement inclus) : l'état existant n'est
+           jamais altéré par une entrée malformée. Même moteur que la synchro Gist. */
         const etat = this.etat;
-        /* fusion par date, l'import gagne */
-        const fusionDate = (locale, importee) => {
-          const map = {}; (locale||[]).forEach(x=>map[x.date]=x); (importee||[]).forEach(x=>map[x.date]=x);
-          return Object.values(map).sort(triDate);
-        };
-        if(Array.isArray(imp.poids)) etat.poids = fusionDate(etat.poids, imp.poids);
-        if(Array.isArray(imp.mensurations)) etat.mensurations = fusionDate(etat.mensurations, imp.mensurations);
-        /* objectif kcal : l'import gagne s'il est présent */
-        if(typeof imp.objectifKcal === 'number') etat.objectifKcal = imp.objectifKcal;
-        /* repas du jour : fusion OR (coché sur un appareil = coché) */
-        if(imp.repas && imp.repas.jour === jourLocal()){
-          if(etat.repas.jour !== jourLocal()){ etat.repas = {jour:jourLocal(), coches:{}}; }
-          Object.keys(imp.repas.coches||{}).forEach(k=>{ if(imp.repas.coches[k]) etat.repas.coches[k]=true; });
-        }
-        /* journal des repas : fusion par date+id */
-        if(Array.isArray(imp.journalRepas)){
-          const map={}; etat.journalRepas.forEach(e=>map[e.date+'|'+e.id]=e); imp.journalRepas.forEach(e=>map[e.date+'|'+e.id]=e);
-          etat.journalRepas = Object.values(map).sort(triDate);
-        }
-        /* programmes : fusion par id (l'import remplace un id existant) */
-        if(Array.isArray(imp.programmes) && imp.programmes.length){
-          const map={}; etat.programmes.forEach(p=>map[p.id]=p);
-          imp.programmes.forEach(p=>{ if(p && p.id && Array.isArray(p.jours)) map[p.id]=p; });
-          etat.programmes = Object.values(map);
-        }
-        if(typeof imp.programmeActif === 'string' && etat.programmes.some(p=>p.id===imp.programmeActif)) etat.programmeActif = imp.programmeActif;
-        /* séances : fusion par date+jourId */
-        if(Array.isArray(imp.seances)){
-          const map={}; etat.seances.forEach(s=>map[s.date+'|'+s.jourId]=s);
-          imp.seances.forEach(s=>{ if(s && s.date) map[s.date+'|'+s.jourId]=s; });
-          etat.seances = Object.values(map).sort(triDate);
-        }
-        /* courses : fusion des articles par id + coches OR */
-        if(imp.courses && typeof imp.courses === 'object'){
-          if(Array.isArray(imp.courses.items)){
-            const map={}; (etat.courses.items||[]).forEach(it=>map[it.id]=it);
-            imp.courses.items.forEach(it=>{ if(it && it.id) map[it.id]=it; });
-            etat.courses.items = Object.values(map);
-          }
-          Object.keys(imp.courses.coches||{}).forEach(k=>{ if(imp.courses.coches[k]) etat.courses.coches[k]=true; });
-        }
+        fusionnerEtat(etat, imp);
         this.app.muscu.jourSelectionne = null;
         this.store.sauver(); this.app.renderAll();
         alert(`Import réussi : ${etat.poids.length} pesées, ${etat.mensurations.length} relevés, ${etat.seances.length} séances, ${etat.programmes.length} programme(s).`);

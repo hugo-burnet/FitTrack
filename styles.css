@@ -493,3 +493,11 @@ select:focus{outline:2px solid var(--laiton);outline-offset:-1px;border-color:va
 /* ---- détail série par série dans le recap ---- */
 .rc-tete{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
 .rc-perf{font-size:12px;color:var(--craie-2);margin-top:1px}
+
+/* ---- statut de synchro Gist (specs 2.1) ---- */
+.sync-statut{display:flex;align-items:center;gap:6px;font-weight:500}
+.sync-ok{color:var(--ok)}
+.sync-erreur{color:var(--alerte)}
+.sync-horsligne{color:var(--laiton)}
+.sync-encours,.sync-inactif{color:var(--craie-2)}
+#form-sync .btn-2{margin-top:8px}
