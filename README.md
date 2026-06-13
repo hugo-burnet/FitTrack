@@ -1,10 +1,10 @@
 # Carnet Recompo
 
-Application web mono-utilisateur de suivi de **recomposition corporelle** : pesées, mensurations, nutrition, musculation et liste de courses, le tout dans une interface mobile-first, sombre, sans dépendance ni backend. Tout est stocké **en local dans le navigateur** ; le JSON sert de sauvegarde et de synchro PC ↔ mobile.
+Application web mono-utilisateur de suivi de **recomposition corporelle** : pesées, mensurations, nutrition, musculation et liste de courses, le tout dans une interface mobile-first, sombre, sans dépendance ni backend. Les données vivent **dans le navigateur** (IndexedDB), avec une **synchro automatique chiffrée** PC ↔ mobile via un Gist GitHub privé, et l'export JSON en filet de sécurité.
 
 > *« Pesée le dimanche · mensurations le 1er du mois · le tour de taille dit la vérité. »*
 
-Vanilla **JavaScript orienté objet** (modules ES), zéro framework, zéro build. Seule dépendance externe : [Chart.js](https://www.chartjs.org/) chargé via CDN pour les courbes.
+Vanilla **JavaScript orienté objet** (modules ES), zéro framework, **zéro build, zéro dépendance à installer**. [Chart.js](https://www.chartjs.org/) est *vendoré* dans le repo (`vendor/`) — aucun appel réseau au démarrage. Installable en **PWA** et fonctionne **hors-ligne**.
 
 ---
 
@@ -42,7 +42,9 @@ Saisie des pesées et du relevé mensuel (taille contractée/relâchée, bras, c
 Liste de courses par rayon, cases à cocher, ajout/suppression d'articles, « tout décocher » pour la semaine suivante. Les quantités des aliments du plan sont **dérivées automatiquement** (plan × nombre de jours, ajustées à ton objectif kcal) — ferme la boucle plan → conso → liste.
 
 ### 💾 Données
-**Export / import JSON** (fusion intelligente par date / id), **sauvegarde miroir** automatique en local, indicateur de dernière sauvegarde, option de **téléchargement auto** après chaque séance, et remise à zéro.
+- **Synchro automatique (Gist GitHub)** : à chaque modif, l'état est poussé dans un Gist secret ; au démarrage il est relu et **fusionné** (par date / id). Le **token** (fine-grained, scope Gists) reste **uniquement** dans le navigateur — jamais dans le code, l'export ou le Gist de données — et le champ `<input type="password">` permet à ton gestionnaire de mots de passe (Trousseau / Google) de le retenir. Indicateur de statut (synchronisé / hors-ligne / erreur), repli local en cas de coupure.
+- **Export / import JSON** (fusion intelligente par date / id) en filet de sécurité, indicateur de dernière sauvegarde, option de **téléchargement auto** après chaque séance.
+- **Remise à zéro** (efface aussi la copie cloud si la synchro est active).
 
 ---
 
@@ -64,54 +66,71 @@ Sur **GitHub Pages**, aucune manipulation : les modules ES sont servis en HTTP, 
 
 ## Tests
 
-Les moteurs purs (progression, stats, nutrition) sont couverts par des tests unitaires, via le **runner natif de Node** — aucune dépendance à installer :
+Les moteurs purs sont couverts par des tests unitaires (**42 tests**), via le **runner natif de Node** — aucune dépendance à installer :
 
 ```bash
 npm test          # ou : node --test
 ```
 
-Cibles : `js/progression.js` (`recommander`, `statsExo`), `js/stats.js` (`moyennesHebdo`, `rythmeMensuel`, `tendanceTaille/Bras`), `js/nutrition.js` (`facteurFlex`, bornes & saturation).
+Cibles :
+- `progression.js` — `recommander` (toutes les branches), `statsExo`, `parseFourchette`, `meilleurE1rm`.
+- `stats.js` — `moyennesHebdo`, `rythmeMensuel`, `tendanceTaille/Bras`, `e1rm` (plafond reps), `brasStagne`.
+- `nutrition.js` — `facteurFlex` (bornes & saturation), `consoQuotidienne`.
+- `verdict.js` — l'arbre de décision (chaque branche + anti-réactivité).
+- `bilan.js` — `adherenceHebdo`, `bilanForce`.
+- `RepasModule` — moteur de comblement protéique.
 
 ---
 
 ## Architecture
 
-POO vanilla en modules ES. Une `Store` unique détient l'état et la persistance ; chaque onglet est une classe (`bind()` attache les écouteurs une fois, `render()` reconstruit le DOM depuis l'état) ; l'`App` orchestre le routage et le rendu. Aucun handler `onclick` inline — délégation d'évènements partout.
+POO vanilla en modules ES. Une `Store` unique détient l'état et la persistance ; chaque onglet est une classe (`bind()` attache les écouteurs une fois, `render()` reconstruit le DOM depuis l'état) ; l'`App` orchestre le routage et le rendu. La logique métier est isolée en **modules purs** (testables hors DOM). Aucun handler `onclick` inline — délégation d'évènements partout.
 
 ```
 index.html            markup (aucun JS inline)
 styles.css            tout le style
+manifest.json         PWA (installable)
+sw.js                 service worker (cache de la coquille → démarrage hors-ligne)
+vendor/chart.umd.min.js  Chart.js vendoré (zéro CDN)
+icons/                icônes PWA (192/512/maskable + apple-touch)
 carnet-recompo-DEMO.json   jeu de données de démonstration (à importer)
 js/
   main.js             point d'entrée → new App().init()
   App.js              routeur d'onglets + orchestration du rendu
-  Store.js            état, persistance localStorage, migrations, sauvegarde miroir
+  Store.js            état, persistance IndexedDB (+ miroir localStorage), migrations
+  idb.js              mini-wrapper IndexedDB (clé/valeur, zéro dépendance)
+  Sync.js             synchro Gist : pull/fusion/push, statut, sécurité du token
+  gist.js             client API GitHub Gist (lecture/écriture/création, troncature)
+  fusion.js           fusion d'état par date / id (import manuel ET synchro)
+  sanitize.js         assainissement des données (ne jamais crasher au rendu)
+  ui.js               toasts + dialogues inline (remplace alert/confirm/prompt)
   data.js             constantes & données par défaut (aliments, plan, programme, courses)
   utils.js            helpers (dates, formatage, slug, échappement…)
-  stats.js            calculs purs (moyennes hebdo, rythme, tendances, 1RM)
-  progression.js      moteur de surcharge progressive (reco, niveaux, repos)
+  — moteurs purs (testés) —
+  stats.js            moyennes hebdo, rythme, tendances, 1RM (Epley borné), brasStagne
+  progression.js      surcharge progressive (reco, niveaux, repos, e1RM)
+  nutrition.js        facteur flex, cibles, conso quotidienne, comblement
+  verdict.js          arbre de décision recompo
+  bilan.js            reads hebdo (adhérence, signal de force)
   charts.js           config Chart.js partagée
   RestTimer.js        chrono de repos
-  modules/
-    MesuresModule.js  poids + mensurations + bandeau + courbes
-    VerdictModule.js  arbre de décision
-    RepasModule.js    plan repas + objectif kcal
-    MuscuModule.js    programmes, séances, leveling, chrono
-    CoursesModule.js  liste de courses
-    DonneesModule.js  export / import / reset
+  modules/            classes d'onglets (bind/render)
+    MesuresModule.js · VerdictModule.js · RepasModule.js
+    MuscuModule.js · CoursesModule.js · DonneesModule.js
+tests/                tests unitaires (node --test)
 ```
 
 ## Données & sauvegarde
 
-- Stockage : `localStorage` (clé `carnet-recompo-v1` + une clé miroir de secours).
-- L'**export JSON** contient tout : pesées, mensurations, repas réellement mangés (avec quantités), séances (charge × reps par série), programmes et liste de courses.
-- L'**import** fusionne intelligemment (par date / id, le fichier importé gagne) — pratique pour synchroniser PC et mobile, ou pour importer un programme seul (clé `programmes`).
-- `carnet-recompo-DEMO.json` est un jeu de test réaliste (3 mois de recompo, progression réelle) : importe-le via **Données → Importer un JSON** pour explorer toutes les features.
+- **Persistance locale : IndexedDB** (clé `carnet-recompo-v1`), bien plus résistante à l'éviction iOS que `localStorage` — qui reste en miroir de secours. `navigator.storage.persist()` est demandé au démarrage. Migration transparente depuis l'ancien `localStorage` au premier lancement.
+- **Synchro cloud : Gist GitHub privé** via token fine-grained (scope Gists). 100 % côté navigateur, fusion par date / id (pas un *last-write-wins* brut), gestion de la troncature > 1 Mo. Le token n'est **jamais** dans le code, le repo, l'export ni le Gist de données.
+- L'**export JSON** contient tout : pesées, mensurations, repas réellement mangés (avec quantités), séances (charge × reps par série), programmes et liste de courses. L'**import** fusionne par date / id (le fichier gagne) — y compris un fichier ne contenant que la clé `programmes`.
+- `carnet-recompo-DEMO.json` est un jeu de test réaliste (3 mois de recompo) : importe-le via **Données → Importer un JSON**.
 
-> ⚠️ Sur iOS Safari notamment, le navigateur peut purger le stockage local. Pense à exporter régulièrement — c'est la seule vraie sauvegarde.
+> ⚠️ iOS Safari peut tout de même purger le stockage. La synchro Gist (ou un export régulier) reste le vrai filet de sécurité.
 
 ---
 
-## Aucune dépendance à installer
+## Zéro dépendance, zéro build
 
-Pas de `npm install`, pas de bundler. Le seul script externe est Chart.js (CDN). Pour modifier : édite les fichiers et recharge la page.
+Pas de `npm install`, pas de bundler. Chart.js est vendoré dans `vendor/`. Pour modifier : édite les fichiers et recharge la page. `package.json` ne sert qu'à `npm test` (runner natif de Node, aucune dépendance).
