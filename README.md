@@ -23,7 +23,8 @@ Plan alimentaire du jour avec **objectif kcal ajustable**. Protéines/lipides fi
 ### 🏋️ Muscu
 Le cœur de l'app, pensé pour la **surcharge progressive « 0 doute »** :
 
-- **Objectif par exercice** : à partir de ta dernière perf, l'app te dit exactement quoi faire — monter la charge, gratter des reps, consolider ou faire un deload. Une **barre de niveau (XP)** et un **badge Niv.** matérialisent la progression (un niveau gagné à chaque PR de charge).
+- **Objectif par exercice** : à partir de ta dernière perf, l'app te dit exactement quoi faire — monter la charge, gratter des reps, consolider ou faire un deload. La barre d'objectif te dit quand monter la charge.
+- **Système d'XP & de niveaux** : l'XP n'est gagné **que si tu progresses**. Un exercice ne rapporte son XP (proportionnel au travail : charge × reps ; poids du corps au forfait ; unilatéral compté des deux côtés) que s'il a fait **mieux que sa dernière séance sur la globalité des séries** — c.-à-d. **plus de volume** (≥ +1 rep) **ou** un **meilleur 1RM estimé** (≥ +1 kg, même si les reps baissent un peu). Sinon : 0 XP. Un **niveau global** (titre de palier : Débutant → Légende) et un **niveau par exercice** (badge **Niv.**, courbe plus douce) en découlent, via une courbe en puissance où chaque palier coûte plus que le précédent. Le **gain d'XP** et les **montées de niveau** s'affichent dans le recap de fin de séance.
 - **Double progression** correcte : distingue *3 séries droites à 40 kg* (→ on monte) de *40 / 38 / 35 dégressif* (→ consolide d'abord). Le détail **série par série** (charges variables incluses) est affiché partout, jamais collapsé sur la charge max.
 - **Unilatéral** déclarable à la saisie : la charge tapée est alors comprise comme **un seul côté** (affichée « X kg/côté »), et le volume compte les deux côtés.
 - **Contraction 2 s** et autres marqueurs par exercice.
@@ -108,7 +109,8 @@ js/
   utils.js            helpers (dates, formatage, slug, échappement…)
   — moteurs purs (testés) —
   stats.js            moyennes hebdo, rythme, tendances, 1RM (Epley borné), brasStagne
-  progression.js      surcharge progressive (reco, niveaux, repos, e1RM)
+  progression.js      surcharge progressive (reco, repos, e1RM)
+  xp.js               système d'XP & de niveaux (volume → XP, courbe, paliers)
   nutrition.js        facteur flex, cibles, conso quotidienne, comblement
   verdict.js          arbre de décision recompo
   bilan.js            reads hebdo (adhérence, signal de force)

@@ -4,9 +4,10 @@ import { e1rm } from '../stats.js';
 import { optCommun } from '../charts.js';
 import { RestTimer } from '../RestTimer.js';
 import {
-  parseFourchette, recommander, statsExo, reposRecommande, fmtRepos,
+  parseFourchette, recommander, reposRecommande, fmtRepos,
   meilleurE1rm, meilleureCharge, PAS_DEFAUT
 } from '../progression.js';
+import { xpTotal, xpGagneExercice, xpExerciceTotal, infosNiveau, niveauPourXp, fmtXp, XP_BASE_EXO } from '../xp.js';
 
 /* ================= MUSCU : programmes, séances, surcharge progressive, chrono ================= */
 export class MuscuModule {
@@ -135,11 +136,31 @@ export class MuscuModule {
     sel.innerHTML = this.etat.programmes.map(p=>
       `<option value="${echap(p.id)}"${p.id===prog.id?' selected':''}>${echap(p.nom)}</option>`).join('');
     this.renderChips(prog);
+    this.afficherNiveau();
     this.afficherRecap();
     this.renderSeanceForm();
     this.afficherEditeur();
     this.majSelectExoProgression();
     this.afficherHistMuscu();
+  }
+
+  /* ---- carte de niveau global (XP cumulé de toutes les séances) ---- */
+  afficherNiveau(){
+    const c = $('muscu-niveau');
+    if(!c) return;
+    const n = infosNiveau(xpTotal(this.etat.seances));
+    if(n.total <= 0){
+      c.innerHTML = `<div class="niv-haut"><span class="niv-num">Niv. 0</span><span class="niv-titre">Recrue</span></div>
+        <p class="note" style="margin:6px 0 0">Enregistre ta première séance : tu gagnes de l'XP à chaque série, en fonction de la charge et des reps réellement faites.</p>`;
+      return;
+    }
+    c.innerHTML = `<div class="niv-haut">
+        <span class="niv-num">Niv. ${n.niveau}</span>
+        <span class="niv-titre">${echap(n.titre)}</span>
+        <span class="niv-xp mono">${fmtXp(n.total)} XP</span>
+      </div>
+      <div class="xp-barre niv-barre"><div class="xp-rempli" style="width:${n.pct}%"></div></div>
+      <div class="niv-pied mono">${fmtXp(n.restant)} XP avant le niveau ${n.niveau + 1}</div>`;
   }
 
   renderChips(prog = this.programmeActif()){
@@ -233,7 +254,8 @@ export class MuscuModule {
       const presc = `${ex.series} × ${ex.reps}${ex.note?' · '+ex.note:''}`;
       const last = this.dernierePerf(ex.nom);
       const reco = recommander(ex, last ? last.series : null);
-      const { niveau } = statsExo(this.etat.seances, ex.nom);
+      const xpExo = xpExerciceTotal(this.etat.seances, ex.nom);
+      const nivExo = infosNiveau(xpExo, XP_BASE_EXO);
       const repos = reposRecommande(ex);
       const dBloc = draft && draft.blocs ? draft.blocs[ei] : null;
       /* unilatéral DE LA SÉANCE : initialisé sur le programme, mais modifiable pour cette séance.
@@ -244,7 +266,7 @@ export class MuscuModule {
       if(uni)              badges.push('<span class="exo-badge b-uni">Unilatéral · 1 côté</span>');
       if(ex.contraction2s) badges.push('<span class="exo-badge b-tempo">Contraction 2 s</span>');
       badges.push(`<span class="exo-badge b-repos">⏱ ${fmtRepos(repos)}</span>`);
-      if(niveau>0) badges.push(`<span class="exo-badge b-niv">Niv. ${niveau}</span>`);
+      if(xpExo>0) badges.push(`<span class="exo-badge b-niv" title="${fmtXp(xpExo)} XP cumulés sur cet exercice">Niv. ${nivExo.niveau} · ${echap(nivExo.titre)}</span>`);
 
       const histoOpen = this.histoOuverte.has(ex.nom);
       const objectif = `<div class="exo-objectif ton-${reco.ton}${histoOpen?' ouvert':''}" data-action="toggle-historique" data-exo="${ei}" role="button" tabindex="0" aria-expanded="${histoOpen}">
@@ -394,7 +416,19 @@ export class MuscuModule {
     });
     const monte = lignes.filter(l=>l.ton==='up').length;
     const baisse = lignes.filter(l=>l.ton==='down').length;
-    return { date, jourNom:jour.nom, lignes, monte, baisse };
+    /* XP : baseline = tout SAUF une éventuelle occurrence déjà enregistrée de cette
+       séance (date+jour) — ainsi une ré-édition ne double-compte pas. Chaque exercice
+       ne rapporte que s'il a fait mieux que son occurrence précédente (cf. xp.js). */
+    const base = this.etat.seances.filter(s=>!(s.date===date && s.jourId===jour.id));
+    const avant = xpTotal(base);
+    let xpGagne = 0, ameliores = 0;
+    exercices.forEach(exo=>{
+      const g = xpGagneExercice(exo, this.perfPrecedente(date, exo.nom));
+      if(g>0){ xpGagne += g; ameliores++; }
+    });
+    const niv = infosNiveau(avant + xpGagne);
+    const levelUp = niv.niveau - niveauPourXp(avant);
+    return { date, jourNom:jour.nom, lignes, monte, baisse, xpGagne, ameliores, total:exercices.length, niv, levelUp };
   }
 
   afficherRecap(){
@@ -420,12 +454,28 @@ export class MuscuModule {
     const bilan = r.monte || r.baisse
       ? `${r.monte} en hausse${r.baisse?` · ${r.baisse} en baisse`:''}`
       : 'séance de maintien';
+    let xpBloc = '';
+    if(r.niv){
+      const gagne = r.xpGagne > 0;
+      const gain = gagne
+        ? `<span class="recap-xp-gain mono">+${fmtXp(r.xpGagne)} XP</span><span class="recap-xp-note mono">${r.ameliores}/${r.total} exo en progrès</span>`
+        : `<span class="recap-xp-gain nul mono">0 XP</span><span class="recap-xp-note mono">aucun exo battu — refais mieux que la dernière fois</span>`;
+      const lvUp = r.levelUp > 0
+        ? `<span class="recap-lvup">🔥 Niveau ${r.niv.niveau} ! ${echap(r.niv.titre)}${r.levelUp>1?` (+${r.levelUp})`:''}</span>`
+        : `<span class="recap-niv mono">Niv. ${r.niv.niveau} · ${echap(r.niv.titre)}</span>`;
+      xpBloc = `<div class="recap-xp${gagne?'':' recap-xp-nul'}">
+          <div class="recap-xp-haut">${gain}${lvUp}</div>
+          <div class="xp-barre niv-barre${r.levelUp>0?' ton-up':''}"><div class="xp-rempli" style="width:${r.niv.pct}%"></div></div>
+          <div class="niv-pied mono">${fmtXp(r.niv.restant)} XP avant le niveau ${r.niv.niveau + 1}</div>
+        </div>`;
+    }
     c.innerHTML = `<div class="recap-carte">
       <div class="recap-haut">
         <span class="recap-titre">Recap · ${echap(r.jourNom)} ${fmtDate(r.date)}</span>
         <button class="repas-annuler" data-action="fermer-recap">Fermer</button>
       </div>
       <div class="recap-bilan mono">${bilan}</div>
+      ${xpBloc}
       <ul class="recap-liste">${lignes}</ul>
     </div>`;
   }
