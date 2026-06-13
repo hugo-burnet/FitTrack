@@ -39,6 +39,15 @@ export function tendanceBras(mensurations){
   return avec[avec.length-1].bras - avec[avec.length-2].bras;
 }
 
+/* le bras stagne-t-il ? ≥3 relevés et les 2 derniers deltas mensuels ≤ 0 — exiger
+   2 deltas (pas un seul, trop bruité) avant d'agir dessus dans le verdict (specs 5) */
+export function brasStagne(mensurations){
+  const avec = mensurations.filter(m=>m.bras!=null && isFinite(m.bras));
+  if(avec.length < 3) return false;
+  const n = avec.length;
+  return (avec[n-1].bras - avec[n-2].bras) <= 0 && (avec[n-2].bras - avec[n-3].bras) <= 0;
+}
+
 /* plafond de reps dans l'estimation Epley : au-delà, charge*(1+reps/30) devient bruité
    (le programme est surtout 10-15 reps) → on borne pour des deltas 1RM fiables (specs 4.2) */
 export const REPS_CAP_E1RM = 12;
