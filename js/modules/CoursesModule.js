@@ -34,6 +34,7 @@ export class CoursesModule {
 
   bind(){
     $('btn-ajouter-course').addEventListener('click', () => this.ajouterCourse());
+    $('btn-cocher-courses').addEventListener('click', () => this.cocherCourses());
     $('btn-decocher-courses').addEventListener('click', () => this.decocherCourses());
     $('courses-jours').addEventListener('change', e => {
       const v = parseInt(e.target.value,10);
@@ -108,6 +109,11 @@ export class CoursesModule {
   supprimerCourse(id){
     this.etat.courses.items = this.etat.courses.items.filter(it=>it.id!==id);
     delete this.etat.courses.coches[id];
+    this.store.sauver(); this.render();
+  }
+  cocherCourses(){
+    const c = {}; this.etat.courses.items.forEach(it=>{ c[it.id]=true; });
+    this.etat.courses.coches = c; this.etat.courses.maj = jourLocal();
     this.store.sauver(); this.render();
   }
   decocherCourses(){
