@@ -27,6 +27,17 @@ export function facteurFlex(objectifKcal){
   return Math.max(FLEX_MIN, Math.min(FLEX_MAX, f));
 }
 
+/* protéines cibles du jour = ce que délivre le PLAN (flex ajusté à l'objectif) */
+export function protCible(objectifKcal){
+  const f = facteurFlex(objectifKcal);
+  let p = 0;
+  PLAN.forEach(r=>r.items.forEach(([cle,q])=>{
+    const qte = ALIMENTS[cle].flex ? Math.round(q*f/5)*5 : q;
+    p += protItem(cle, qte);
+  }));
+  return Math.round(p);
+}
+
 /* consommation quotidienne par aliment, dérivée du PLAN (flex ajusté à l'objectif).
    Sert à calculer une liste de courses « plan × jours » (specs 4.3) : ferme la boucle
    plan → conso → liste, et se met à jour avec l'objectif kcal. Renvoie {cle: qté/jour}. */

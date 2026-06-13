@@ -596,3 +596,20 @@ input:-webkit-autofill:focus{
 .modal-input:focus{outline:2px solid var(--laiton);outline-offset:-1px;border-color:var(--laiton)}
 .modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .modal-actions .btn{margin-top:0}
+
+/* ---------- Accueil : reads hebdo « Cette semaine » (specs 4.4) ---------- */
+.semaine-grille{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.sem-read{background:var(--plaque-2);border:1px solid var(--trait);border-radius:8px;
+  padding:10px 8px;text-align:center;display:flex;flex-direction:column;gap:2px}
+.sem-lib{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--craie-2)}
+.sem-val{font-size:22px;font-weight:600;color:var(--craie);line-height:1.1}
+.sem-val.up{color:var(--alerte)} .sem-val.down{color:var(--ok)}
+.sem-val.up.bon{color:var(--ok)} .sem-val.flat{color:var(--craie)}
+.sem-sub{font-size:10.5px;color:var(--craie-2);line-height:1.2}
+.sem-force{margin-top:12px;font-size:13px;line-height:1.45;color:var(--craie-2)}
+.sem-force:empty{display:none}
+.sem-force.alerte{color:var(--craie);background:#2a1f1c;border:1px solid var(--alerte);
+  border-radius:8px;padding:10px 12px}
+.sem-force.ok{color:var(--craie);background:#1f2620;border:1px solid var(--trait);
+  border-left:3px solid var(--ok);border-radius:8px;padding:10px 12px}
+.sem-force b{color:var(--craie)}

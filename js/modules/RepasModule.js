@@ -1,6 +1,6 @@
 import { $, echap } from '../utils.js';
 import { ALIMENTS, PLAN } from '../data.js';
-import { kcalItem, protItem, facteurFlex, flexSature } from '../nutrition.js';
+import { kcalItem, protItem, facteurFlex, flexSature, protCible } from '../nutrition.js';
 
 /* ================= REPAS : cible du jour, écart temps réel, log de la réalité =================
    Modèle « cible + écart » (specs 4.1) : le plan n'est qu'un DÉFAUT suggéré ; la vérité,
@@ -63,7 +63,7 @@ export class RepasModule {
   repasProt(r){ return r.items.reduce((s,[cle,q])=>s+protItem(cle, this.qteAjustee(cle,q)),0); }
 
   /* cible du jour : kcal = objectif réglé ; protéines = ce que le plan délivre (fixe) */
-  cibles(){ return { kcal:this.etat.objectifKcal, prot:Math.round(PLAN.reduce((s,r)=>s+this.repasProt(r),0)) }; }
+  cibles(){ return { kcal:this.etat.objectifKcal, prot:protCible(this.etat.objectifKcal) }; }
 
   /* ---- journal du jour (= réalité) ---- */
   journalDuJour(){ const j=this.etat.repas.jour; return this.etat.journalRepas.filter(e=>e.date===j); }

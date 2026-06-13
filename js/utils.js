@@ -5,6 +5,8 @@ export function jourLocal(d = new Date()){
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 export const aujourdHui = () => jourLocal();
+/* date locale d'il y a n jours (pour les fenêtres glissantes hebdo) */
+export function ilYaJours(n, d = new Date()){ const x = new Date(d); x.setDate(x.getDate()-n); return jourLocal(x); }
 
 export const fmtDate = d => new Date(d+'T12:00:00').toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'2-digit'});
 export const triDate = (a,b) => a.date.localeCompare(b.date);

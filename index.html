@@ -58,6 +58,29 @@
       <div class="donnees" id="verdict-data"></div>
     </div>
 
+    <!-- Reads hebdo entre deux verdicts mensuels (specs 4.4) -->
+    <div class="carte" id="carte-semaine">
+      <h2>Cette semaine</h2>
+      <div class="semaine-grille">
+        <div class="sem-read">
+          <div class="sem-lib">Tendance</div>
+          <div class="sem-val mono" id="sem-trend">—</div>
+          <div class="sem-sub" id="sem-trend-sub">kg/mois</div>
+        </div>
+        <div class="sem-read">
+          <div class="sem-lib">Protéines</div>
+          <div class="sem-val mono" id="sem-prot">—</div>
+          <div class="sem-sub">jours à la cible (7 j)</div>
+        </div>
+        <div class="sem-read">
+          <div class="sem-lib">Séances</div>
+          <div class="sem-val mono" id="sem-seances">—</div>
+          <div class="sem-sub">sur 7 jours</div>
+        </div>
+      </div>
+      <div class="sem-force" id="sem-force"></div>
+    </div>
+
     <div class="carte">
       <h2>L'arbre de décision</h2>
       <ul class="scenarios">

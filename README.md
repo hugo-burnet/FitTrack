@@ -13,7 +13,9 @@ Vanilla **JavaScript orienté objet** (modules ES), zéro framework, zéro build
 L'app est découpée en 6 onglets.
 
 ### 🎯 Verdict
-Un **arbre de décision** transforme tes données en une consigne unique et nette (« −150 kcal sur le riz », « +150 kcal », « RAS — Continue »…). Calcul du **rythme en kg/mois** (régression sur les moyennes hebdo glissantes) croisé avec la **tendance du tour de taille** et du **bras** : c'est la taille qui tranche entre prise de muscle et prise de gras.
+Un **arbre de décision** transforme tes données en une consigne unique et nette (« −150 kcal sur le riz », « +150 kcal », « RAS — Continue »…). Calcul du **rythme en kg/mois** (régression sur les moyennes hebdo glissantes) croisé avec la **tendance du tour de taille** et du **bras** : c'est la taille qui tranche entre prise de muscle et prise de gras. Le verdict est **prudent** : aucun ajustement avant 3 moyennes hebdo, et la branche « bras qui stagne » exige 2 relevés confirmés.
+
+Sous le verdict, un read **« Cette semaine »** entre deux verdicts mensuels : tendance lissée, **adhérence protéines (jours à la cible / 7)** et **séances sur 7 j**, plus une alerte **« force en baisse »** quand le 1RM estimé décroche sur plusieurs exercices récents — signal précoce de sous-alimentation.
 
 ### 🍽️ Repas
 Plan alimentaire du jour avec **objectif kcal ajustable**. Protéines/lipides fixés, glucides (riz/avoine) qui s'ajustent automatiquement pour atteindre la cible. Cases à cocher par repas (avec progression kcal/macros), **décochage automatique à minuit**, et journalisation détaillée de ce qui a réellement été mangé (avec quantités) pour l'export.
