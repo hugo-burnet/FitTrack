@@ -99,5 +99,7 @@ export class App {
     $('ong-'+nom).classList.add('actif');
     qsa('nav button').forEach(b=>b.classList.toggle('actif', b.dataset.ong===nom));
     if(this.muscu) this.muscu.surOnglet(nom);   /* wake lock : actif seulement en séance (specs 4.2) */
+    /* courses : quantités dérivées du plan → on rafraîchit à l'entrée (suit l'objectif kcal) */
+    if(nom==='courses' && this.courses) this.courses.render();
   }
 }

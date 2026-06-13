@@ -566,3 +566,9 @@ input:-webkit-autofill:focus{
 .extra-macros{font-size:13px;color:var(--craie-2)}
 #extras-liste{margin-bottom:12px}
 #extra-form{margin-top:12px}
+
+/* ---------- Courses : quantités dérivées du plan (specs 4.3) ---------- */
+.courses-reglage{display:flex;align-items:center;gap:8px;margin-bottom:12px;
+  font-size:13px;color:var(--craie-2);flex-wrap:wrap}
+.courses-reglage input{width:70px;padding:8px 10px;min-height:40px;text-align:center}
+.course-qte.derivee{color:var(--laiton);font-weight:600}

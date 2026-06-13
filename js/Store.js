@@ -75,6 +75,7 @@ export class Store extends EventTarget {
     if(!Array.isArray(etat.courses.items) || !etat.courses.items.length)
       etat.courses.items = COURSES_DEFAUT.map(c=>({id:slug(c.nom), ...c}));
     if(!etat.courses.coches) etat.courses.coches = {};
+    if(typeof etat.courses.jours !== 'number') etat.courses.jours = 7;   /* horizon de la liste (specs 4.3) */
     /* brouillons de séance (saisie en cours, non encore enregistrée) par id de jour */
     if(!etat.brouillons || typeof etat.brouillons !== 'object') etat.brouillons = {};
     if(typeof etat.autoExport !== 'boolean') etat.autoExport = false;

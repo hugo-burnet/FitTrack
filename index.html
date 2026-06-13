@@ -253,8 +253,13 @@
 
     <div class="carte">
       <h2>Liste de courses</h2>
+      <div class="courses-reglage">
+        <label for="courses-jours">Quantités pour</label>
+        <input type="number" id="courses-jours" min="1" max="60" step="1" inputmode="numeric">
+        <span>jours</span>
+      </div>
       <div id="courses-liste"></div>
-      <p class="note">Coche au fur et à mesure dans les rayons. « Tout décocher » remet la liste à blanc pour la semaine suivante.</p>
+      <p class="note">Les quantités <span class="course-qte derivee" style="padding:0">en laiton</span> sont <b>calculées depuis ton plan × le nombre de jours</b> et suivent ton objectif kcal (le riz/avoine s'ajuste). Les autres sont des repères figés que tu peux éditer. Coche au fur et à mesure ; « Tout décocher » remet à blanc pour la semaine suivante.</p>
     </div>
 
     <div class="carte">

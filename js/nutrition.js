@@ -27,6 +27,19 @@ export function facteurFlex(objectifKcal){
   return Math.max(FLEX_MIN, Math.min(FLEX_MAX, f));
 }
 
+/* consommation quotidienne par aliment, dérivée du PLAN (flex ajusté à l'objectif).
+   Sert à calculer une liste de courses « plan × jours » (specs 4.3) : ferme la boucle
+   plan → conso → liste, et se met à jour avec l'objectif kcal. Renvoie {cle: qté/jour}. */
+export function consoQuotidienne(objectifKcal){
+  const f = facteurFlex(objectifKcal);
+  const out = {};
+  PLAN.forEach(r=>r.items.forEach(([cle,q])=>{
+    const qte = ALIMENTS[cle].flex ? Math.round(q*f/5)*5 : q;   /* même arrondi que qteAjustee */
+    out[cle] = (out[cle]||0) + qte;
+  }));
+  return out;
+}
+
 /* le facteur sature-t-il à une borne ? renvoie 'bas' | 'haut' | null
    (sert à avertir que le total réel diverge de la cible — cf. specs 4.1) */
 export function flexSature(objectifKcal){

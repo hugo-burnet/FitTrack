@@ -70,20 +70,22 @@ export const PROG_DEFAUT = [{
   ]
 }];
 
-/* ================= LISTE DE COURSES PAR DÉFAUT ================= */
+/* ================= LISTE DE COURSES PAR DÉFAUT =================
+   `cle` relie l'article à un aliment du PLAN → la quantité est alors DÉRIVÉE
+   (plan × jours, flex ajusté à l'objectif). Sans `cle`, la quantité figée sert. */
 export const COURSES_DEFAUT = [
-  {cat:'Frais',              nom:'Skyr nature',                          qte:'3,4 kg'},
-  {cat:'Frais',              nom:'Haut de cuisse de poulet désossé',     qte:'1,6 kg'},
-  {cat:'Frais',              nom:'Bananes',                              qte:'21'},
-  {cat:'Épicerie',           nom:'Riz',                                  qte:'1 kg/sem (sac 5 kg)'},
-  {cat:'Épicerie',           nom:"Flocons d'avoine",                     qte:'700 g'},
-  {cat:'Épicerie',           nom:'Petits pois-carottes',                 qte:'7 boîtes 190 g'},
-  {cat:'Épicerie',           nom:'Chocolat noir 85 %',                   qte:'2 × 100 g'},
-  {cat:'Stock (2-4 sem)',    nom:'Beurre de cacahuète',                  qte:'pot 350 g'},
-  {cat:'Stock (2-4 sem)',    nom:'Amandes natures non salées',           qte:'500 g'},
-  {cat:'Stock (2-4 sem)',    nom:'Cerneaux de noix',                     qte:'250 g'},
+  {cat:'Frais',              nom:'Skyr nature',                          qte:'3,4 kg',              cle:'skyr'},
+  {cat:'Frais',              nom:'Haut de cuisse de poulet désossé',     qte:'1,6 kg',              cle:'poulet'},
+  {cat:'Frais',              nom:'Bananes',                              qte:'21',                  cle:'banane'},
+  {cat:'Épicerie',           nom:'Riz',                                  qte:'1 kg/sem (sac 5 kg)', cle:'riz'},
+  {cat:'Épicerie',           nom:"Flocons d'avoine",                     qte:'700 g',               cle:'avoine'},
+  {cat:'Épicerie',           nom:'Petits pois-carottes',                 qte:'7 boîtes 190 g',      cle:'pois'},
+  {cat:'Épicerie',           nom:'Chocolat noir 85 %',                   qte:'2 × 100 g',           cle:'choco'},
+  {cat:'Stock (2-4 sem)',    nom:'Beurre de cacahuète',                  qte:'pot 350 g',           cle:'pb'},
+  {cat:'Stock (2-4 sem)',    nom:'Amandes natures non salées',           qte:'500 g',               cle:'amandes'},
+  {cat:'Stock (2-4 sem)',    nom:'Cerneaux de noix',                     qte:'250 g',               cle:'noix'},
   {cat:'Stock (2-4 sem)',    nom:'Œufs',                                 qte:'si substitution noix'},
-  {cat:'Réassort mensuel',   nom:'Whey',                                 qte:'~1,8 kg/mois'},
+  {cat:'Réassort mensuel',   nom:'Whey',                                 qte:'~1,8 kg/mois',        cle:'whey'},
   {cat:'Réassort mensuel',   nom:'Créatine',                             qte:'90-150 g/mois'},
   {cat:'Réassort mensuel',   nom:'K2-D3 / Oméga-3 / Magnésium / Méla.',  qte:'vérifier piluliers'},
 ];

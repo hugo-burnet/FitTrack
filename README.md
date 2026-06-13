@@ -37,7 +37,7 @@ Le cœur de l'app, pensé pour la **surcharge progressive « 0 doute »** :
 Saisie des pesées et du relevé mensuel (taille contractée/relâchée, bras, cuisse, torse). Bandeau de stats (moyenne 7 j, taille, bras avec flèches de tendance), **courbes** poids + moyenne hebdo et taille vs bras, historiques supprimables.
 
 ### 🛒 Courses
-Liste de courses par rayon, cases à cocher, ajout/suppression d'articles, « tout décocher » pour la semaine suivante.
+Liste de courses par rayon, cases à cocher, ajout/suppression d'articles, « tout décocher » pour la semaine suivante. Les quantités des aliments du plan sont **dérivées automatiquement** (plan × nombre de jours, ajustées à ton objectif kcal) — ferme la boucle plan → conso → liste.
 
 ### 💾 Données
 **Export / import JSON** (fusion intelligente par date / id), **sauvegarde miroir** automatique en local, indicateur de dernière sauvegarde, option de **téléchargement auto** après chaque séance, et remise à zéro.
