@@ -1,0 +1,16 @@
+# Réglages locaux Claude Code (permissions propres à la machine)
+.claude/settings.local.json
+
+# Dépendances (le projet n'en a aucune — vanilla — mais au cas où)
+node_modules/
+
+# Fichiers système / éditeur
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/
+
+# Divers
+*.log

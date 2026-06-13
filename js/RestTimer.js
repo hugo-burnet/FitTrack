@@ -1,0 +1,89 @@
+/* ================= CHRONO DE REPOS =================
+   Compte à rebours sticky au-dessus de la navigation. Démarré depuis chaque
+   exercice avec sa durée conseillée. Bip + vibration à zéro. */
+export class RestTimer {
+  constructor(rootId){
+    this.root = document.getElementById(rootId);
+    this.remaining = 0; this.total = 0; this.running = false; this.finished = false; this.id = null;
+    this.elTime   = this.root.querySelector('.rt-time');
+    this.elLabel  = this.root.querySelector('.rt-label');
+    this.elFill   = this.root.querySelector('.rt-fill');
+    this.elToggle = this.root.querySelector('[data-rt="toggle"]');
+
+    this.root.addEventListener('click', e => {
+      const b = e.target.closest('[data-rt]'); if(!b) return;
+      const a = b.dataset.rt;
+      if(a==='toggle') this.toggle();
+      else if(a==='add') this.add(15);
+      else if(a==='skip') this.stop();
+    });
+  }
+
+  fmt(s){ s = Math.max(0, s); const m = Math.floor(s/60), sec = s%60; return `${m}:${String(sec).padStart(2,'0')}`; }
+  show(){ this.root.classList.remove('cache'); }
+  hide(){ this.root.classList.add('cache'); }
+
+  start(seconds, label){
+    this.stopTick();
+    this.total = seconds; this.remaining = seconds; this.running = true; this.finished = false;
+    if(this.elLabel) this.elLabel.textContent = label ? 'Repos · ' + label : 'Repos';
+    this.root.classList.remove('rt-done');
+    this.elToggle.textContent = '⏸';
+    this.update(); this.show();
+    this.id = window.setInterval(() => this.tick(), 1000);
+  }
+
+  tick(){
+    if(!this.running) return;
+    this.remaining--;
+    if(this.remaining <= 0){ this.remaining = 0; this.update(); this.finish(); return; }
+    this.update();
+  }
+
+  update(){
+    if(this.elTime) this.elTime.textContent = this.fmt(this.remaining);
+    if(this.elFill) this.elFill.style.width = this.total ? (100*(this.total-this.remaining)/this.total).toFixed(1)+'%' : '0%';
+  }
+
+  finish(){
+    this.stopTick(); this.running = false; this.finished = true;
+    this.root.classList.add('rt-done');
+    if(this.elLabel) this.elLabel.textContent = 'Repos terminé — go !';
+    this.elToggle.textContent = '✕';
+    this.beep(); this.vibrate();
+    window.setTimeout(() => { if(this.finished) this.hide(); }, 4000);
+  }
+
+  toggle(){
+    if(this.finished){ this.hide(); return; }
+    this.running = !this.running;
+    this.elToggle.textContent = this.running ? '⏸' : '▶';
+    if(this.running && !this.id) this.id = window.setInterval(() => this.tick(), 1000);
+  }
+
+  add(s){
+    this.remaining += s; this.total += s; this.finished = false;
+    this.root.classList.remove('rt-done');
+    if(this.root.classList.contains('cache')) this.show();
+    if(!this.running){ this.running = true; this.elToggle.textContent = '⏸'; if(!this.id) this.id = window.setInterval(() => this.tick(), 1000); }
+    this.update();
+  }
+
+  stop(){ this.stopTick(); this.running = false; this.finished = false; this.hide(); }
+  stopTick(){ if(this.id){ window.clearInterval(this.id); this.id = null; } }
+
+  beep(){
+    try{
+      const Ctx = window.AudioContext || window.webkitAudioContext; if(!Ctx) return;
+      const ctx = new Ctx();
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.type = 'sine'; o.frequency.value = 880;
+      g.gain.setValueAtTime(0.0001, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.3, ctx.currentTime + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.45);
+      o.start(); o.stop(ctx.currentTime + 0.47);
+    }catch(e){ /* audio indisponible : tant pis */ }
+  }
+  vibrate(){ try{ if(navigator.vibrate) navigator.vibrate([120,60,120]); }catch(e){} }
+}

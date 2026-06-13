@@ -1,0 +1,2698 @@
+{
+  "version": 2,
+  "exporte": "2026-06-13T07:00:00.000Z",
+  "poids": [
+    {
+      "date": "2026-03-15",
+      "kg": 71.9
+    },
+    {
+      "date": "2026-03-22",
+      "kg": 72.3
+    },
+    {
+      "date": "2026-03-29",
+      "kg": 72.2
+    },
+    {
+      "date": "2026-04-05",
+      "kg": 72.1
+    },
+    {
+      "date": "2026-04-12",
+      "kg": 72.5
+    },
+    {
+      "date": "2026-04-19",
+      "kg": 72.2
+    },
+    {
+      "date": "2026-04-26",
+      "kg": 72.2
+    },
+    {
+      "date": "2026-05-03",
+      "kg": 72
+    },
+    {
+      "date": "2026-05-10",
+      "kg": 72.4
+    },
+    {
+      "date": "2026-05-17",
+      "kg": 72.1
+    },
+    {
+      "date": "2026-05-24",
+      "kg": 72.4
+    },
+    {
+      "date": "2026-05-31",
+      "kg": 72.8
+    },
+    {
+      "date": "2026-06-03",
+      "kg": 72.7
+    },
+    {
+      "date": "2026-06-07",
+      "kg": 72.8
+    },
+    {
+      "date": "2026-06-10",
+      "kg": 72.5
+    }
+  ],
+  "mensurations": [
+    {
+      "date": "2026-03-01",
+      "taille": 84.6,
+      "tailleRelache": 86.4,
+      "bras": 38.4,
+      "cuisse": 58.5,
+      "torse": 104
+    },
+    {
+      "date": "2026-04-01",
+      "taille": 84.3,
+      "tailleRelache": 86,
+      "bras": 38.8,
+      "cuisse": 58.9,
+      "torse": 104.6
+    },
+    {
+      "date": "2026-05-01",
+      "taille": 84.1,
+      "tailleRelache": 85.7,
+      "bras": 39.1,
+      "cuisse": 59.2,
+      "torse": 105.1
+    },
+    {
+      "date": "2026-06-01",
+      "taille": 83.8,
+      "tailleRelache": 85.4,
+      "bras": 39.4,
+      "cuisse": 59.6,
+      "torse": 105.6
+    }
+  ],
+  "objectifKcal": 2545,
+  "repas": {
+    "jour": "2026-06-13",
+    "coches": {
+      "pdej": true,
+      "dej": true,
+      "coll": true
+    }
+  },
+  "journalRepas": [
+    {
+      "date": "2026-06-12",
+      "id": "pdej",
+      "nom": "Petit-déjeuner",
+      "kcal": 520,
+      "prot": 34,
+      "objectifKcal": 2545,
+      "items": [
+        {
+          "cle": "avoine",
+          "nom": "Flocons d'avoine",
+          "qte": 100,
+          "unite": "g"
+        },
+        {
+          "cle": "whey",
+          "nom": "Whey",
+          "qte": 1,
+          "unite": "shaker"
+        },
+        {
+          "cle": "banane",
+          "nom": "Banane",
+          "qte": 1,
+          "unite": "unité"
+        },
+        {
+          "cle": "pb",
+          "nom": "Beurre de cacahuète",
+          "qte": 15,
+          "unite": "g"
+        }
+      ]
+    },
+    {
+      "date": "2026-06-12",
+      "id": "dej",
+      "nom": "Déjeuner",
+      "kcal": 610,
+      "prot": 52,
+      "objectifKcal": 2545,
+      "items": [
+        {
+          "cle": "poulet",
+          "nom": "Haut de cuisse poulet (cru)",
+          "qte": 220,
+          "unite": "g"
+        },
+        {
+          "cle": "riz",
+          "nom": "Riz (cru)",
+          "qte": 140,
+          "unite": "g"
+        },
+        {
+          "cle": "pois",
+          "nom": "Petits pois-carottes",
+          "qte": 190,
+          "unite": "g"
+        }
+      ]
+    }
+  ],
+  "seances": [
+    {
+      "date": "2026-05-04",
+      "programmeId": "pplul",
+      "jourId": "push",
+      "jourNom": "Push",
+      "exercices": [
+        {
+          "nom": "Chest press machine",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 40,
+              "reps": 10
+            },
+            {
+              "charge": 40,
+              "reps": 10
+            },
+            {
+              "charge": 40,
+              "reps": 10
+            }
+          ]
+        },
+        {
+          "nom": "Développé incliné haltères (30°)",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 22,
+              "reps": 10
+            },
+            {
+              "charge": 22,
+              "reps": 10
+            },
+            {
+              "charge": 22,
+              "reps": 10
+            }
+          ]
+        },
+        {
+          "nom": "Développé épaules haltères assis",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 16,
+              "reps": 10
+            },
+            {
+              "charge": 16,
+              "reps": 10
+            },
+            {
+              "charge": 16,
+              "reps": 10
+            }
+          ]
+        },
+        {
+          "nom": "Élévations latérales",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 8,
+              "reps": 12
+            },
+            {
+              "charge": 8,
+              "reps": 12
+            },
+            {
+              "charge": 8,
+              "reps": 12
+            }
+          ],
+          "contraction2s": true
+        },
+        {
+          "nom": "Extension triceps poulie",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 25,
+              "reps": 12
+            },
+            {
+              "charge": 25,
+              "reps": 12
+            },
+            {
+              "charge": 25,
+              "reps": 12
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-05-05",
+      "programmeId": "pplul",
+      "jourId": "pull",
+      "jourNom": "Pull",
+      "exercices": [
+        {
+          "nom": "Tirage vertical",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 50,
+              "reps": 10
+            },
+            {
+              "charge": 50,
+              "reps": 10
+            },
+            {
+              "charge": 50,
+              "reps": 10
+            }
+          ]
+        },
+        {
+          "nom": "Rowing unilatéral buste appuyé",
+          "presc": "3×10-12/côté",
+          "series": [
+            {
+              "charge": 24,
+              "reps": 10
+            },
+            {
+              "charge": 24,
+              "reps": 10
+            },
+            {
+              "charge": 24,
+              "reps": 10
+            }
+          ],
+          "unilateral": true
+        },
+        {
+          "nom": "Face pull",
+          "presc": "3×15",
+          "series": [
+            {
+              "charge": 20,
+              "reps": 15
+            },
+            {
+              "charge": 20,
+              "reps": 15
+            },
+            {
+              "charge": 20,
+              "reps": 15
+            }
+          ],
+          "contraction2s": true
+        },
+        {
+          "nom": "Curl incliné haltères",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 12,
+              "reps": 10
+            },
+            {
+              "charge": 12,
+              "reps": 10
+            },
+            {
+              "charge": 12,
+              "reps": 10
+            }
+          ]
+        },
+        {
+          "nom": "Curl marteau",
+          "presc": "2×12-15",
+          "series": [
+            {
+              "charge": 12,
+              "reps": 12
+            },
+            {
+              "charge": 12,
+              "reps": 12
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-05-06",
+      "programmeId": "pplul",
+      "jourId": "legs",
+      "jourNom": "Legs",
+      "exercices": [
+        {
+          "nom": "Presse horizontale",
+          "presc": "4×12-15",
+          "series": [
+            {
+              "charge": 120,
+              "reps": 12
+            },
+            {
+              "charge": 120,
+              "reps": 12
+            },
+            {
+              "charge": 120,
+              "reps": 12
+            },
+            {
+              "charge": 120,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Leg curl assis",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 40,
+              "reps": 10
+            },
+            {
+              "charge": 40,
+              "reps": 10
+            },
+            {
+              "charge": 40,
+              "reps": 10
+            }
+          ]
+        },
+        {
+          "nom": "Leg extension",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 45,
+              "reps": 12
+            },
+            {
+              "charge": 45,
+              "reps": 12
+            },
+            {
+              "charge": 45,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Mollets assis",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 50,
+              "reps": 12
+            },
+            {
+              "charge": 50,
+              "reps": 12
+            },
+            {
+              "charge": 50,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Circuit McGill big 3",
+          "presc": "2×tours",
+          "series": [
+            {
+              "charge": null,
+              "reps": 2
+            },
+            {
+              "charge": null,
+              "reps": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-05-07",
+      "programmeId": "pplul",
+      "jourId": "upper",
+      "jourNom": "Upper",
+      "exercices": [
+        {
+          "nom": "Développé incliné haltères",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 22,
+              "reps": 10
+            },
+            {
+              "charge": 22,
+              "reps": 10
+            },
+            {
+              "charge": 22,
+              "reps": 10
+            }
+          ]
+        },
+        {
+          "nom": "Rowing machine appui pectoral",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 45,
+              "reps": 10
+            },
+            {
+              "charge": 45,
+              "reps": 10
+            },
+            {
+              "charge": 45,
+              "reps": 10
+            }
+          ]
+        },
+        {
+          "nom": "Développé épaules haltères assis",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 16,
+              "reps": 11
+            },
+            {
+              "charge": 16,
+              "reps": 11
+            }
+          ]
+        },
+        {
+          "nom": "Tirage vertical prise neutre",
+          "presc": "2×12",
+          "series": [
+            {
+              "charge": 45,
+              "reps": 12
+            },
+            {
+              "charge": 45,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Élévations latérales",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 8,
+              "reps": 13
+            },
+            {
+              "charge": 8,
+              "reps": 13
+            }
+          ],
+          "contraction2s": true
+        },
+        {
+          "nom": "Curl au choix",
+          "presc": "2×12-15",
+          "series": [
+            {
+              "charge": 12,
+              "reps": 12
+            },
+            {
+              "charge": 12,
+              "reps": 12
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-05-08",
+      "programmeId": "pplul",
+      "jourId": "lower",
+      "jourNom": "Lower",
+      "exercices": [
+        {
+          "nom": "Presse horizontale",
+          "presc": "4×12-15",
+          "series": [
+            {
+              "charge": 120,
+              "reps": 13
+            },
+            {
+              "charge": 120,
+              "reps": 13
+            },
+            {
+              "charge": 120,
+              "reps": 13
+            }
+          ]
+        },
+        {
+          "nom": "Hip thrust",
+          "presc": "3×12",
+          "series": [
+            {
+              "charge": 80,
+              "reps": 12
+            },
+            {
+              "charge": 80,
+              "reps": 12
+            },
+            {
+              "charge": 80,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Leg curl allongé",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 40,
+              "reps": 12
+            },
+            {
+              "charge": 40,
+              "reps": 12
+            },
+            {
+              "charge": 40,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Mollets assis",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 50,
+              "reps": 13
+            },
+            {
+              "charge": 50,
+              "reps": 13
+            },
+            {
+              "charge": 50,
+              "reps": 13
+            }
+          ]
+        },
+        {
+          "nom": "Fentes bulgares haltères",
+          "presc": "2×12/jambe",
+          "series": [
+            {
+              "charge": 16,
+              "reps": 12
+            },
+            {
+              "charge": 16,
+              "reps": 12
+            }
+          ],
+          "unilateral": true
+        },
+        {
+          "nom": "Circuit McGill big 3",
+          "presc": "2×tours",
+          "series": [
+            {
+              "charge": null,
+              "reps": 2
+            },
+            {
+              "charge": null,
+              "reps": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-05-11",
+      "programmeId": "pplul",
+      "jourId": "push",
+      "jourNom": "Push",
+      "exercices": [
+        {
+          "nom": "Chest press machine",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 40,
+              "reps": 11
+            },
+            {
+              "charge": 40,
+              "reps": 11
+            },
+            {
+              "charge": 40,
+              "reps": 11
+            }
+          ]
+        },
+        {
+          "nom": "Développé incliné haltères (30°)",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 22,
+              "reps": 11
+            },
+            {
+              "charge": 22,
+              "reps": 11
+            },
+            {
+              "charge": 22,
+              "reps": 11
+            }
+          ]
+        },
+        {
+          "nom": "Développé épaules haltères assis",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 16,
+              "reps": 12
+            },
+            {
+              "charge": 16,
+              "reps": 12
+            },
+            {
+              "charge": 16,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Élévations latérales",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 8,
+              "reps": 14
+            },
+            {
+              "charge": 8,
+              "reps": 14
+            },
+            {
+              "charge": 8,
+              "reps": 14
+            }
+          ],
+          "contraction2s": true
+        },
+        {
+          "nom": "Extension triceps poulie",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 25,
+              "reps": 13
+            },
+            {
+              "charge": 25,
+              "reps": 13
+            },
+            {
+              "charge": 25,
+              "reps": 13
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-05-12",
+      "programmeId": "pplul",
+      "jourId": "pull",
+      "jourNom": "Pull",
+      "exercices": [
+        {
+          "nom": "Tirage vertical",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 50,
+              "reps": 11
+            },
+            {
+              "charge": 50,
+              "reps": 11
+            },
+            {
+              "charge": 50,
+              "reps": 11
+            }
+          ]
+        },
+        {
+          "nom": "Rowing unilatéral buste appuyé",
+          "presc": "3×10-12/côté",
+          "series": [
+            {
+              "charge": 24,
+              "reps": 11
+            },
+            {
+              "charge": 24,
+              "reps": 11
+            },
+            {
+              "charge": 24,
+              "reps": 11
+            }
+          ],
+          "unilateral": true
+        },
+        {
+          "nom": "Face pull",
+          "presc": "3×15",
+          "series": [
+            {
+              "charge": 22.5,
+              "reps": 15
+            },
+            {
+              "charge": 22.5,
+              "reps": 15
+            },
+            {
+              "charge": 22.5,
+              "reps": 15
+            }
+          ],
+          "contraction2s": true
+        },
+        {
+          "nom": "Curl incliné haltères",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 12,
+              "reps": 11
+            },
+            {
+              "charge": 12,
+              "reps": 11
+            },
+            {
+              "charge": 12,
+              "reps": 11
+            }
+          ]
+        },
+        {
+          "nom": "Curl marteau",
+          "presc": "2×12-15",
+          "series": [
+            {
+              "charge": 12,
+              "reps": 13
+            },
+            {
+              "charge": 12,
+              "reps": 13
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-05-13",
+      "programmeId": "pplul",
+      "jourId": "legs",
+      "jourNom": "Legs",
+      "exercices": [
+        {
+          "nom": "Presse horizontale",
+          "presc": "4×12-15",
+          "series": [
+            {
+              "charge": 120,
+              "reps": 14
+            },
+            {
+              "charge": 120,
+              "reps": 14
+            },
+            {
+              "charge": 120,
+              "reps": 14
+            },
+            {
+              "charge": 120,
+              "reps": 14
+            }
+          ]
+        },
+        {
+          "nom": "Leg curl assis",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 40,
+              "reps": 11
+            },
+            {
+              "charge": 40,
+              "reps": 11
+            },
+            {
+              "charge": 40,
+              "reps": 11
+            }
+          ]
+        },
+        {
+          "nom": "Leg extension",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 45,
+              "reps": 13
+            },
+            {
+              "charge": 45,
+              "reps": 13
+            },
+            {
+              "charge": 45,
+              "reps": 13
+            }
+          ]
+        },
+        {
+          "nom": "Mollets assis",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 50,
+              "reps": 14
+            },
+            {
+              "charge": 50,
+              "reps": 14
+            },
+            {
+              "charge": 50,
+              "reps": 14
+            }
+          ]
+        },
+        {
+          "nom": "Circuit McGill big 3",
+          "presc": "2×tours",
+          "series": [
+            {
+              "charge": null,
+              "reps": 2
+            },
+            {
+              "charge": null,
+              "reps": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-05-14",
+      "programmeId": "pplul",
+      "jourId": "upper",
+      "jourNom": "Upper",
+      "exercices": [
+        {
+          "nom": "Développé incliné haltères",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 22,
+              "reps": 11
+            },
+            {
+              "charge": 22,
+              "reps": 11
+            },
+            {
+              "charge": 22,
+              "reps": 11
+            }
+          ]
+        },
+        {
+          "nom": "Rowing machine appui pectoral",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 45,
+              "reps": 11
+            },
+            {
+              "charge": 45,
+              "reps": 11
+            },
+            {
+              "charge": 45,
+              "reps": 11
+            }
+          ]
+        },
+        {
+          "nom": "Développé épaules haltères assis",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 18,
+              "reps": 10
+            },
+            {
+              "charge": 18,
+              "reps": 10
+            }
+          ]
+        },
+        {
+          "nom": "Tirage vertical prise neutre",
+          "presc": "2×12",
+          "series": [
+            {
+              "charge": 47.5,
+              "reps": 12
+            },
+            {
+              "charge": 47.5,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Élévations latérales",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 8,
+              "reps": 15
+            },
+            {
+              "charge": 8,
+              "reps": 15
+            }
+          ],
+          "contraction2s": true
+        },
+        {
+          "nom": "Curl au choix",
+          "presc": "2×12-15",
+          "series": [
+            {
+              "charge": 12,
+              "reps": 13
+            },
+            {
+              "charge": 12,
+              "reps": 13
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-05-15",
+      "programmeId": "pplul",
+      "jourId": "lower",
+      "jourNom": "Lower",
+      "exercices": [
+        {
+          "nom": "Presse horizontale",
+          "presc": "4×12-15",
+          "series": [
+            {
+              "charge": 120,
+              "reps": 15
+            },
+            {
+              "charge": 120,
+              "reps": 15
+            },
+            {
+              "charge": 120,
+              "reps": 15
+            }
+          ]
+        },
+        {
+          "nom": "Hip thrust",
+          "presc": "3×12",
+          "series": [
+            {
+              "charge": 85,
+              "reps": 12
+            },
+            {
+              "charge": 85,
+              "reps": 12
+            },
+            {
+              "charge": 85,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Leg curl allongé",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 40,
+              "reps": 13
+            },
+            {
+              "charge": 40,
+              "reps": 13
+            },
+            {
+              "charge": 40,
+              "reps": 13
+            }
+          ]
+        },
+        {
+          "nom": "Mollets assis",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 50,
+              "reps": 15
+            },
+            {
+              "charge": 50,
+              "reps": 15
+            },
+            {
+              "charge": 50,
+              "reps": 15
+            }
+          ]
+        },
+        {
+          "nom": "Fentes bulgares haltères",
+          "presc": "2×12/jambe",
+          "series": [
+            {
+              "charge": 18,
+              "reps": 12
+            },
+            {
+              "charge": 18,
+              "reps": 12
+            }
+          ],
+          "unilateral": true
+        },
+        {
+          "nom": "Circuit McGill big 3",
+          "presc": "2×tours",
+          "series": [
+            {
+              "charge": null,
+              "reps": 2
+            },
+            {
+              "charge": null,
+              "reps": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-05-18",
+      "programmeId": "pplul",
+      "jourId": "push",
+      "jourNom": "Push",
+      "exercices": [
+        {
+          "nom": "Chest press machine",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 40,
+              "reps": 12
+            },
+            {
+              "charge": 40,
+              "reps": 12
+            },
+            {
+              "charge": 40,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Développé incliné haltères (30°)",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 22,
+              "reps": 12
+            },
+            {
+              "charge": 22,
+              "reps": 12
+            },
+            {
+              "charge": 22,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Développé épaules haltères assis",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 18,
+              "reps": 11
+            },
+            {
+              "charge": 18,
+              "reps": 11
+            },
+            {
+              "charge": 18,
+              "reps": 11
+            }
+          ]
+        },
+        {
+          "nom": "Élévations latérales",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 9,
+              "reps": 12
+            },
+            {
+              "charge": 9,
+              "reps": 12
+            },
+            {
+              "charge": 9,
+              "reps": 12
+            }
+          ],
+          "contraction2s": true
+        },
+        {
+          "nom": "Extension triceps poulie",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 25,
+              "reps": 14
+            },
+            {
+              "charge": 25,
+              "reps": 14
+            },
+            {
+              "charge": 25,
+              "reps": 14
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-05-19",
+      "programmeId": "pplul",
+      "jourId": "pull",
+      "jourNom": "Pull",
+      "exercices": [
+        {
+          "nom": "Tirage vertical",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 50,
+              "reps": 12
+            },
+            {
+              "charge": 50,
+              "reps": 12
+            },
+            {
+              "charge": 50,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Rowing unilatéral buste appuyé",
+          "presc": "3×10-12/côté",
+          "series": [
+            {
+              "charge": 24,
+              "reps": 12
+            },
+            {
+              "charge": 24,
+              "reps": 12
+            },
+            {
+              "charge": 24,
+              "reps": 12
+            }
+          ],
+          "unilateral": true
+        },
+        {
+          "nom": "Face pull",
+          "presc": "3×15",
+          "series": [
+            {
+              "charge": 25,
+              "reps": 15
+            },
+            {
+              "charge": 25,
+              "reps": 15
+            },
+            {
+              "charge": 25,
+              "reps": 15
+            }
+          ],
+          "contraction2s": true
+        },
+        {
+          "nom": "Curl incliné haltères",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 12,
+              "reps": 12
+            },
+            {
+              "charge": 12,
+              "reps": 12
+            },
+            {
+              "charge": 12,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Curl marteau",
+          "presc": "2×12-15",
+          "series": [
+            {
+              "charge": 12,
+              "reps": 14
+            },
+            {
+              "charge": 12,
+              "reps": 14
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-05-20",
+      "programmeId": "pplul",
+      "jourId": "legs",
+      "jourNom": "Legs",
+      "exercices": [
+        {
+          "nom": "Presse horizontale",
+          "presc": "4×12-15",
+          "series": [
+            {
+              "charge": 115,
+              "reps": 12
+            },
+            {
+              "charge": 115,
+              "reps": 12
+            },
+            {
+              "charge": 115,
+              "reps": 12
+            },
+            {
+              "charge": 115,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Leg curl assis",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 40,
+              "reps": 12
+            },
+            {
+              "charge": 40,
+              "reps": 12
+            },
+            {
+              "charge": 40,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Leg extension",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 45,
+              "reps": 14
+            },
+            {
+              "charge": 45,
+              "reps": 14
+            },
+            {
+              "charge": 45,
+              "reps": 14
+            }
+          ]
+        },
+        {
+          "nom": "Mollets assis",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 52.5,
+              "reps": 12
+            },
+            {
+              "charge": 52.5,
+              "reps": 12
+            },
+            {
+              "charge": 52.5,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Circuit McGill big 3",
+          "presc": "2×tours",
+          "series": [
+            {
+              "charge": null,
+              "reps": 2
+            },
+            {
+              "charge": null,
+              "reps": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-05-21",
+      "programmeId": "pplul",
+      "jourId": "upper",
+      "jourNom": "Upper",
+      "exercices": [
+        {
+          "nom": "Développé incliné haltères",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 22,
+              "reps": 12
+            },
+            {
+              "charge": 22,
+              "reps": 12
+            },
+            {
+              "charge": 22,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Rowing machine appui pectoral",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 45,
+              "reps": 12
+            },
+            {
+              "charge": 45,
+              "reps": 12
+            },
+            {
+              "charge": 45,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Développé épaules haltères assis",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 18,
+              "reps": 12
+            },
+            {
+              "charge": 18,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Tirage vertical prise neutre",
+          "presc": "2×12",
+          "series": [
+            {
+              "charge": 50,
+              "reps": 12
+            },
+            {
+              "charge": 50,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Élévations latérales",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 9,
+              "reps": 13
+            },
+            {
+              "charge": 9,
+              "reps": 13
+            }
+          ],
+          "contraction2s": true
+        },
+        {
+          "nom": "Curl au choix",
+          "presc": "2×12-15",
+          "series": [
+            {
+              "charge": 12,
+              "reps": 14
+            },
+            {
+              "charge": 12,
+              "reps": 14
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-05-22",
+      "programmeId": "pplul",
+      "jourId": "lower",
+      "jourNom": "Lower",
+      "exercices": [
+        {
+          "nom": "Presse horizontale",
+          "presc": "4×12-15",
+          "series": [
+            {
+              "charge": 125,
+              "reps": 12
+            },
+            {
+              "charge": 125,
+              "reps": 12
+            },
+            {
+              "charge": 125,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Hip thrust",
+          "presc": "3×12",
+          "series": [
+            {
+              "charge": 90,
+              "reps": 12
+            },
+            {
+              "charge": 90,
+              "reps": 12
+            },
+            {
+              "charge": 90,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Leg curl allongé",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 40,
+              "reps": 14
+            },
+            {
+              "charge": 40,
+              "reps": 14
+            },
+            {
+              "charge": 40,
+              "reps": 14
+            }
+          ]
+        },
+        {
+          "nom": "Mollets assis",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 52.5,
+              "reps": 13
+            },
+            {
+              "charge": 52.5,
+              "reps": 13
+            },
+            {
+              "charge": 52.5,
+              "reps": 13
+            }
+          ]
+        },
+        {
+          "nom": "Fentes bulgares haltères",
+          "presc": "2×12/jambe",
+          "series": [
+            {
+              "charge": 20,
+              "reps": 12
+            },
+            {
+              "charge": 20,
+              "reps": 12
+            }
+          ],
+          "unilateral": true
+        },
+        {
+          "nom": "Circuit McGill big 3",
+          "presc": "2×tours",
+          "series": [
+            {
+              "charge": null,
+              "reps": 2
+            },
+            {
+              "charge": null,
+              "reps": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-05-25",
+      "programmeId": "pplul",
+      "jourId": "push",
+      "jourNom": "Push",
+      "exercices": [
+        {
+          "nom": "Chest press machine",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 42.5,
+              "reps": 10
+            },
+            {
+              "charge": 42.5,
+              "reps": 10
+            },
+            {
+              "charge": 42.5,
+              "reps": 10
+            }
+          ]
+        },
+        {
+          "nom": "Développé incliné haltères (30°)",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 24,
+              "reps": 10
+            },
+            {
+              "charge": 24,
+              "reps": 10
+            },
+            {
+              "charge": 24,
+              "reps": 10
+            }
+          ]
+        },
+        {
+          "nom": "Développé épaules haltères assis",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 20,
+              "reps": 10
+            },
+            {
+              "charge": 20,
+              "reps": 10
+            },
+            {
+              "charge": 20,
+              "reps": 10
+            }
+          ]
+        },
+        {
+          "nom": "Élévations latérales",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 9,
+              "reps": 14
+            },
+            {
+              "charge": 9,
+              "reps": 14
+            },
+            {
+              "charge": 9,
+              "reps": 14
+            }
+          ],
+          "contraction2s": true
+        },
+        {
+          "nom": "Extension triceps poulie",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 25,
+              "reps": 15
+            },
+            {
+              "charge": 25,
+              "reps": 15
+            },
+            {
+              "charge": 25,
+              "reps": 15
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-05-26",
+      "programmeId": "pplul",
+      "jourId": "pull",
+      "jourNom": "Pull",
+      "exercices": [
+        {
+          "nom": "Tirage vertical",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 52.5,
+              "reps": 10
+            },
+            {
+              "charge": 52.5,
+              "reps": 10
+            },
+            {
+              "charge": 52.5,
+              "reps": 10
+            }
+          ]
+        },
+        {
+          "nom": "Rowing unilatéral buste appuyé",
+          "presc": "3×10-12/côté",
+          "series": [
+            {
+              "charge": 26,
+              "reps": 10
+            },
+            {
+              "charge": 26,
+              "reps": 10
+            },
+            {
+              "charge": 26,
+              "reps": 10
+            }
+          ],
+          "unilateral": true
+        },
+        {
+          "nom": "Face pull",
+          "presc": "3×15",
+          "series": [
+            {
+              "charge": 27.5,
+              "reps": 15
+            },
+            {
+              "charge": 27.5,
+              "reps": 15
+            },
+            {
+              "charge": 27.5,
+              "reps": 15
+            }
+          ],
+          "contraction2s": true
+        },
+        {
+          "nom": "Curl incliné haltères",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 14,
+              "reps": 10
+            },
+            {
+              "charge": 14,
+              "reps": 10
+            },
+            {
+              "charge": 14,
+              "reps": 10
+            }
+          ]
+        },
+        {
+          "nom": "Curl marteau",
+          "presc": "2×12-15",
+          "series": [
+            {
+              "charge": 12,
+              "reps": 15
+            },
+            {
+              "charge": 12,
+              "reps": 15
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-05-27",
+      "programmeId": "pplul",
+      "jourId": "legs",
+      "jourNom": "Legs",
+      "exercices": [
+        {
+          "nom": "Presse horizontale",
+          "presc": "4×12-15",
+          "series": [
+            {
+              "charge": 125,
+              "reps": 13
+            },
+            {
+              "charge": 125,
+              "reps": 13
+            },
+            {
+              "charge": 125,
+              "reps": 13
+            },
+            {
+              "charge": 125,
+              "reps": 13
+            }
+          ]
+        },
+        {
+          "nom": "Leg curl assis",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 42.5,
+              "reps": 10
+            },
+            {
+              "charge": 42.5,
+              "reps": 10
+            },
+            {
+              "charge": 42.5,
+              "reps": 10
+            }
+          ]
+        },
+        {
+          "nom": "Leg extension",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 45,
+              "reps": 15
+            },
+            {
+              "charge": 45,
+              "reps": 15
+            },
+            {
+              "charge": 45,
+              "reps": 15
+            }
+          ]
+        },
+        {
+          "nom": "Mollets assis",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 52.5,
+              "reps": 14
+            },
+            {
+              "charge": 52.5,
+              "reps": 14
+            },
+            {
+              "charge": 52.5,
+              "reps": 14
+            }
+          ]
+        },
+        {
+          "nom": "Circuit McGill big 3",
+          "presc": "2×tours",
+          "series": [
+            {
+              "charge": null,
+              "reps": 2
+            },
+            {
+              "charge": null,
+              "reps": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-05-28",
+      "programmeId": "pplul",
+      "jourId": "upper",
+      "jourNom": "Upper",
+      "exercices": [
+        {
+          "nom": "Développé incliné haltères",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 24,
+              "reps": 10
+            },
+            {
+              "charge": 24,
+              "reps": 10
+            },
+            {
+              "charge": 24,
+              "reps": 10
+            }
+          ]
+        },
+        {
+          "nom": "Rowing machine appui pectoral",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 47.5,
+              "reps": 10
+            },
+            {
+              "charge": 47.5,
+              "reps": 10
+            },
+            {
+              "charge": 47.5,
+              "reps": 10
+            }
+          ]
+        },
+        {
+          "nom": "Développé épaules haltères assis",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 20,
+              "reps": 11
+            },
+            {
+              "charge": 20,
+              "reps": 11
+            }
+          ]
+        },
+        {
+          "nom": "Tirage vertical prise neutre",
+          "presc": "2×12",
+          "series": [
+            {
+              "charge": 52.5,
+              "reps": 12
+            },
+            {
+              "charge": 52.5,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Élévations latérales",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 9,
+              "reps": 15
+            },
+            {
+              "charge": 9,
+              "reps": 15
+            }
+          ],
+          "contraction2s": true
+        },
+        {
+          "nom": "Curl au choix",
+          "presc": "2×12-15",
+          "series": [
+            {
+              "charge": 12,
+              "reps": 15
+            },
+            {
+              "charge": 12,
+              "reps": 15
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-05-29",
+      "programmeId": "pplul",
+      "jourId": "lower",
+      "jourNom": "Lower",
+      "exercices": [
+        {
+          "nom": "Presse horizontale",
+          "presc": "4×12-15",
+          "series": [
+            {
+              "charge": 125,
+              "reps": 14
+            },
+            {
+              "charge": 125,
+              "reps": 14
+            },
+            {
+              "charge": 125,
+              "reps": 14
+            }
+          ]
+        },
+        {
+          "nom": "Hip thrust",
+          "presc": "3×12",
+          "series": [
+            {
+              "charge": 95,
+              "reps": 12
+            },
+            {
+              "charge": 95,
+              "reps": 12
+            },
+            {
+              "charge": 95,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Leg curl allongé",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 40,
+              "reps": 15
+            },
+            {
+              "charge": 40,
+              "reps": 15
+            },
+            {
+              "charge": 40,
+              "reps": 15
+            }
+          ]
+        },
+        {
+          "nom": "Mollets assis",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 52.5,
+              "reps": 15
+            },
+            {
+              "charge": 52.5,
+              "reps": 15
+            },
+            {
+              "charge": 52.5,
+              "reps": 15
+            }
+          ]
+        },
+        {
+          "nom": "Fentes bulgares haltères",
+          "presc": "2×12/jambe",
+          "series": [
+            {
+              "charge": 22,
+              "reps": 12
+            },
+            {
+              "charge": 22,
+              "reps": 12
+            }
+          ],
+          "unilateral": true
+        },
+        {
+          "nom": "Circuit McGill big 3",
+          "presc": "2×tours",
+          "series": [
+            {
+              "charge": null,
+              "reps": 2
+            },
+            {
+              "charge": null,
+              "reps": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-06-01",
+      "programmeId": "pplul",
+      "jourId": "push",
+      "jourNom": "Push",
+      "exercices": [
+        {
+          "nom": "Chest press machine",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 42.5,
+              "reps": 11
+            },
+            {
+              "charge": 42.5,
+              "reps": 11
+            },
+            {
+              "charge": 42.5,
+              "reps": 11
+            }
+          ]
+        },
+        {
+          "nom": "Développé incliné haltères (30°)",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 24,
+              "reps": 11
+            },
+            {
+              "charge": 24,
+              "reps": 11
+            },
+            {
+              "charge": 24,
+              "reps": 11
+            }
+          ]
+        },
+        {
+          "nom": "Développé épaules haltères assis",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 20,
+              "reps": 12
+            },
+            {
+              "charge": 20,
+              "reps": 12
+            },
+            {
+              "charge": 20,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Élévations latérales",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 10,
+              "reps": 12
+            },
+            {
+              "charge": 10,
+              "reps": 12
+            },
+            {
+              "charge": 10,
+              "reps": 12
+            }
+          ],
+          "contraction2s": true
+        },
+        {
+          "nom": "Extension triceps poulie",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 27.5,
+              "reps": 12
+            },
+            {
+              "charge": 27.5,
+              "reps": 12
+            },
+            {
+              "charge": 27.5,
+              "reps": 12
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-06-02",
+      "programmeId": "pplul",
+      "jourId": "pull",
+      "jourNom": "Pull",
+      "exercices": [
+        {
+          "nom": "Tirage vertical",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 52.5,
+              "reps": 11
+            },
+            {
+              "charge": 52.5,
+              "reps": 11
+            },
+            {
+              "charge": 52.5,
+              "reps": 11
+            }
+          ]
+        },
+        {
+          "nom": "Rowing unilatéral buste appuyé",
+          "presc": "3×10-12/côté",
+          "series": [
+            {
+              "charge": 26,
+              "reps": 11
+            },
+            {
+              "charge": 26,
+              "reps": 11
+            },
+            {
+              "charge": 26,
+              "reps": 11
+            }
+          ],
+          "unilateral": true
+        },
+        {
+          "nom": "Face pull",
+          "presc": "3×15",
+          "series": [
+            {
+              "charge": 30,
+              "reps": 15
+            },
+            {
+              "charge": 30,
+              "reps": 15
+            },
+            {
+              "charge": 30,
+              "reps": 15
+            }
+          ],
+          "contraction2s": true
+        },
+        {
+          "nom": "Curl incliné haltères",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 14,
+              "reps": 11
+            },
+            {
+              "charge": 14,
+              "reps": 11
+            },
+            {
+              "charge": 14,
+              "reps": 11
+            }
+          ]
+        },
+        {
+          "nom": "Curl marteau",
+          "presc": "2×12-15",
+          "series": [
+            {
+              "charge": 14,
+              "reps": 12
+            },
+            {
+              "charge": 14,
+              "reps": 12
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-06-03",
+      "programmeId": "pplul",
+      "jourId": "legs",
+      "jourNom": "Legs",
+      "exercices": [
+        {
+          "nom": "Presse horizontale",
+          "presc": "4×12-15",
+          "series": [
+            {
+              "charge": 125,
+              "reps": 15
+            },
+            {
+              "charge": 125,
+              "reps": 15
+            },
+            {
+              "charge": 125,
+              "reps": 15
+            },
+            {
+              "charge": 125,
+              "reps": 15
+            }
+          ]
+        },
+        {
+          "nom": "Leg curl assis",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 42.5,
+              "reps": 11
+            },
+            {
+              "charge": 42.5,
+              "reps": 11
+            },
+            {
+              "charge": 42.5,
+              "reps": 11
+            }
+          ]
+        },
+        {
+          "nom": "Leg extension",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 47.5,
+              "reps": 12
+            },
+            {
+              "charge": 47.5,
+              "reps": 12
+            },
+            {
+              "charge": 47.5,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Mollets assis",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 55,
+              "reps": 12
+            },
+            {
+              "charge": 55,
+              "reps": 12
+            },
+            {
+              "charge": 55,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Circuit McGill big 3",
+          "presc": "2×tours",
+          "series": [
+            {
+              "charge": null,
+              "reps": 2
+            },
+            {
+              "charge": null,
+              "reps": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-06-04",
+      "programmeId": "pplul",
+      "jourId": "upper",
+      "jourNom": "Upper",
+      "exercices": [
+        {
+          "nom": "Développé incliné haltères",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 24,
+              "reps": 11
+            },
+            {
+              "charge": 24,
+              "reps": 11
+            },
+            {
+              "charge": 24,
+              "reps": 11
+            }
+          ]
+        },
+        {
+          "nom": "Rowing machine appui pectoral",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 47.5,
+              "reps": 11
+            },
+            {
+              "charge": 47.5,
+              "reps": 11
+            },
+            {
+              "charge": 47.5,
+              "reps": 11
+            }
+          ]
+        },
+        {
+          "nom": "Développé épaules haltères assis",
+          "presc": "3×10-12",
+          "series": [
+            {
+              "charge": 22,
+              "reps": 10
+            },
+            {
+              "charge": 22,
+              "reps": 10
+            }
+          ]
+        },
+        {
+          "nom": "Tirage vertical prise neutre",
+          "presc": "2×12",
+          "series": [
+            {
+              "charge": 55,
+              "reps": 12
+            },
+            {
+              "charge": 55,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Élévations latérales",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 10,
+              "reps": 13
+            },
+            {
+              "charge": 10,
+              "reps": 13
+            }
+          ],
+          "contraction2s": true
+        },
+        {
+          "nom": "Curl au choix",
+          "presc": "2×12-15",
+          "series": [
+            {
+              "charge": 14,
+              "reps": 12
+            },
+            {
+              "charge": 14,
+              "reps": 12
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-06-05",
+      "programmeId": "pplul",
+      "jourId": "lower",
+      "jourNom": "Lower",
+      "exercices": [
+        {
+          "nom": "Presse horizontale",
+          "presc": "4×12-15",
+          "series": [
+            {
+              "charge": 130,
+              "reps": 12
+            },
+            {
+              "charge": 130,
+              "reps": 12
+            },
+            {
+              "charge": 130,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Hip thrust",
+          "presc": "3×12",
+          "series": [
+            {
+              "charge": 100,
+              "reps": 12
+            },
+            {
+              "charge": 100,
+              "reps": 12
+            },
+            {
+              "charge": 100,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Leg curl allongé",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 42.5,
+              "reps": 12
+            },
+            {
+              "charge": 42.5,
+              "reps": 12
+            },
+            {
+              "charge": 42.5,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "nom": "Mollets assis",
+          "presc": "3×12-15",
+          "series": [
+            {
+              "charge": 55,
+              "reps": 13
+            },
+            {
+              "charge": 55,
+              "reps": 13
+            },
+            {
+              "charge": 55,
+              "reps": 13
+            }
+          ]
+        },
+        {
+          "nom": "Fentes bulgares haltères",
+          "presc": "2×12/jambe",
+          "series": [
+            {
+              "charge": 24,
+              "reps": 12
+            },
+            {
+              "charge": 24,
+              "reps": 12
+            }
+          ],
+          "unilateral": true
+        },
+        {
+          "nom": "Circuit McGill big 3",
+          "presc": "2×tours",
+          "series": [
+            {
+              "charge": null,
+              "reps": 2
+            },
+            {
+              "charge": null,
+              "reps": 2
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "courses": {
+    "coches": {
+      "skyr-nature": true,
+      "bananes": true,
+      "riz": true
+    },
+    "maj": "2026-06-13"
+  }
+}

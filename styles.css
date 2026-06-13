@@ -1,0 +1,479 @@
+:root{
+  --fonte:#1a1d21;        /* fond — fonte d'acier */
+  --plaque:#23272d;       /* surfaces */
+  --plaque-2:#2b3038;     /* surfaces relevées */
+  --trait:#3a4049;        /* bordures */
+  --craie:#e8e4da;        /* texte principal — craie chaude */
+  --craie-2:#9aa0a8;      /* texte secondaire */
+  --laiton:#d9a441;       /* accent — laiton de vieux haltères */
+  --ok:#7fb069;
+  --alerte:#c8553d;
+  --info:#6f9ceb;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;overflow-x:hidden}
+body{
+  background:var(--fonte);
+  color:var(--craie);
+  font-family:'Barlow',system-ui,sans-serif;
+  font-size:16px;line-height:1.5;
+  min-height:100vh;
+  overflow-x:hidden;
+  padding-bottom:calc(90px + env(safe-area-inset-bottom));
+}
+.mono{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums}
+
+/* ---------- entête ---------- */
+header{
+  border-bottom:1px solid var(--trait);
+  padding:20px 16px 14px;
+  background:linear-gradient(180deg,#1e2126 0%,var(--fonte) 100%);
+}
+.titre,.sous-titre{max-width:680px;margin-left:auto;margin-right:auto}
+.titre{
+  font-family:'Barlow Condensed',sans-serif;
+  font-weight:800;font-size:30px;letter-spacing:.06em;
+  text-transform:uppercase;line-height:1;
+}
+.titre span{color:var(--laiton)}
+.sous-titre{color:var(--craie-2);font-size:13px;margin-top:4px}
+
+.bandeau{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--trait);
+  border:1px solid var(--trait);border-radius:8px;
+  overflow:hidden;
+  width:calc(100% - 32px);max-width:680px;
+  margin:14px auto 0;
+}
+.stat{background:var(--plaque);padding:10px 8px;text-align:center}
+.stat .v{font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:600}
+.stat .l{font-size:11px;color:var(--craie-2);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+.stat .d{font-size:11px;margin-top:2px}
+.up{color:var(--alerte)} .down{color:var(--ok)} .flat{color:var(--craie-2)}
+.up.bon{color:var(--ok)}
+
+/* ---------- navigation ---------- */
+nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:10;
+  display:flex;background:var(--plaque);
+  border-top:1px solid var(--trait);
+  padding-bottom:env(safe-area-inset-bottom);
+}
+nav button{
+  flex:1;background:none;border:none;color:var(--craie-2);
+  font-family:'Barlow Condensed',sans-serif;font-weight:600;
+  font-size:15px;letter-spacing:.08em;text-transform:uppercase;
+  padding:14px 4px 12px;cursor:pointer;
+  border-top:3px solid transparent;margin-top:-1px;
+}
+nav button.actif{color:var(--laiton);border-top-color:var(--laiton)}
+nav button:focus-visible{outline:2px solid var(--laiton);outline-offset:-2px}
+
+main{max-width:680px;margin:0 auto;padding:16px}
+.onglet{display:none}
+.onglet.actif{display:block;animation:app .18s ease-out}
+@keyframes app{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.onglet.actif{animation:none}}
+
+/* ---------- cartes & formulaires ---------- */
+.carte{
+  background:var(--plaque);border:1px solid var(--trait);
+  border-radius:10px;padding:16px;margin-bottom:16px;
+}
+h2{
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;
+  font-size:19px;letter-spacing:.07em;text-transform:uppercase;
+  margin-bottom:12px;color:var(--craie);
+  display:flex;align-items:center;gap:8px;
+}
+h2::before{content:"";width:14px;height:3px;background:var(--laiton);border-radius:2px}
+label{display:block;font-size:13px;color:var(--craie-2);margin-bottom:4px}
+input[type=number],input[type=date]{
+  width:100%;background:var(--fonte);border:1px solid var(--trait);
+  border-radius:6px;color:var(--craie);padding:10px 12px;font-size:16px;
+  font-family:'IBM Plex Mono',monospace;
+  min-height:44px;
+}
+input[type=date]{-webkit-appearance:none;appearance:none}
+input:focus{outline:2px solid var(--laiton);outline-offset:-1px;border-color:var(--laiton)}
+.ligne{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;align-items:end}
+.ligne-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;align-items:end}
+.champ{margin-bottom:10px}
+
+.btn{
+  display:inline-block;width:100%;
+  background:var(--laiton);color:#1a1408;border:none;border-radius:6px;
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;
+  font-size:17px;letter-spacing:.08em;text-transform:uppercase;
+  padding:12px;cursor:pointer;margin-top:4px;
+}
+.btn:active{transform:translateY(1px)}
+.btn:focus-visible{outline:2px solid var(--craie);outline-offset:2px}
+.btn-2{background:var(--plaque-2);color:var(--craie);border:1px solid var(--trait)}
+.btn-danger{background:none;border:1px solid var(--alerte);color:var(--alerte)}
+
+/* ---------- historique ---------- */
+#hist-poids,#hist-mens{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{
+  text-align:left;color:var(--craie-2);font-weight:500;font-size:12px;
+  text-transform:uppercase;letter-spacing:.06em;
+  padding:6px 8px;border-bottom:1px solid var(--trait);
+}
+td{padding:8px;border-bottom:1px solid #2a2e35}
+/* nowrap réservé aux historiques (scrollables) — pas à l'arbre de décision qui doit pouvoir wrapper */
+#hist-poids th,#hist-poids td,#hist-mens th,#hist-mens td{white-space:nowrap}
+td.n{font-family:'IBM Plex Mono',monospace}
+.suppr{
+  background:none;border:none;color:var(--craie-2);cursor:pointer;
+  font-size:15px;padding:8px 10px;min-width:40px;min-height:40px;border-radius:4px;
+}
+.suppr:hover{color:var(--alerte)}
+.vide{color:var(--craie-2);font-size:14px;padding:10px 0}
+
+.graph-box{position:relative;height:240px;margin-top:8px}
+
+/* ---------- cartes-scénarios (arbre de décision) ---------- */
+.scenarios{list-style:none;display:flex;flex-direction:column;gap:10px}
+.sc{
+  background:var(--fonte);border:1px solid var(--trait);
+  border-left-width:4px;border-radius:8px;padding:12px 14px;
+}
+.sc-ok{border-left-color:var(--ok)}
+.sc-baisse{border-left-color:var(--alerte)}
+.sc-hausse{border-left-color:var(--info)}
+.sc-cond{display:flex;flex-wrap:wrap;gap:4px 10px;margin-bottom:8px}
+.cond-p{font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--craie);font-weight:600}
+.cond-t{font-size:14px;color:var(--craie-2)}
+.cond-t::before{content:"·\00a0";color:var(--trait)}
+.sc-verdict{
+  font-family:'Barlow Condensed',sans-serif;font-weight:600;
+  font-size:18px;letter-spacing:.02em;line-height:1.15;
+}
+.sc-ok .sc-verdict{color:var(--ok)}
+.sc-baisse .sc-verdict{color:var(--alerte)}
+.sc-hausse .sc-verdict{color:var(--info)}
+
+/* ---------- onglet repas ---------- */
+.obj-ligne{display:flex;align-items:stretch;gap:10px}
+.obj-pas{
+  width:52px;flex:none;background:var(--plaque-2);border:1px solid var(--trait);
+  border-radius:8px;color:var(--laiton);font-size:26px;font-weight:600;
+  cursor:pointer;line-height:1;
+}
+.obj-pas:active{transform:translateY(1px)}
+.obj-pas:focus-visible{outline:2px solid var(--laiton);outline-offset:1px}
+.obj-val{
+  flex:1;display:flex;align-items:baseline;justify-content:center;gap:6px;
+  background:var(--fonte);border:1px solid var(--trait);border-radius:8px;padding:6px 8px;
+}
+.obj-val input{
+  width:100%;background:none;border:none;text-align:right;
+  font-family:'IBM Plex Mono',monospace;font-size:30px;font-weight:600;color:var(--craie);
+  padding:0;min-height:auto;
+}
+.obj-val input:focus{outline:none}
+.obj-val span{color:var(--craie-2);font-size:14px;flex:none}
+
+.progression{position:sticky;top:0;z-index:5}
+.prog-haut{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.prog-titre{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;letter-spacing:.05em;text-transform:uppercase}
+.prog-kcal{font-size:15px;color:var(--craie-2)}
+.prog-barre{height:10px;background:var(--fonte);border:1px solid var(--trait);border-radius:6px;overflow:hidden}
+.prog-rempli{height:100%;width:0;background:linear-gradient(90deg,var(--laiton),#e8b85a);border-radius:5px;transition:width .35s ease}
+@media (prefers-reduced-motion:reduce){.prog-rempli{transition:none}}
+.prog-macros{font-size:13px;color:var(--craie-2);margin-top:8px;display:flex;gap:16px;flex-wrap:wrap}
+.prog-macros b{color:var(--craie);font-weight:600}
+
+.repas-carte{
+  background:var(--plaque);border:1px solid var(--trait);border-left-width:4px;
+  border-left-color:var(--trait);border-radius:10px;padding:14px 16px;margin-bottom:12px;
+  cursor:pointer;-webkit-user-select:none;user-select:none;transition:border-color .2s,background .2s;
+}
+.repas-carte:focus-visible{outline:2px solid var(--laiton);outline-offset:2px}
+.repas-carte.pris{border-left-color:var(--ok);background:#1f2620}
+.repas-haut{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.repas-coche{
+  width:28px;height:28px;flex:none;border-radius:8px;border:2px solid var(--trait);
+  display:flex;align-items:center;justify-content:center;color:#1a1408;font-weight:800;font-size:18px;
+}
+.repas-carte.pris .repas-coche{background:var(--ok);border-color:var(--ok)}
+.repas-nom{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:19px;letter-spacing:.04em;text-transform:uppercase;flex:1;line-height:1}
+.repas-kcal{font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--craie-2);flex:none}
+.repas-annuler{
+  flex:none;background:none;border:1px solid var(--trait);border-radius:999px;
+  color:var(--craie-2);font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;
+  padding:5px 14px;cursor:pointer;min-height:34px;
+}
+.repas-annuler:active{transform:translateY(1px)}
+.repas-annuler:focus-visible{outline:2px solid var(--laiton);outline-offset:1px}
+.repas-carte.pris .repas-nom{color:var(--craie-2);text-decoration:line-through;text-decoration-color:var(--trait)}
+.repas-items{list-style:none;display:flex;flex-direction:column;gap:3px}
+.repas-items li{font-size:14px;color:var(--craie);display:flex;justify-content:space-between;gap:10px}
+.repas-items .qte{font-family:'IBM Plex Mono',monospace;color:var(--craie-2);flex:none}
+.repas-items .qte.flex{color:var(--laiton)}
+
+/* ---------- VERDICT (élément signature) ---------- */
+.verdict{
+  border:2px solid var(--laiton);border-radius:10px;
+  background:
+    radial-gradient(circle at 12px 12px, var(--trait) 3px, transparent 3.5px),
+    radial-gradient(circle at calc(100% - 12px) 12px, var(--trait) 3px, transparent 3.5px),
+    radial-gradient(circle at 12px calc(100% - 12px), var(--trait) 3px, transparent 3.5px),
+    radial-gradient(circle at calc(100% - 12px) calc(100% - 12px), var(--trait) 3px, transparent 3.5px),
+    var(--plaque-2);
+  padding:22px 18px;text-align:center;margin-bottom:16px;
+}
+.verdict .tampon{
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;
+  font-size:34px;line-height:1.05;letter-spacing:.05em;text-transform:uppercase;
+}
+.verdict.v-ok .tampon{color:var(--ok)}
+.verdict.v-baisse .tampon{color:var(--alerte)}
+.verdict.v-hausse .tampon{color:var(--info)}
+.verdict.v-neutre .tampon{color:var(--craie-2)}
+.verdict .explication{color:var(--craie-2);font-size:14px;margin-top:10px}
+.verdict .donnees{
+  font-family:'IBM Plex Mono',monospace;font-size:13px;
+  color:var(--craie);margin-top:14px;
+  display:flex;justify-content:center;gap:18px;flex-wrap:wrap;
+}
+.verdict .donnees b{color:var(--laiton);font-weight:600}
+
+.note{font-size:13px;color:var(--craie-2);margin-top:10px}
+.note b{color:var(--craie)}
+.avert{
+  background:#3a2f1d;border:1px solid var(--laiton);border-radius:8px;
+  padding:10px 12px;font-size:13px;color:var(--craie);margin-bottom:16px;
+}
+.cache{display:none !important}
+
+/* ---------- champs texte & select (ajout muscu/courses) ---------- */
+input[type=text]{
+  width:100%;background:var(--fonte);border:1px solid var(--trait);
+  border-radius:6px;color:var(--craie);padding:10px 12px;font-size:16px;
+  font-family:'Barlow',sans-serif;min-height:44px;
+}
+input[type=text]:focus{outline:2px solid var(--laiton);outline-offset:-1px;border-color:var(--laiton)}
+select{
+  width:100%;background:var(--fonte);border:1px solid var(--trait);border-radius:6px;
+  color:var(--craie);padding:10px 12px;font-size:16px;min-height:44px;
+  font-family:'Barlow',sans-serif;-webkit-appearance:none;appearance:none;
+}
+select:focus{outline:2px solid var(--laiton);outline-offset:-1px;border-color:var(--laiton)}
+
+/* ---------- chips de sélection (jours / programme) ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px}
+.chip{
+  background:var(--plaque-2);border:1px solid var(--trait);border-radius:999px;
+  color:var(--craie-2);font-family:'Barlow Condensed',sans-serif;font-weight:600;
+  font-size:15px;letter-spacing:.05em;text-transform:uppercase;
+  padding:8px 14px;cursor:pointer;min-height:40px;
+}
+.chip.actif{background:var(--laiton);color:#1a1408;border-color:var(--laiton)}
+.chip:active{transform:translateY(1px)}
+.chip:focus-visible{outline:2px solid var(--laiton);outline-offset:1px}
+
+/* ---------- bloc exercice (saisie de séance) ---------- */
+.exo-bloc{background:var(--fonte);border:1px solid var(--trait);border-radius:8px;padding:12px;margin-bottom:10px}
+.exo-tete{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:4px}
+.exo-nom{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:17px;letter-spacing:.03em;text-transform:uppercase;line-height:1.1}
+.exo-presc{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--craie-2);flex:none;white-space:nowrap}
+.exo-derniere{font-size:12px;color:var(--craie-2);margin-bottom:8px}
+.exo-derniere b{color:var(--laiton);font-family:'IBM Plex Mono',monospace}
+.sets{display:flex;flex-direction:column;gap:6px}
+.set-ligne{display:grid;grid-template-columns:24px 1fr 1fr;gap:8px;align-items:center}
+.set-n{font-family:'IBM Plex Mono',monospace;color:var(--craie-2);font-size:13px;text-align:center}
+.set-ligne input{padding:8px 10px;min-height:40px;font-size:15px}
+.set-add{
+  background:none;border:1px dashed var(--trait);border-radius:6px;color:var(--craie-2);
+  font-size:13px;padding:6px;cursor:pointer;margin-top:6px;width:100%;
+}
+.set-add:active{transform:translateY(1px)}
+
+/* ---------- séances enregistrées ---------- */
+.seance-carte{background:var(--plaque);border:1px solid var(--trait);border-left:4px solid var(--laiton);border-radius:8px;padding:12px 14px;margin-bottom:10px}
+.seance-haut{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:6px}
+.seance-jour{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:17px;letter-spacing:.04em;text-transform:uppercase}
+.seance-date{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--craie-2);white-space:nowrap}
+.seance-exos{list-style:none;display:flex;flex-direction:column;gap:3px}
+.seance-exos li{font-size:13px;color:var(--craie);display:flex;justify-content:space-between;gap:10px}
+.seance-exos .perf{font-family:'IBM Plex Mono',monospace;color:var(--craie-2);flex:none}
+
+/* ---------- éditeur de programme ---------- */
+.ed-jour{background:var(--fonte);border:1px solid var(--trait);border-radius:8px;padding:12px;margin-bottom:10px}
+.ed-jour-tete{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+.ed-jour-tete input{flex:1}
+.ed-exo{display:grid;grid-template-columns:1fr 52px 70px 36px;gap:6px;margin-top:6px;align-items:center}
+.ed-exo input{padding:7px 8px;min-height:38px;font-size:14px}
+.ed-exo .suppr{padding:6px;min-width:36px;min-height:36px}
+
+/* ---------- liste de courses ---------- */
+.course-cat{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:15px;letter-spacing:.07em;text-transform:uppercase;color:var(--laiton);margin:14px 0 6px}
+.course-cat:first-child{margin-top:0}
+.course-item{
+  display:flex;align-items:center;gap:12px;background:var(--plaque);border:1px solid var(--trait);
+  border-radius:8px;padding:10px 12px;margin-bottom:6px;cursor:pointer;-webkit-user-select:none;user-select:none;
+}
+.course-item:focus-visible{outline:2px solid var(--laiton);outline-offset:2px}
+.course-coche{width:24px;height:24px;flex:none;border-radius:6px;border:2px solid var(--trait);display:flex;align-items:center;justify-content:center;color:#1a1408;font-weight:800;font-size:15px}
+.course-item.pris .course-coche{background:var(--ok);border-color:var(--ok)}
+.course-nom{flex:1;font-size:15px}
+.course-item.pris .course-nom{color:var(--craie-2);text-decoration:line-through;text-decoration-color:var(--trait)}
+.course-qte{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--craie-2);flex:none;text-align:right}
+
+/* ---------- responsive ---------- */
+.verdict .tampon{overflow-wrap:break-word}
+@media (max-width:400px){
+  .ligne-3{grid-template-columns:1fr 1fr}
+  .verdict .tampon{font-size:27px}
+  .titre{font-size:26px}
+  .stat .v{font-size:16px}
+  nav button{font-size:13px;letter-spacing:.04em}
+}
+@media (min-width:600px){
+  .graph-box{height:320px}
+  nav{justify-content:center}
+  nav button{flex:0 1 170px}
+}
+
+/* ============================================================
+   FEATURES MUSCU : badges, objectif/leveling, recap, suppression
+   de série, options d'exercice, chrono de repos, auto-export
+   ============================================================ */
+
+/* ---- suppression de série : 4e colonne ---- */
+.set-ligne{grid-template-columns:24px 1fr 1fr 34px}
+.set-del{
+  background:none;border:1px solid var(--trait);border-radius:6px;color:var(--craie-2);
+  font-size:13px;min-height:40px;min-width:34px;cursor:pointer;line-height:1;
+}
+.set-del:hover{color:var(--alerte);border-color:var(--alerte)}
+.set-del:active{transform:translateY(1px)}
+.set-boutons{display:flex;gap:8px;margin-top:6px}
+.set-boutons .set-add{margin-top:0}
+.set-repos{color:var(--laiton);border-color:var(--laiton);border-style:solid}
+
+/* ---- badges d'exercice (unilatéral / tempo / repos / niveau) ---- */
+.exo-badges{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 8px}
+.exo-badge{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;
+  padding:3px 8px;border-radius:999px;border:1px solid var(--trait);
+  color:var(--craie-2);background:var(--plaque-2);white-space:nowrap;
+}
+.exo-badge.mini{font-size:9px;padding:1px 5px;vertical-align:middle}
+.b-uni{color:var(--info);border-color:var(--info)}
+.b-tempo{color:#c79be0;border-color:#6b4d80}
+.b-repos{color:var(--craie);border-color:var(--trait)}
+.b-niv{color:#1a1408;background:var(--laiton);border-color:var(--laiton)}
+
+/* ---- objectif « 0 doute » + barre de niveau (XP) ---- */
+.exo-objectif{
+  border:1px solid var(--trait);border-left-width:4px;border-radius:8px;
+  background:var(--plaque-2);padding:10px 12px;margin-bottom:8px;
+}
+.exo-objectif.ton-up{border-left-color:var(--ok)}
+.exo-objectif.ton-down{border-left-color:var(--alerte)}
+.exo-objectif.ton-neutre{border-left-color:var(--laiton)}
+.obj-haut{display:flex;gap:8px;align-items:baseline}
+.obj-tag{
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--laiton);flex:none;
+}
+.ton-up .obj-tag{color:var(--ok)} .ton-down .obj-tag{color:var(--alerte)}
+.obj-msg{font-size:13.5px;color:var(--craie);line-height:1.3}
+.xp-barre{height:6px;background:var(--fonte);border:1px solid var(--trait);border-radius:4px;overflow:hidden;margin-top:8px}
+.xp-rempli{height:100%;background:linear-gradient(90deg,var(--laiton),#e8b85a);border-radius:3px;transition:width .35s ease}
+.ton-up .xp-rempli{background:linear-gradient(90deg,var(--ok),#a7d18f)}
+.ton-down .xp-rempli{background:linear-gradient(90deg,var(--alerte),#e07a64)}
+@media (prefers-reduced-motion:reduce){.xp-rempli{transition:none}}
+
+/* ---- delta dans l'historique des séances ---- */
+.seance-delta{font-size:11px;margin-left:6px;font-weight:600}
+
+/* ---- carte recap de séance ---- */
+.recap-carte{
+  background:var(--plaque-2);border:1px solid var(--laiton);border-radius:10px;
+  padding:14px 16px;margin-bottom:16px;
+}
+.recap-haut{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:4px}
+.recap-titre{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:17px;letter-spacing:.04em;text-transform:uppercase;color:var(--laiton)}
+.recap-bilan{font-size:13px;color:var(--craie-2);margin-bottom:8px}
+.recap-liste{list-style:none;display:flex;flex-direction:column;gap:4px}
+.recap-liste li{display:flex;justify-content:space-between;gap:10px;font-size:14px;color:var(--craie)}
+.rc-delta{font-family:'IBM Plex Mono',monospace;font-size:12px;flex:none;text-align:right}
+
+/* ---- options d'exercice dans l'éditeur ---- */
+.ed-exo-opts{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:2px 0 10px;padding-left:2px}
+.chip-mini{
+  background:var(--plaque-2);border:1px solid var(--trait);border-radius:999px;
+  color:var(--craie-2);font-family:'Barlow',sans-serif;font-weight:600;font-size:12px;
+  padding:5px 11px;cursor:pointer;min-height:32px;
+}
+.chip-mini.actif{background:var(--info);color:#0d1420;border-color:var(--info)}
+.chip-mini:active{transform:translateY(1px)}
+.ed-pas{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--craie-2);margin:0}
+.ed-pas input{width:64px;min-height:32px;padding:5px 8px;font-size:13px}
+
+/* ---- option export auto ---- */
+.opt-auto{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--craie);margin-top:14px;cursor:pointer}
+.opt-auto input{width:20px;height:20px;flex:none;accent-color:var(--laiton);min-height:auto}
+
+/* ---- chrono de repos (sticky au-dessus de la nav) ---- */
+.rest-timer{
+  position:fixed;left:50%;transform:translateX(-50%);z-index:20;
+  bottom:calc(env(safe-area-inset-bottom) + 60px);
+  width:calc(100% - 24px);max-width:660px;
+  display:flex;align-items:center;gap:10px;
+  background:var(--plaque-2);border:1px solid var(--laiton);border-radius:12px;
+  padding:10px 12px;box-shadow:0 8px 24px rgba(0,0,0,.45);
+}
+.rest-timer.rt-done{border-color:var(--ok);animation:rtpulse .6s ease}
+@keyframes rtpulse{0%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.02)}100%{transform:translateX(-50%) scale(1)}}
+@media (prefers-reduced-motion:reduce){.rest-timer.rt-done{animation:none}}
+.rt-body{flex:1;min-width:0}
+.rt-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.rt-label{font-size:12px;color:var(--craie-2);text-transform:uppercase;letter-spacing:.06em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rt-time{font-size:22px;font-weight:600;color:var(--craie);flex:none}
+.rt-done .rt-time{color:var(--ok)}
+.rt-bar{height:6px;background:var(--fonte);border:1px solid var(--trait);border-radius:4px;overflow:hidden;margin-top:6px}
+.rt-fill{height:100%;width:0;background:linear-gradient(90deg,var(--laiton),#e8b85a);border-radius:3px}
+.rt-done .rt-fill{background:var(--ok);width:100%}
+.rt-btn{
+  flex:none;background:var(--fonte);border:1px solid var(--trait);border-radius:8px;
+  color:var(--craie);font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;
+  min-width:44px;min-height:44px;padding:0 10px;cursor:pointer;
+}
+.rt-btn:active{transform:translateY(1px)}
+.rt-x{min-width:40px}
+.rt-toggle{background:var(--laiton);color:#1a1408;border-color:var(--laiton)}
+
+/* ---- toggle unilatéral au moment de la saisie de séance ---- */
+.exo-controls{margin:0 0 8px}
+.uni-toggle{font-size:11px}
+.uni-toggle.actif{background:var(--info);color:#0d1420;border-color:var(--info)}
+
+/* ---- objectif cliquable + détail des séances précédentes (inline, repliable) ---- */
+.exo-objectif[role="button"]{cursor:pointer}
+.exo-objectif[role="button"]:focus-visible{outline:2px solid var(--laiton);outline-offset:2px}
+.obj-haut{align-items:center}
+.obj-msg{flex:1}
+.obj-caret{flex:none;color:var(--craie-2);font-size:12px;margin-left:4px}
+.exo-objectif.ouvert{border-bottom-left-radius:0;border-bottom-right-radius:0}
+.exo-histo{
+  border:1px solid var(--trait);border-top:none;border-radius:0 0 8px 8px;
+  background:var(--fonte);padding:8px 12px 10px;margin:-8px 0 8px;
+}
+.histo-haut{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
+.histo-titre{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--craie-2)}
+.histo-haut .repas-annuler{padding:3px 10px;min-height:28px;font-size:12px}
+.histo-liste{list-style:none;display:flex;flex-direction:column;gap:4px}
+.histo-liste li{display:flex;justify-content:space-between;gap:10px;font-size:13px}
+.histo-date{color:var(--craie-2);flex:none}
+.histo-perf{color:var(--craie);text-align:right}
+.histo-vide{color:var(--craie-2);justify-content:flex-start}
+
+/* ---- détail série par série dans le recap ---- */
+.rc-tete{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.rc-perf{font-size:12px;color:var(--craie-2);margin-top:1px}
