@@ -1,0 +1,10 @@
+{
+  "name": "carnet-recompo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Carnet de recomposition corporelle — app vanilla, zéro build.",
+  "scripts": {
+    "test": "node --test"
+  }
+}

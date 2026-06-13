@@ -58,6 +58,18 @@ Sur **GitHub Pages**, aucune manipulation : les modules ES sont servis en HTTP, 
 
 ---
 
+## Tests
+
+Les moteurs purs (progression, stats, nutrition) sont couverts par des tests unitaires, via le **runner natif de Node** — aucune dépendance à installer :
+
+```bash
+npm test          # ou : node --test
+```
+
+Cibles : `js/progression.js` (`recommander`, `statsExo`), `js/stats.js` (`moyennesHebdo`, `rythmeMensuel`, `tendanceTaille/Bras`), `js/nutrition.js` (`facteurFlex`, bornes & saturation).
+
+---
+
 ## Architecture
 
 POO vanilla en modules ES. Une `Store` unique détient l'état et la persistance ; chaque onglet est une classe (`bind()` attache les écouteurs une fois, `render()` reconstruit le DOM depuis l'état) ; l'`App` orchestre le routage et le rendu. Aucun handler `onclick` inline — délégation d'évènements partout.

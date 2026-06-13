@@ -1,5 +1,6 @@
 import { $ } from '../utils.js';
 import { ALIMENTS, PLAN } from '../data.js';
+import { kcalItem, protItem, facteurFlex } from '../nutrition.js';
 
 /* ================= REPAS : plan du jour + objectif kcal ================= */
 export class RepasModule {
@@ -28,33 +29,15 @@ export class RepasModule {
     $('obj-kcal').addEventListener('change', () => this.majObjectif());
   }
 
-  /* ---- calculs nutritionnels ---- */
-  kcalItem(cle, q){ const a=ALIMENTS[cle]; return a.unite!==undefined ? a.kcalU*q : a.kcal100*q/100; }
-  protItem(cle, q){ const a=ALIMENTS[cle]; return a.unite!==undefined ? a.protU*q : a.prot100*q/100; }
-
-  /* base de calories des aliments non-flex (protéines/lipides fixés) et des aliments flex (glucides ajustables) */
-  basesKcal(){
-    let fixe=0, flex=0;
-    PLAN.forEach(r=>r.items.forEach(([cle,q])=>{
-      (ALIMENTS[cle].flex ? (flex+=this.kcalItem(cle,q)) : (fixe+=this.kcalItem(cle,q)));
-    }));
-    return {fixe, flex};
-  }
-  /* facteur appliqué aux aliments flex pour atteindre l'objectif, borné pour rester réaliste */
-  facteurFlex(){
-    const {fixe, flex} = this.basesKcal();
-    if(flex<=0) return 1;
-    const f = (this.etat.objectifKcal - fixe) / flex;
-    return Math.max(0.4, Math.min(1.8, f));
-  }
-  /* quantité affichée d'un item après ajustement */
+  /* ---- calculs nutritionnels (moteur pur dans nutrition.js) ---- */
+  /* quantité affichée d'un item après ajustement du facteur flex */
   qteAjustee(cle, qBase){
     if(!ALIMENTS[cle].flex) return qBase;
-    const q = qBase * this.facteurFlex();
+    const q = qBase * facteurFlex(this.etat.objectifKcal);
     return Math.round(q/5)*5; /* arrondi à 5 g */
   }
-  repasKcal(r){ return r.items.reduce((s,[cle,q])=>s+this.kcalItem(cle, this.qteAjustee(cle,q)),0); }
-  repasProt(r){ return r.items.reduce((s,[cle,q])=>s+this.protItem(cle, this.qteAjustee(cle,q)),0); }
+  repasKcal(r){ return r.items.reduce((s,[cle,q])=>s+kcalItem(cle, this.qteAjustee(cle,q)),0); }
+  repasProt(r){ return r.items.reduce((s,[cle,q])=>s+protItem(cle, this.qteAjustee(cle,q)),0); }
 
   /* ---- cochage : un tap prend le repas (ne décoche jamais) ; bouton Annuler explicite pour revenir ---- */
   prendreRepas(id){
