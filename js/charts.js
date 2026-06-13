@@ -1,5 +1,5 @@
 /* ================= CONFIG CHART.JS PARTAGÉE ================= */
-/* Chart est fourni en global par le <script> CDN dans index.html */
+/* Chart est fourni en global par le <script> vendoré (vendor/chart.umd.min.js) dans index.html */
 
 export const optCommun = {
   responsive:true, maintainAspectRatio:false,
