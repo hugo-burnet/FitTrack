@@ -25,8 +25,10 @@ Le cœur de l'app, pensé pour la **surcharge progressive « 0 doute »** :
 - **Double progression** correcte : distingue *3 séries droites à 40 kg* (→ on monte) de *40 / 38 / 35 dégressif* (→ consolide d'abord). Le détail **série par série** (charges variables incluses) est affiché partout, jamais collapsé sur la charge max.
 - **Unilatéral** déclarable à la saisie : la charge tapée est alors comprise comme **un seul côté** (affichée « X kg/côté »), et le volume compte les deux côtés.
 - **Contraction 2 s** et autres marqueurs par exercice.
-- **Repos conseillé dynamique** (déduit de la fourchette de reps) + **chrono de repos in-app** (compte à rebours, +15 s / pause, bip + vibration).
-- **Suppression de série**, **éditeur de programmes** complet, **import de programmes** en JSON.
+- **« Comme la dernière fois »** : un tap préremplit les vraies valeurs de la séance précédente — tu n'édites que ce qui change.
+- **Repos conseillé dynamique** (déduit de la fourchette de reps) + **chrono de repos in-app** (compte à rebours, +15 s / pause, bip + vibration), **proposé automatiquement** dès qu'une série est saisie. **Wake lock** : l'écran reste allumé pendant la séance.
+- **1RM estimé fiable** : les reps sont plafonnées à 12 dans l'estimation Epley (au-delà la formule devient bruitée), pour des deltas de force lisibles.
+- **Suppression de série**, **éditeur de programmes** complet.
 - **Recap de séance** après enregistrement (deltas 1RM/charge, hausses **et** baisses) + **courbes de progression** (1RM estimé Epley + volume), points colorés selon la tendance.
 - Clic sur un objectif → **détail repliable des séances précédentes**.
 - **Brouillon auto** : la saisie en cours survit à la navigation et au rechargement. L'historique des séances n'est **jamais** réinitialisé.

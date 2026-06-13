@@ -5,6 +5,8 @@
    d'un « pas » (level up). Si on s'écroule sous le bas de fourchette, on redescend
    (deload) — c'est ainsi que les réductions de poids sont prises en compte. */
 
+import { e1rm } from './stats.js';
+
 export const PAS_DEFAUT = 2.5; /* kg ajoutés à chaque palier, par défaut */
 
 /* "10-12" -> {min:10,max:12} ; "12" / "12/jambe" -> {min:12,max:12} ; "tours"/"" -> null */
@@ -101,13 +103,12 @@ export function recommander(ex, lastSeries){
     message: `Garde ${wc!=null ? fmtKg(wc)+' kg' : 'le poids'}, gratte des reps jusqu'à ${f.max} partout.` };
 }
 
-/* meilleur 1RM estimé (Epley) d'un tableau de séries */
+/* meilleur 1RM estimé (Epley) d'un tableau de séries — reps plafonnées via e1rm (cf. 4.2) */
 export function meilleurE1rm(series){
   let best = null;
   series.forEach(s=>{
-    if(s.charge==null) return;
-    const e = s.charge*(1+s.reps/30);
-    if(best==null || e>best) best = e;
+    const e = e1rm(s.charge, s.reps);
+    if(e!=null && (best==null || e>best)) best = e;
   });
   return best;
 }

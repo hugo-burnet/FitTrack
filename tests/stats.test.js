@@ -52,3 +52,9 @@ test('e1rm : Epley, null si charge absente', () => {
   assert.ok(Math.abs(e1rm(60, 10) - 60 * (1 + 10 / 30)) < 1e-9);   // 80
   assert.equal(e1rm(null, 10), null);
 });
+
+test('e1rm : reps plafonnées à 12 (anti-bruit en haut de fourchette)', () => {
+  assert.equal(e1rm(50, 12), 70);            // 50 * (1 + 12/30)
+  assert.equal(e1rm(50, 15), e1rm(50, 12));  // au-delà de 12 → même estimation
+  assert.equal(e1rm(50, 20), 70);
+});

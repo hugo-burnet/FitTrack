@@ -98,5 +98,6 @@ export class App {
     qsa('.onglet').forEach(o=>o.classList.remove('actif'));
     $('ong-'+nom).classList.add('actif');
     qsa('nav button').forEach(b=>b.classList.toggle('actif', b.dataset.ong===nom));
+    if(this.muscu) this.muscu.surOnglet(nom);   /* wake lock : actif seulement en séance (specs 4.2) */
   }
 }

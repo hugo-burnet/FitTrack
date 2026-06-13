@@ -77,6 +77,11 @@ test('statsExo : exercice jamais fait → niveau 0, record null', () => {
   assert.equal(s.record, null);
 });
 
+test('meilleurE1rm : reps plafonnées à 12 (via e1rm)', () => {
+  // 40 kg × 20 reps, capé à 12 → 40 * (1 + 12/30) = 56 (et non 40*(1+20/30)=66,7)
+  assert.ok(Math.abs(meilleurE1rm([{ charge:40, reps:20 }]) - 56) < 1e-9);
+});
+
 test('meilleurE1rm / meilleureCharge : ignorent les charges nulles', () => {
   const series = [{ charge:null, reps:12 }, { charge:40, reps:10 }, { charge:50, reps:5 }];
   assert.equal(meilleureCharge(series), 50);

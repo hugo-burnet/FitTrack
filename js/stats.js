@@ -39,5 +39,9 @@ export function tendanceBras(mensurations){
   return avec[avec.length-1].bras - avec[avec.length-2].bras;
 }
 
-/* 1RM estimé (formule Epley) */
-export function e1rm(charge, reps){ return charge==null ? null : charge*(1+reps/30); }
+/* plafond de reps dans l'estimation Epley : au-delà, charge*(1+reps/30) devient bruité
+   (le programme est surtout 10-15 reps) → on borne pour des deltas 1RM fiables (specs 4.2) */
+export const REPS_CAP_E1RM = 12;
+
+/* 1RM estimé (formule Epley), reps plafonnées pour limiter le bruit en haut de fourchette */
+export function e1rm(charge, reps){ return charge==null ? null : charge*(1+Math.min(reps, REPS_CAP_E1RM)/30); }

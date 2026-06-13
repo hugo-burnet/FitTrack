@@ -21,6 +21,8 @@ export class MuscuModule {
     this.histoOuverte = new Set(); /* exos dont le détail des séances précédentes est déplié */
     this._draftTimer = null;
     this.timer = new RestTimer('rest-timer');
+    this._wakeLock = null;          /* sentinelle navigator.wakeLock pendant une séance */
+    this._wakeOn = false;           /* on VEUT garder l'écran allumé (séance en cours) */
     this.bind();
   }
 
@@ -47,6 +49,7 @@ export class MuscuModule {
     /* formulaire de saisie de séance */
     const form = $('muscu-form');
     form.addEventListener('click', e => {
+      if(e.target.closest('[data-action="prefill-derniere"]')){ this.prefillDerniere(); return; }
       if(e.target.closest('[data-action="set-add"]')){ this.ajouterSetLigne(e.target.closest('[data-action="set-add"]')); return; }
       if(e.target.closest('[data-action="set-del"]')){ this.supprimerSetLigne(e.target.closest('[data-action="set-del"]')); return; }
       if(e.target.closest('[data-action="toggle-uni-seance"]')){ this.toggleUniSeance(e.target.closest('[data-action="toggle-uni-seance"]')); return; }
@@ -59,7 +62,14 @@ export class MuscuModule {
       if(o && (e.key===' '||e.key==='Enter')){ e.preventDefault(); this.toggleHistorique(+o.dataset.exo); }
     });
     form.addEventListener('input', () => this.sauverBrouillonDiffere());
-    form.addEventListener('change', () => this.sauverBrouillon()); /* flush immédiat au blur (avant de quitter l'onglet) */
+    form.addEventListener('change', e => {
+      this.sauverBrouillon();                       /* flush immédiat au blur */
+      /* propose le chrono de repos juste après la saisie d'une série (specs 4.2) */
+      if(e.target.classList && e.target.classList.contains('in-reps') && e.target.value.trim()!=='') this._proposerChrono(e.target);
+    });
+
+    /* wake lock : ré-acquisition au retour sur l'onglet/écran (le verrou saute en arrière-plan) */
+    document.addEventListener('visibilitychange', () => { if(!document.hidden && this._wakeOn) this._acquerirWake(); });
 
     /* éditeur de programmes : clics + modifications de champs */
     const ed = $('muscu-editeur');
@@ -93,7 +103,7 @@ export class MuscuModule {
   dernierePerf(nom){
     for(let i=this.etat.seances.length-1;i>=0;i--){
       const ex = this.etat.seances[i].exercices.find(e=>e.nom===nom);
-      if(ex) return { date:this.etat.seances[i].date, series:ex.series };
+      if(ex) return { date:this.etat.seances[i].date, series:ex.series, unilateral:ex.unilateral };
     }
     return null;
   }
@@ -134,7 +144,46 @@ export class MuscuModule {
     this.afficherHistMuscu();
   }
 
-  choisirJour(id){ this.jourSelectionne = id; this.histoOuverte.clear(); this.render(); }
+  choisirJour(id){ this.jourSelectionne = id; this.histoOuverte.clear(); this._activerWake(); this.render(); }
+
+  /* ---- wake lock : garde l'écran allumé pendant la séance (specs 4.2) ---- */
+  _activerWake(){ this._wakeOn = true; this._acquerirWake(); }
+  async _acquerirWake(){
+    if(!('wakeLock' in navigator) || this._wakeLock) return;
+    try{
+      this._wakeLock = await navigator.wakeLock.request('screen');
+      this._wakeLock.addEventListener('release', () => { this._wakeLock = null; });
+    }catch{ this._wakeLock = null; }   /* refusé (batterie faible, etc.) → tant pis */
+  }
+  _relacherWake(){
+    this._wakeOn = false;
+    if(this._wakeLock){ try{ this._wakeLock.release(); }catch{} this._wakeLock = null; }
+  }
+  /* appelé par App au changement d'onglet : on ne garde l'écran allumé que sur Muscu, en séance */
+  surOnglet(nom){
+    if(nom==='muscu'){ if(this.jourSelectionne) this._activerWake(); }
+    else this._relacherWake();
+  }
+
+  /* ---- « comme la dernière fois » : préremplit les vraies valeurs de la dernière séance ---- */
+  prefillDerniere(){
+    const jour = this.jourCourant(); if(!jour) return;
+    const blocs = [], unis = [];
+    jour.exercices.forEach((ex,ei)=>{
+      const last = this.dernierePerf(ex.nom);
+      blocs[ei] = last ? last.series.map(s=>({ charge: s.charge!=null?String(s.charge):'', reps: s.reps!=null?String(s.reps):'' })) : [];
+      unis[ei] = last && last.unilateral!=null ? !!last.unilateral : !!ex.unilateral;
+    });
+    const dateEl = $('muscu-date');
+    this.etat.brouillons[jour.id] = { date: dateEl ? dateEl.value : aujourdHui(), blocs, unis };
+    this.store.sauver();
+    this.renderSeanceForm();
+  }
+  _proposerChrono(input){
+    const bloc = input.closest('.exo-bloc'); if(!bloc) return;
+    const b = bloc.querySelector('[data-action="repos"]'); if(!b) return;
+    this.timer.start(+b.dataset.sec, b.dataset.nom);
+  }
 
   toggleHistorique(ei){
     const jour = this.jourCourant(); if(!jour || !jour.exercices[ei]) return;
@@ -172,6 +221,9 @@ export class MuscuModule {
     const draft = this.etat.brouillons[jour.id];
     const dateVal = draft && draft.date ? draft.date : aujourdHui();
     let html = `<div class="champ" style="margin-top:12px"><label for="muscu-date">Date de la séance</label><input type="date" id="muscu-date" value="${dateVal}"></div>`;
+    /* raccourci : recopier la dernière séance pour n'éditer que ce qui change */
+    if(jour.exercices.some(ex=>this.dernierePerf(ex.nom)))
+      html += `<button class="btn btn-2" data-action="prefill-derniere" style="margin-bottom:6px">↩ Comme la dernière fois</button>`;
 
     html += jour.exercices.map((ex,ei)=>{
       const presc = `${ex.series} × ${ex.reps}${ex.note?' · '+ex.note:''}`;
@@ -317,6 +369,7 @@ export class MuscuModule {
     this.store.sauver();
 
     this.dernierRecap = recap;
+    this._relacherWake();   /* séance enregistrée → on laisse l'écran s'éteindre */
     if(this.etat.autoExport && this.app.donnees) this.app.donnees.exporterJSON();
     this.render();
   }
