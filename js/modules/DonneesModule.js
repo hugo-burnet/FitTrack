@@ -1,5 +1,6 @@
 import { $, jourLocal, aujourdHui, triDate, cloneProfond, slug } from '../utils.js';
 import { OBJ_DEFAUT, PROG_DEFAUT, COURSES_DEFAUT } from '../data.js';
+import { assainirEtat } from '../sanitize.js';
 
 /* ================= DONNÉES : export / import / reset ================= */
 export class DonneesModule {
@@ -51,6 +52,9 @@ export class DonneesModule {
         const imp = JSON.parse(lecteur.result);
         const connus = ['poids','mensurations','objectifKcal','repas','journalRepas','programmes','programmeActif','seances','courses'];
         if(!connus.some(k=>k in imp)) throw new Error('format');
+        /* on ne fait jamais confiance au fichier : purge des formes invalides AVANT la fusion,
+           pour que l'état existant ne soit jamais altéré par une entrée malformée */
+        assainirEtat(imp);
         const etat = this.etat;
         /* fusion par date, l'import gagne */
         const fusionDate = (locale, importee) => {

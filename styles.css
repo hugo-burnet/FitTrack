@@ -249,6 +249,22 @@ td.n{font-family:'IBM Plex Mono',monospace}
 }
 .cache{display:none !important}
 
+/* ---------- écran de récupération (crash au démarrage) ---------- */
+.ecran-recup{
+  position:fixed;inset:0;z-index:1000;
+  background:rgba(16,18,21,.94);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;overflow:auto;
+}
+.recup-carte{
+  background:var(--plaque);border:1px solid var(--alerte);border-radius:10px;
+  padding:20px;max-width:420px;width:100%;
+}
+.recup-carte h2{font-family:'Barlow Condensed',sans-serif;color:var(--alerte);margin:0 0 10px}
+.recup-carte p{font-size:14px;color:var(--craie);margin:0 0 14px;line-height:1.45}
+.recup-carte details{margin-top:14px;color:var(--craie-2);font-size:12px}
+.recup-carte pre{white-space:pre-wrap;word-break:break-word;margin-top:8px;color:var(--craie-2)}
+
 /* ---------- champs texte & select (ajout muscu/courses) ---------- */
 input[type=text]{
   width:100%;background:var(--fonte);border:1px solid var(--trait);

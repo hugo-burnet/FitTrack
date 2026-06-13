@@ -27,6 +27,17 @@
   ⚠ Stockage local indisponible dans cet environnement : les données ne survivront pas à la fermeture de l'onglet. Utilise Exporter/Importer. (Sur GitHub Pages, la sauvegarde sera automatique.)
 </div>
 
+<!-- Écran de récupération : affiché si le rendu initial crashe, pour permettre au minimum d'exporter -->
+<div id="ecran-recuperation" class="ecran-recup cache" role="alertdialog" aria-modal="true" aria-labelledby="recup-titre">
+  <div class="recup-carte">
+    <h2 id="recup-titre">⚠ Démarrage impossible</h2>
+    <p>Une erreur empêche l'affichage du carnet, mais <b>tes données sont toujours là</b>. Exporte-les maintenant pour les mettre en sécurité, puis recharge la page.</p>
+    <button class="btn" id="recup-export">⬇ Exporter mes données (secours)</button>
+    <button class="btn btn-2" id="recup-reload" type="button">↻ Recharger la page</button>
+    <details><summary>Détail technique</summary><pre id="recup-detail" class="mono"></pre></details>
+  </div>
+</div>
+
 <main>
 
   <!-- ===== ONGLET VERDICT ===== -->

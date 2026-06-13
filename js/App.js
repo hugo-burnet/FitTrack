@@ -16,32 +16,61 @@ export class App {
     });
   }
 
-  init(){
-    this.store.charger();
+  async init(){
+    await this.store.charger();
     this.store.resetSiNouveauJour();
 
-    /* instanciation des modules (chacun attache ses écouteurs dans son constructeur) */
-    this.mesures = new MesuresModule(this.store, this);
-    this.verdict = new VerdictModule(this.store, this);
-    this.repas   = new RepasModule(this.store, this);
-    this.muscu   = new MuscuModule(this.store, this);
-    this.courses = new CoursesModule(this.store, this);
-    this.donnees = new DonneesModule(this.store, this);
+    try{
+      /* instanciation des modules (chacun attache ses écouteurs dans son constructeur) */
+      this.mesures = new MesuresModule(this.store, this);
+      this.verdict = new VerdictModule(this.store, this);
+      this.repas   = new RepasModule(this.store, this);
+      this.muscu   = new MuscuModule(this.store, this);
+      this.courses = new CoursesModule(this.store, this);
+      this.donnees = new DonneesModule(this.store, this);
 
-    this.bindNav();
+      this.bindNav();
 
-    $('p-date').value = aujourdHui();
-    $('m-date').value = aujourdHui();
-    this.renderAll();
+      $('p-date').value = aujourdHui();
+      $('m-date').value = aujourdHui();
+      this.renderAll();
 
-    /* décochage automatique à minuit, robuste :
-       1) au retour sur l'onglet/appli (cas le plus fréquent : app rouverte un nouveau jour) */
-    document.addEventListener('visibilitychange', () => {
-      if(!document.hidden && this.store.resetSiNouveauJour()) this.repas.render();
-    });
-    window.addEventListener('focus', () => { if(this.store.resetSiNouveauJour()) this.repas.render(); });
-    /* 2) si l'appli reste ouverte au passage de minuit : contrôle chaque minute */
-    setInterval(() => { if(this.store.resetSiNouveauJour()) this.repas.render(); }, 60000);
+      /* décochage automatique à minuit, robuste :
+         1) au retour sur l'onglet/appli (cas le plus fréquent : app rouverte un nouveau jour) */
+      document.addEventListener('visibilitychange', () => {
+        if(!document.hidden && this.store.resetSiNouveauJour()) this.repas.render();
+      });
+      window.addEventListener('focus', () => { if(this.store.resetSiNouveauJour()) this.repas.render(); });
+      /* 2) si l'appli reste ouverte au passage de minuit : contrôle chaque minute */
+      setInterval(() => { if(this.store.resetSiNouveauJour()) this.repas.render(); }, 60000);
+    }catch(err){
+      /* le rendu initial a crashé : on n'empêche jamais l'utilisateur d'exporter ses données */
+      this.afficherRecuperation(err);
+    }
+  }
+
+  /* écran de secours : l'app ne démarre pas, mais les données en mémoire sont intactes
+     et l'export reste possible (indépendant des modules, qui ont pu échouer à se construire) */
+  afficherRecuperation(err){
+    console.error('Échec du démarrage du carnet', err);
+    const ecran = $('ecran-recuperation');
+    if(!ecran){ alert('Erreur au démarrage. Recharge la page.'); return; }
+    ecran.classList.remove('cache');
+    const detail = $('recup-detail');
+    if(detail) detail.textContent = String(err && err.stack || err);
+    $('recup-export').addEventListener('click', () => this.exporterSecours());
+    $('recup-reload').addEventListener('click', () => location.reload());
+  }
+
+  exporterSecours(){
+    try{
+      const blob = new Blob([JSON.stringify({version:2, exporte:new Date().toISOString(), ...this.store.etat}, null, 2)],
+                            {type:'application/json'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `carnet-recompo-secours-${aujourdHui()}.json`;
+      a.click(); URL.revokeObjectURL(a.href);
+    }catch(e){ console.error('Export de secours impossible', e); }
   }
 
   /* re-rend tous les onglets (équivalent de l'ancien toutAfficher) */
