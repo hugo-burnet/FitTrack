@@ -91,21 +91,66 @@
         <div class="obj-val"><input type="number" id="obj-kcal" step="50" inputmode="numeric"><span>kcal</span></div>
         <button class="obj-pas" data-action="obj-step" data-delta="50" aria-label="+50 kcal">+</button>
       </div>
+      <div id="flex-warn" class="avert cache" style="margin-top:12px"></div>
       <p class="note">Protéines et lipides restent fixés à leurs cibles : seuls le riz et l'avoine s'ajustent, comme le dit ton onglet Verdict. <b>Quand le verdict te dit ±150 kcal, change ce nombre ici.</b></p>
     </div>
 
-    <div class="carte progression">
-      <div class="prog-haut">
-        <span class="prog-titre" id="prog-repas">0 / 5 repas</span>
-        <span class="prog-kcal mono" id="prog-kcal">0 / 0 kcal</span>
+    <!-- Cible explicite du jour + écart en temps réel (kcal ET protéines) -->
+    <div class="carte progression" id="carte-cible">
+      <div class="cible-grille">
+        <div class="cible-bloc">
+          <div class="cible-haut"><span class="cible-lib">Calories</span><span class="cible-reste mono" id="reste-kcal"></span></div>
+          <div class="prog-barre"><div class="prog-rempli" id="bar-kcal"></div></div>
+          <div class="cible-chiffre mono" id="cible-kcal">0 / 0 kcal</div>
+        </div>
+        <div class="cible-bloc">
+          <div class="cible-haut"><span class="cible-lib">Protéines</span><span class="cible-reste mono" id="reste-prot"></span></div>
+          <div class="prog-barre"><div class="prog-rempli prot" id="bar-prot"></div></div>
+          <div class="cible-chiffre mono" id="cible-prot">0 / 0 g</div>
+        </div>
       </div>
-      <div class="prog-barre"><div class="prog-rempli" id="prog-rempli"></div></div>
-      <div class="prog-macros mono" id="prog-macros"></div>
+      <div class="cible-pied mono" id="cible-repas">0 / 5 repas cochés</div>
+    </div>
+
+    <!-- Suggestions de comblement protéique (affiché seulement si déficit) -->
+    <div class="carte cache" id="carte-comblement">
+      <h2>Combler les protéines</h2>
+      <p class="note" id="comblement-txt" style="margin-top:0"></p>
+      <div class="chips" id="comblement-options"></div>
     </div>
 
     <div id="liste-repas"></div>
 
-    <p class="note" style="text-align:center">Les repas se décochent seuls à minuit. Touche « Annuler » sur un repas pris pour revenir en arrière.</p>
+    <!-- Log de substitution / hors-plan : journalise la RÉALITÉ (resto, écart…) -->
+    <div class="carte">
+      <h2>J'ai mangé autre chose</h2>
+      <div id="extras-liste"></div>
+      <button class="btn btn-2" id="btn-extra-toggle" type="button">+ Ajouter un aliment hors-plan</button>
+      <div id="extra-form" class="cache">
+        <div class="champ">
+          <label for="extra-aliment">Aliment</label>
+          <select id="extra-aliment">
+            <option value="">— Saisie libre (resto, plat composé…) —</option>
+          </select>
+        </div>
+        <div id="extra-aliment-q" class="champ cache">
+          <label for="extra-qte">Quantité <span id="extra-unite" class="lbl-opt">g</span></label>
+          <input type="number" id="extra-qte" inputmode="decimal" min="0" step="1" placeholder="ex. 150">
+        </div>
+        <div id="extra-libre">
+          <div class="champ"><label for="extra-nom">Nom</label><input type="text" id="extra-nom" placeholder="ex. Pizza margherita"></div>
+          <div class="ligne">
+            <div><label for="extra-kcal">kcal</label><input type="number" id="extra-kcal" inputmode="numeric" min="0" placeholder="600"></div>
+            <div><label for="extra-prot">Protéines (g)</label><input type="number" id="extra-prot" inputmode="decimal" min="0" placeholder="25"></div>
+          </div>
+        </div>
+        <div class="extra-apercu mono" id="extra-apercu"></div>
+        <button class="btn" id="btn-extra-add" type="button">Ajouter au journal du jour</button>
+      </div>
+      <p class="note">Ce qui est ajouté ici est journalisé <b>tel que mangé</b> et compte dans la cible & l'export — contrairement au plan, qui n'est qu'une suggestion.</p>
+    </div>
+
+    <p class="note" style="text-align:center">Les repas se décochent seuls à minuit (les extras hors-plan aussi). Touche « Annuler » sur un repas pris pour revenir en arrière.</p>
   </section>
 
   <!-- ===== ONGLET MUSCU ===== -->
