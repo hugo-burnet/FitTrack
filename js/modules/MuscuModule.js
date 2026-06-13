@@ -32,7 +32,6 @@ export class MuscuModule {
     $('muscu-prog').addEventListener('change', e => this.changerProgrammeActif(e.target.value));
     $('prog-exo').addEventListener('change', e => this.dessinerProgression(e.target.value));
     $('btn-editeur').addEventListener('click', () => this.basculerEditeur());
-    $('btn-import-prog').addEventListener('click', () => $('fichier-import').click());
 
     /* chips de séances */
     $('muscu-jours').addEventListener('click', e => {
