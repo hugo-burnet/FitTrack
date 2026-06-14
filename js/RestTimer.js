@@ -37,6 +37,7 @@ export class RestTimer {
     if(!this.running) return;
     this.remaining--;
     if(this.remaining <= 0){ this.remaining = 0; this.update(); this.finish(); return; }
+    if(this.remaining === 3){ this.beep({ freq: 660, dur: 0.12, vol: 0.2 }); this.vibrate([60]); }
     this.update();
   }
 
@@ -72,18 +73,18 @@ export class RestTimer {
   stop(){ this.stopTick(); this.running = false; this.finished = false; this.hide(); }
   stopTick(){ if(this.id){ window.clearInterval(this.id); this.id = null; } }
 
-  beep(){
+  beep({ freq = 880, dur = 0.45, vol = 0.3 } = {}){
     try{
       const Ctx = window.AudioContext || window.webkitAudioContext; if(!Ctx) return;
       const ctx = new Ctx();
       const o = ctx.createOscillator(), g = ctx.createGain();
       o.connect(g); g.connect(ctx.destination);
-      o.type = 'sine'; o.frequency.value = 880;
+      o.type = 'sine'; o.frequency.value = freq;
       g.gain.setValueAtTime(0.0001, ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.3, ctx.currentTime + 0.02);
-      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.45);
-      o.start(); o.stop(ctx.currentTime + 0.47);
+      g.gain.exponentialRampToValueAtTime(vol, ctx.currentTime + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + dur);
+      o.start(); o.stop(ctx.currentTime + dur + 0.02);
     }catch(e){ /* audio indisponible : tant pis */ }
   }
-  vibrate(){ try{ if(navigator.vibrate) navigator.vibrate([120,60,120]); }catch(e){} }
+  vibrate(pattern = [120,60,120]){ try{ if(navigator.vibrate) navigator.vibrate(pattern); }catch(e){} }
 }
