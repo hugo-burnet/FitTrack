@@ -352,6 +352,7 @@ select{-webkit-appearance:none;appearance:none}
 .ed-jour{background:var(--plaque-2);border-radius:var(--r-ctl);padding:12px;margin-bottom:10px}
 .ed-jour-tete{display:flex;gap:8px;align-items:center;margin-bottom:6px}
 .ed-jour-tete input{flex:1}
+.ed-exo-bloc + .ed-exo-bloc{border-top:1px solid var(--trait);margin-top:12px;padding-top:6px}
 .ed-exo{display:grid;grid-template-columns:1fr 52px 70px 36px;gap:6px;margin-top:6px;align-items:center}
 .ed-exo input{padding:8px;min-height:38px;font-size:14px}
 .ed-exo .suppr{padding:6px;min-width:36px;min-height:36px}

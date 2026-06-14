@@ -631,6 +631,7 @@ export class MuscuModule {
     let html = `<div class="champ" style="margin-top:12px"><label for="ed-nom">Nom du programme</label><input type="text" id="ed-nom" value="${echap(prog.nom)}" data-action="renommer-programme"></div>`;
     html += prog.jours.map((j,ji)=>{
       const exos = j.exercices.map((ex,ei)=>`
+        <div class="ed-exo-bloc">
         <div class="ed-exo">
           <input type="text" value="${echap(ex.nom)}" placeholder="Exercice" data-action="maj-exo" data-ji="${ji}" data-ei="${ei}" data-champ="nom">
           <input type="number" value="${ex.series}" min="1" placeholder="sér." data-action="maj-exo" data-ji="${ji}" data-ei="${ei}" data-champ="series">
@@ -646,6 +647,7 @@ export class MuscuModule {
           ${ex.gainage
             ? `<label class="ed-pas">Cible <input type="number" step="1" min="1" value="${ex.dureeCible!=null?ex.dureeCible:''}" data-action="maj-exo" data-ji="${ji}" data-ei="${ei}" data-champ="dureeCible"> s</label>`
             : `<label class="ed-pas">Pas <input type="number" step="0.5" min="0.5" value="${ex.pas!=null?ex.pas:PAS_DEFAUT}" data-action="maj-exo" data-ji="${ji}" data-ei="${ei}" data-champ="pas"> kg</label>`}
+        </div>
         </div>`).join('');
       return `<div class="ed-jour">
         <div class="ed-jour-tete">
