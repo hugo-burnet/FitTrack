@@ -545,18 +545,18 @@ export class MuscuModule {
     pts.sort((a,b)=>a.date.localeCompare(b.date));
     /* couleur des points : vert si le 1RM monte vs point précédent, rouge s'il baisse (réductions visibles) */
     const couleursPts = pts.map((p,i)=>{
-      if(i===0 || p.e1rm==null || pts[i-1].e1rm==null) return '#d9a441';
-      if(p.e1rm > pts[i-1].e1rm + 0.05) return '#7fb069';
-      if(p.e1rm < pts[i-1].e1rm - 0.05) return '#c8553d';
-      return '#d9a441';
+      if(i===0 || p.e1rm==null || pts[i-1].e1rm==null) return '#4d7ef0';
+      if(p.e1rm > pts[i-1].e1rm + 0.05) return '#4cb784';
+      if(p.e1rm < pts[i-1].e1rm - 0.05) return '#e07a63';
+      return '#4d7ef0';
     });
     const ctx = $('graph-prog');
     if(this.chProg) this.chProg.destroy();
     this.chProg = new Chart(ctx,{type:'line',data:{labels:pts.map(p=>fmtDate(p.date)),datasets:[
-      {label:'1RM estimé (kg)', data:pts.map(p=>p.e1rm!=null?Math.round(p.e1rm*10)/10:null), borderColor:'#d9a441',backgroundColor:couleursPts,pointBackgroundColor:couleursPts,borderWidth:2.5,pointRadius:5,tension:.25,spanGaps:true},
-      {label:'Volume (kg·reps)', data:pts.map(p=>Math.round(p.vol)), borderColor:'#6f9ceb',backgroundColor:'#6f9ceb',borderWidth:1.5,pointRadius:3,tension:.25,yAxisID:'y2',spanGaps:true}
+      {label:'1RM estimé (kg)', data:pts.map(p=>p.e1rm!=null?Math.round(p.e1rm*10)/10:null), borderColor:'#4d7ef0',backgroundColor:couleursPts,pointBackgroundColor:couleursPts,borderWidth:2.5,pointRadius:5,tension:.25,spanGaps:true},
+      {label:'Volume (kg·reps)', data:pts.map(p=>Math.round(p.vol)), borderColor:'#9aa1ab',backgroundColor:'#9aa1ab',borderWidth:1.5,pointRadius:3,tension:.25,yAxisID:'y2',spanGaps:true}
     ]},options:{...optCommun,scales:{...optCommun.scales,
-      y2:{position:'right',ticks:{color:'#6f9ceb',font:{family:'IBM Plex Mono',size:11}},grid:{display:false}}
+      y2:{position:'right',ticks:{color:'#9aa1ab',font:{family:'Inter, system-ui, sans-serif',size:11}},grid:{display:false}}
     }}});
   }
 

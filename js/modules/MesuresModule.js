@@ -109,8 +109,8 @@ export class MesuresModule {
     });
     if(this.chPoids) this.chPoids.destroy();
     this.chPoids = new Chart(ctx,{type:'line',data:{labels,datasets:[
-      {label:'Pesées',data:this.etat.poids.map(p=>p.kg),borderColor:'#5a626d',backgroundColor:'#5a626d',pointRadius:3,borderWidth:1.5,tension:.2},
-      {label:'Moyenne hebdo',data:serieMoy,borderColor:'#d9a441',backgroundColor:'#d9a441',pointRadius:0,borderWidth:2.5,tension:.3,stepped:true}
+      {label:'Pesées',data:this.etat.poids.map(p=>p.kg),borderColor:'#686f7a',backgroundColor:'#686f7a',pointRadius:3,borderWidth:1.5,tension:.2},
+      {label:'Moyenne hebdo',data:serieMoy,borderColor:'#4d7ef0',backgroundColor:'#4d7ef0',pointRadius:0,borderWidth:2.5,tension:.3,stepped:true}
     ]},options:optCommun});
   }
 
@@ -119,10 +119,10 @@ export class MesuresModule {
     const m = this.etat.mensurations;
     if(this.chMens) this.chMens.destroy();
     this.chMens = new Chart(ctx,{type:'line',data:{labels:m.map(x=>fmtDate(x.date)),datasets:[
-      {label:'Taille (cm)',data:m.map(x=>x.taille),borderColor:'#c8553d',backgroundColor:'#c8553d',borderWidth:2,pointRadius:4,tension:.25,spanGaps:true},
-      {label:'Bras (cm)',data:m.map(x=>x.bras),borderColor:'#7fb069',backgroundColor:'#7fb069',borderWidth:2,pointRadius:4,tension:.25,spanGaps:true,yAxisID:'y2'}
+      {label:'Taille (cm)',data:m.map(x=>x.taille),borderColor:'#e07a63',backgroundColor:'#e07a63',borderWidth:2,pointRadius:4,tension:.25,spanGaps:true},
+      {label:'Bras (cm)',data:m.map(x=>x.bras),borderColor:'#4cb784',backgroundColor:'#4cb784',borderWidth:2,pointRadius:4,tension:.25,spanGaps:true,yAxisID:'y2'}
     ]},options:{...optCommun,scales:{...optCommun.scales,
-      y2:{position:'right',ticks:{color:'#7fb069',font:{family:'IBM Plex Mono',size:11}},grid:{display:false}}
+      y2:{position:'right',ticks:{color:'#4cb784',font:{family:'Inter, system-ui, sans-serif',size:11}},grid:{display:false}}
     }}});
   }
 }

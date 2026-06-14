@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#1a1d21">
+<meta name="theme-color" content="#0d0e11">
 <title>Carnet Recompo</title>
 <!-- PWA : installable + démarrage hors-ligne (specs 2.4) -->
 <link rel="manifest" href="manifest.json">
@@ -13,8 +13,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Recompo">
 <meta name="mobile-web-app-capable" content="yes">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;800&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<!-- Typo : Inter via system-ui (SF Pro sur iOS) — aucune dépendance réseau, zéro fichier -->
 <link rel="stylesheet" href="styles.css">
 <!-- Chart.js vendoré (4.4.1) : démarrage garanti hors-ligne (salle, réseau instable),
      zéro dépendance réseau, pas de risque supply-chain CDN (cf. specs 2.3) -->
@@ -271,8 +270,10 @@
     <div class="carte progression">
       <div class="prog-haut">
         <span class="prog-titre" id="courses-compte">0 / 0</span>
-        <button class="repas-annuler" id="btn-cocher-courses">Tout cocher</button>
-        <button class="repas-annuler" id="btn-decocher-courses">Tout décocher</button>
+        <div class="prog-actions">
+          <button class="repas-annuler" id="btn-cocher-courses">Tout cocher</button>
+          <button class="repas-annuler" id="btn-decocher-courses">Tout décocher</button>
+        </div>
       </div>
       <div class="prog-barre"><div class="prog-rempli" id="courses-rempli"></div></div>
     </div>
@@ -285,7 +286,7 @@
         <span>jours</span>
       </div>
       <div id="courses-liste"></div>
-      <p class="note">Les quantités <span class="course-qte derivee" style="padding:0">en laiton</span> sont <b>calculées depuis ton plan × le nombre de jours</b> et suivent ton objectif kcal (le riz/avoine s'ajuste). Les autres sont des repères figés que tu peux éditer. Coche au fur et à mesure ; « Tout décocher » remet à blanc pour la semaine suivante.</p>
+      <p class="note">Les quantités <span class="course-qte derivee" style="padding:0">en bleu</span> sont <b>calculées depuis ton plan × le nombre de jours</b> et suivent ton objectif kcal (le riz/avoine s'ajuste). Les autres sont des repères figés que tu peux éditer. Coche au fur et à mesure ; « Tout décocher » remet à blanc pour la semaine suivante.</p>
     </div>
 
     <div class="carte">
@@ -364,12 +365,18 @@
 </div>
 
 <nav>
-  <button class="actif" data-ong="verdict">Verdict</button>
-  <button data-ong="repas">Repas</button>
-  <button data-ong="muscu">Muscu</button>
-  <button data-ong="mesures">Mesures</button>
-  <button data-ong="courses">Courses</button>
-  <button data-ong="data">Données</button>
+  <button class="actif" data-ong="verdict">
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15a8 8 0 0 1 16 0"/><path d="M12 15l4.5-3.5"/></svg></span>Verdict</button>
+  <button data-ong="repas">
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11h16"/><path d="M6 11a6 6 0 0 0 12 0"/><path d="M12 11V4"/></svg></span>Repas</button>
+  <button data-ong="muscu">
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6M7 7v10M17 7v10M20 9v6M7 12h10"/></svg></span>Muscu</button>
+  <button data-ong="mesures">
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5v14h16"/><path d="M7 15l3.5-4.5 3 2L18 7"/></svg></span>Mesures</button>
+  <button data-ong="courses">
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9.5" cy="20" r="1.2"/><circle cx="17" cy="20" r="1.2"/><path d="M3 4h2.2l2.3 11h9.5l1.8-7H6.3"/></svg></span>Courses</button>
+  <button data-ong="data">
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.6 3.1 3 7 3s7-1.4 7-3V6"/><path d="M5 12c0 1.6 3.1 3 7 3s7-1.4 7-3"/></svg></span>Données</button>
 </nav>
 
 <script type="module" src="js/main.js"></script>
