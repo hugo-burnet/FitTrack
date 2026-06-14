@@ -229,6 +229,28 @@ td.n{font-variant-numeric:tabular-nums}
 .repas-items .qte{color:var(--craie-2);flex:none;font-variant-numeric:tabular-nums}
 .repas-items .qte.flex{color:var(--accent-soft)}
 
+/* ---------- réorganiser les repas (déplacer un aliment d'un repas à l'autre) ---------- */
+.repas-reorg-tete{margin-bottom:10px}
+.reorg-bar{background:var(--plaque);border-radius:var(--r-ctl);padding:12px 14px;margin-bottom:12px}
+.reorg-scope{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.reorg-lbl{font-size:13px;color:var(--craie-2)}
+.reorg-note{margin:8px 0 0;font-size:12px}
+.repas-carte.reorg{cursor:default}
+.repas-items-reorg{display:flex;flex-direction:column;gap:6px}
+.ri-bloc{background:var(--plaque-2);border-radius:var(--r-ctl);overflow:hidden}
+.ri-bloc.ouvert{outline:1px solid var(--laiton)}
+.ri-tete{
+  display:flex;align-items:center;gap:10px;width:100%;min-height:44px;
+  background:none;border:0;cursor:pointer;color:var(--craie);font:inherit;
+  padding:10px 12px;text-align:left;-webkit-tap-highlight-color:transparent;
+}
+.ri-tete:focus-visible{outline:2px solid var(--laiton);outline-offset:-2px}
+.ri-tete.fige{cursor:default;opacity:.5}
+.ri-nom{flex:1;font-size:14px}
+.ri-qte{color:var(--craie-2);font-size:13px;font-variant-numeric:tabular-nums}
+.ri-move{flex:none;color:var(--accent-soft);font-size:16px}
+.ri-cibles{display:flex;flex-wrap:wrap;gap:6px;padding:0 12px 12px}
+
 /* ---------- VERDICT (élément signature) — plat, border-left de statut ---------- */
 .verdict{
   background:var(--plaque);border-radius:var(--r-carte);
@@ -461,6 +483,9 @@ select{-webkit-appearance:none;appearance:none}
 }
 .chip-mini.actif{background:var(--plaque-2);border-color:var(--laiton);color:var(--accent-soft)}
 .chip-mini:active{background:var(--plaque)}
+.chip-mini.ordre{min-width:38px;padding:6px 10px;font-size:15px;line-height:1;text-align:center;font-variant-numeric:tabular-nums}
+.chip-mini:disabled{opacity:.3;cursor:default}
+.chip-mini:disabled:active{background:var(--plaque-2)}
 .ed-pas{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--craie-2);margin:0}
 .ed-pas input{width:64px;min-height:32px;padding:6px 8px;font-size:13px}
 

@@ -1,5 +1,5 @@
-import { $, echap } from '../utils.js';
-import { ALIMENTS, PLAN } from '../data.js';
+import { $, echap, cloneProfond } from '../utils.js';
+import { ALIMENTS } from '../data.js';
 import { kcalItem, protItem, facteurFlex, flexSature, protCible } from '../nutrition.js';
 
 /* ================= REPAS : cible du jour, écart temps réel, log de la réalité =================
@@ -11,10 +11,17 @@ export class RepasModule {
   constructor(store, app){
     this.store = store;
     this.app = app;
+    /* état d'interface (non persisté) du mode « réorganiser les repas » */
+    this.reorgOuvert = false;       /* le mode déplacement est-il actif */
+    this.porteeDepl = 'plan';       /* 'plan' (permanent) | 'jour' (aujourd'hui seulement) */
+    this.deplItem = null;           /* "idRepas:cle" de l'aliment dont le sélecteur de cible est ouvert */
     this.bind();
   }
 
   get etat(){ return this.store.etat; }
+
+  /* plan effectif : surcharge du jour si elle existe, sinon le plan permanent */
+  plan(){ return this.etat.repas.planJour || this.etat.plan; }
 
   bind(){
     /* options du sélecteur d'aliment hors-plan (une fois) */
@@ -31,6 +38,13 @@ export class RepasModule {
     root.addEventListener('click', e => {
       const step = e.target.closest('[data-action="obj-step"]');
       if(step){ this.ajusterObjectif(parseInt(step.dataset.delta,10)); return; }
+      if(e.target.closest('#btn-repas-reorg')){ this.basculerReorg(); return; }
+      const portee = e.target.closest('[data-action="depl-portee"]');
+      if(portee){ this.porteeDepl = portee.dataset.portee; this.render(); return; }
+      const dOuvrir = e.target.closest('[data-action="depl-ouvrir"]');
+      if(dOuvrir){ this.basculerDeplItem(dOuvrir.dataset.rid, dOuvrir.dataset.cle); return; }
+      const dVers = e.target.closest('[data-action="depl-vers"]');
+      if(dVers){ this.deplacerAliment(dVers.dataset.from, dVers.dataset.cle, dVers.dataset.to); return; }
       const annuler = e.target.closest('[data-action="annuler-repas"]');
       if(annuler){ e.stopPropagation(); this.annulerRepas(annuler.dataset.id); return; }
       const combler = e.target.closest('[data-action="combler"]');
@@ -56,14 +70,14 @@ export class RepasModule {
   /* ---- calculs nutritionnels (moteur pur dans nutrition.js) ---- */
   qteAjustee(cle, qBase){
     if(!ALIMENTS[cle].flex) return qBase;
-    const q = qBase * facteurFlex(this.etat.objectifKcal);
+    const q = qBase * facteurFlex(this.etat.objectifKcal, this.etat.plan);
     return Math.round(q/5)*5; /* arrondi à 5 g */
   }
   repasKcal(r){ return r.items.reduce((s,[cle,q])=>s+kcalItem(cle, this.qteAjustee(cle,q)),0); }
   repasProt(r){ return r.items.reduce((s,[cle,q])=>s+protItem(cle, this.qteAjustee(cle,q)),0); }
 
   /* cible du jour : kcal = objectif réglé ; protéines = ce que le plan délivre (fixe) */
-  cibles(){ return { kcal:this.etat.objectifKcal, prot:protCible(this.etat.objectifKcal) }; }
+  cibles(){ return { kcal:this.etat.objectifKcal, prot:protCible(this.etat.objectifKcal, this.etat.plan) }; }
 
   /* ---- journal du jour (= réalité) ---- */
   journalDuJour(){ const j=this.etat.repas.jour; return this.etat.journalRepas.filter(e=>e.date===j); }
@@ -85,7 +99,7 @@ export class RepasModule {
   /* repas du PLAN coché → on suppose qu'il a été mangé tel que planifié (quantités ajustées).
      Pour TOUT écart (resto, substitution), passer par « J'ai mangé autre chose » ci-dessous. */
   journaliserRepas(id){
-    const r = PLAN.find(x=>x.id===id); if(!r) return;
+    const r = this.plan().find(x=>x.id===id); if(!r) return;
     const jour = this.etat.repas.jour;
     this.etat.journalRepas = this.etat.journalRepas.filter(e=>!(e.date===jour && e.id===id));
     const items = r.items.map(([cle,qBase])=>{
@@ -200,7 +214,7 @@ export class RepasModule {
     if(document.activeElement!==obj) obj.value = this.etat.objectifKcal;
 
     /* avertissement de saturation du facteur flex (le plan ne peut plus s'ajuster) */
-    const sat = flexSature(this.etat.objectifKcal);
+    const sat = flexSature(this.etat.objectifKcal, this.etat.plan);
     const fw = $('flex-warn');
     if(sat==='bas'){
       fw.classList.remove('cache');
@@ -210,26 +224,18 @@ export class RepasModule {
       fw.innerHTML = '⚠ Objectif très haut : riz/avoine déjà au maximum (×1,8). Le plan ne monte pas plus — complète avec un ajout hors-plan pour atteindre la cible.';
     } else fw.classList.add('cache');
 
-    /* cartes repas du plan (suggestion) */
-    $('liste-repas').innerHTML = PLAN.map(r=>{
-      const pris = !!this.etat.repas.coches[r.id];
-      const items = r.items.map(([cle,qBase])=>{
-        const a=ALIMENTS[cle]; const q=this.qteAjustee(cle,qBase);
-        const lib = a.unite!==undefined ? `${q} ${a.unite}${q>1&&a.unite?'s':''}`.trim() : `${q} g`;
-        return `<li><span>${a.nom}</span><span class="qte${a.flex?' flex':''}">${lib}</span></li>`;
-      }).join('');
-      return `<div class="repas-carte${pris?' pris':''}" role="button" tabindex="0" aria-pressed="${pris}"
-         data-action="prendre-repas" data-id="${r.id}">
-         <div class="repas-haut">
-           <span class="repas-coche">${pris?'✓':''}</span>
-           <span class="repas-nom">${r.nom}</span>
-           ${pris
-              ? `<button type="button" class="repas-annuler" data-action="annuler-repas" data-id="${r.id}">Annuler</button>`
-              : `<span class="repas-kcal">${Math.round(this.repasKcal(r))} kcal</span>`}
-         </div>
-         <ul class="repas-items">${items}</ul>
-      </div>`;
-    }).join('');
+    /* cartes repas : mode normal (tap pour prendre) OU mode réorganisation (déplacer les aliments) */
+    const plan = this.plan();
+    $('btn-repas-reorg').textContent = this.reorgOuvert ? '✓ Terminer' : '⇄ Réorganiser les repas';
+    const bar = $('repas-reorg-bar');
+    if(this.reorgOuvert){
+      bar.classList.remove('cache');
+      bar.innerHTML = this.htmlReorgBar();
+      $('liste-repas').innerHTML = plan.map(r=>this.htmlCarteReorg(r)).join('');
+    } else {
+      bar.classList.add('cache');
+      $('liste-repas').innerHTML = plan.map(r=>this.htmlCarteNormale(r)).join('');
+    }
 
     /* cible & écart (kcal + protéines), à partir de la réalité du jour */
     const c = this.cibles();
@@ -242,8 +248,8 @@ export class RepasModule {
     $('bar-prot').style.width = (c.prot ? Math.min(100, 100*conso.prot/c.prot) : 0).toFixed(0)+'%';
     this._reste($('reste-kcal'), resteK, '');
     this._reste($('reste-prot'), resteP, ' g');
-    const prisN = PLAN.filter(r=>this.etat.repas.coches[r.id]).length;
-    $('cible-repas').textContent = `${prisN} / ${PLAN.length} repas du plan cochés`;
+    const prisN = plan.filter(r=>this.etat.repas.coches[r.id]).length;
+    $('cible-repas').textContent = `${prisN} / ${plan.length} repas du plan cochés`;
 
     /* comblement protéique : seulement s'il reste un vrai déficit */
     const carteC = $('carte-comblement');
@@ -266,6 +272,97 @@ export class RepasModule {
         + `<button type="button" class="repas-annuler" data-action="suppr-extra" data-id="${e.id}" aria-label="Retirer">✕</button>`
         + `</div>`;
     }).join('') : '<p class="note" style="margin:0 0 10px">Rien d’ajouté hors-plan aujourd’hui.</p>';
+  }
+
+  /* ---- carte repas normale (tap pour prendre / annuler) ---- */
+  htmlCarteNormale(r){
+    const pris = !!this.etat.repas.coches[r.id];
+    const items = r.items.map(([cle,qBase])=>{
+      const a=ALIMENTS[cle]; const q=this.qteAjustee(cle,qBase);
+      const lib = a.unite!==undefined ? `${q} ${a.unite}${q>1&&a.unite?'s':''}`.trim() : `${q} g`;
+      return `<li><span>${a.nom}</span><span class="qte${a.flex?' flex':''}">${lib}</span></li>`;
+    }).join('');
+    return `<div class="repas-carte${pris?' pris':''}" role="button" tabindex="0" aria-pressed="${pris}"
+       data-action="prendre-repas" data-id="${r.id}">
+       <div class="repas-haut">
+         <span class="repas-coche">${pris?'✓':''}</span>
+         <span class="repas-nom">${echap(r.nom)}</span>
+         ${pris
+            ? `<button type="button" class="repas-annuler" data-action="annuler-repas" data-id="${r.id}">Annuler</button>`
+            : `<span class="repas-kcal">${Math.round(this.repasKcal(r))} kcal</span>`}
+       </div>
+       <ul class="repas-items">${items}</ul>
+    </div>`;
+  }
+
+  /* ---- bandeau du mode réorganisation : portée du déplacement (plan / aujourd'hui) ---- */
+  htmlReorgBar(){
+    const p = this.porteeDepl;
+    return `<div class="reorg-scope">
+        <span class="reorg-lbl">Déplacer&nbsp;:</span>
+        <button type="button" class="chip-mini${p==='plan'?' actif':''}" data-action="depl-portee" data-portee="plan">Dans le plan</button>
+        <button type="button" class="chip-mini${p==='jour'?' actif':''}" data-action="depl-portee" data-portee="jour">Aujourd'hui</button>
+      </div>
+      <p class="note reorg-note">${p==='plan'
+        ? 'Modifie ton plan pour de bon. Touche un aliment, puis choisis son nouveau repas.'
+        : 'Vaut seulement pour aujourd’hui (remis à zéro demain). Touche un aliment, puis choisis son repas.'}</p>`;
+  }
+
+  /* ---- carte repas en mode réorganisation : chaque aliment se déplace vers un autre repas ----
+     Un repas déjà pris est verrouillé (déjà journalisé) : ni source ni cible, pour ne pas
+     compter deux fois un aliment. */
+  htmlCarteReorg(r){
+    const pris = !!this.etat.repas.coches[r.id];
+    const plan = this.plan();
+    const items = r.items.map(([cle,qBase])=>{
+      const a = ALIMENTS[cle]; const q = this.qteAjustee(cle,qBase);
+      const lib = a.unite!==undefined ? `${q} ${a.unite}${q>1&&a.unite?'s':''}`.trim() : `${q} g`;
+      if(pris) return `<div class="ri-bloc"><div class="ri-tete fige"><span class="ri-nom">${echap(a.nom)}</span><span class="ri-qte">${lib}</span></div></div>`;
+      const ouvert = this.deplItem === r.id+':'+cle;
+      let cibles = '';
+      if(ouvert){
+        const dispo = plan.filter(t=>t.id!==r.id && !this.etat.repas.coches[t.id] && !t.items.some(([c])=>c===cle));
+        cibles = `<div class="ri-cibles">${dispo.length
+          ? dispo.map(t=>`<button type="button" class="chip" data-action="depl-vers" data-from="${r.id}" data-cle="${cle}" data-to="${t.id}">→ ${echap(t.nom)}</button>`).join('')
+          : '<span class="note" style="margin:0">Aucun repas dispo (déjà présent, ou repas pris).</span>'}</div>`;
+      }
+      return `<div class="ri-bloc${ouvert?' ouvert':''}">
+        <button type="button" class="ri-tete" data-action="depl-ouvrir" data-rid="${r.id}" data-cle="${cle}" aria-expanded="${ouvert}">
+          <span class="ri-nom">${echap(a.nom)}</span><span class="ri-qte">${lib}</span><span class="ri-move">⇄</span>
+        </button>${cibles}
+      </div>`;
+    }).join('');
+    return `<div class="repas-carte reorg${pris?' pris':''}">
+      <div class="repas-haut"><span class="repas-nom">${echap(r.nom)}</span>${pris?'<span class="repas-kcal">pris · verrouillé</span>':''}</div>
+      <div class="repas-items-reorg">${items}</div>
+    </div>`;
+  }
+
+  basculerReorg(){ this.reorgOuvert = !this.reorgOuvert; this.deplItem = null; this.render(); }
+  basculerDeplItem(rid, cle){ const k = rid+':'+cle; this.deplItem = this.deplItem===k ? null : k; this.render(); }
+
+  /* déplace un aliment d'un repas à l'autre, selon la portée choisie.
+     - 'jour' : agit sur une copie du plan valable aujourd'hui (planJour, créée à la volée)
+     - 'plan' : agit sur le plan permanent (et reporte le déplacement sur planJour si actif,
+                pour que la vue du jour reste cohérente). Repérage par `cle` → robuste. */
+  deplacerAliment(fromId, cle, toId){
+    const appliquer = repas => {
+      const from = repas.find(r=>r.id===fromId), to = repas.find(r=>r.id===toId);
+      if(!from || !to) return;
+      const i = from.items.findIndex(([c])=>c===cle);
+      if(i<0 || to.items.some(([c])=>c===cle)) return;
+      to.items.push(from.items.splice(i,1)[0]);
+    };
+    if(this.porteeDepl==='jour'){
+      if(!this.etat.repas.planJour) this.etat.repas.planJour = cloneProfond(this.etat.plan);
+      appliquer(this.etat.repas.planJour);
+    } else {
+      appliquer(this.etat.plan);
+      if(this.etat.repas.planJour) appliquer(this.etat.repas.planJour);
+    }
+    this.deplItem = null;
+    this.store.sauver();
+    this.render();
   }
 
   _reste(el, v, suffixe){

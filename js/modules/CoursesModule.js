@@ -60,7 +60,7 @@ export class CoursesModule {
     const ji = $('courses-jours');
     if(ji && document.activeElement!==ji) ji.value = jours;
     /* quantités dérivées du plan, recalculées à chaque rendu (suit l'objectif kcal) */
-    const conso = consoQuotidienne(this.etat.objectifKcal);
+    const conso = consoQuotidienne(this.etat.objectifKcal, this.etat.plan);
 
     const liste = $('courses-liste');
     const items = this.etat.courses.items;

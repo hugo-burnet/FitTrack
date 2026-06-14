@@ -1,5 +1,5 @@
 import { jourLocal, cloneProfond, slug } from './utils.js';
-import { CLE, OBJ_DEFAUT, PROG_DEFAUT, COURSES_DEFAUT } from './data.js';
+import { CLE, OBJ_DEFAUT, PLAN, PROG_DEFAUT, COURSES_DEFAUT } from './data.js';
 import { assainirEtat } from './sanitize.js';
 import { idbGet, idbSet } from './idb.js';
 
@@ -66,6 +66,11 @@ export class Store extends EventTarget {
     if(typeof etat.objectifKcal !== 'number') etat.objectifKcal = OBJ_DEFAUT;
     if(!etat.repas || typeof etat.repas !== 'object') etat.repas = { jour: jourLocal(), coches: {} };
     if(!etat.repas.coches) etat.repas.coches = {};
+    /* planJour : déplacements d'aliments valables seulement aujourd'hui (sinon null).
+       Réinitialisé à minuit comme les cochages (cf. resetSiNouveauJour). */
+    if(!Array.isArray(etat.repas.planJour)) etat.repas.planJour = null;
+    /* plan nutritionnel ÉDITABLE (déplacement d'aliments entre repas). Défaut = PLAN de référence. */
+    if(!Array.isArray(etat.plan) || !etat.plan.length) etat.plan = cloneProfond(PLAN);
     /* nouveaux modules : journal repas, muscu, courses */
     if(!Array.isArray(etat.journalRepas)) etat.journalRepas = [];
     if(!Array.isArray(etat.programmes) || !etat.programmes.length) etat.programmes = cloneProfond(PROG_DEFAUT);
@@ -140,6 +145,7 @@ export class Store extends EventTarget {
     if(this.etat.repas.jour !== j){
       this.etat.repas.jour = j;
       this.etat.repas.coches = {};
+      this.etat.repas.planJour = null;   /* les déplacements « aujourd'hui » expirent à minuit */
       this.sauver();
       return true;
     }

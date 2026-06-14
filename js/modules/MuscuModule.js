@@ -55,6 +55,10 @@ export class MuscuModule {
       if(e.target.closest('[data-action="set-add"]')){ this.ajouterSetLigne(e.target.closest('[data-action="set-add"]')); return; }
       if(e.target.closest('[data-action="set-del"]')){ this.supprimerSetLigne(e.target.closest('[data-action="set-del"]')); return; }
       if(e.target.closest('[data-action="toggle-uni-seance"]')){ this.toggleUniSeance(e.target.closest('[data-action="toggle-uni-seance"]')); return; }
+      const monter = e.target.closest('[data-action="exo-monter"]');
+      if(monter){ this.deplacerExoSeance(+monter.dataset.ei, -1); return; }
+      const descendre = e.target.closest('[data-action="exo-descendre"]');
+      if(descendre){ this.deplacerExoSeance(+descendre.dataset.ei, +1); return; }
       if(e.target.closest('[data-action="toggle-historique"]')){ this.toggleHistorique(+e.target.closest('[data-action="toggle-historique"]').dataset.exo); return; }
       if(e.target.closest('[data-action="repos"]')){ const b = e.target.closest('[data-action="repos"]'); this.timer.start(+b.dataset.sec, b.dataset.nom); return; }
       if(e.target.closest('[data-action="enregistrer-seance"]')){ this.enregistrerSeance(); return; }
@@ -80,6 +84,8 @@ export class MuscuModule {
       const a = b.dataset.action, ji = +b.dataset.ji, ei = +b.dataset.ei;
       if(a==='ajouter-exo') this.ajouterExo(ji);
       else if(a==='suppr-exo') this.supprimerExo(ji, ei);
+      else if(a==='monter-exo') this.deplacerExo(ji, ei, -1);
+      else if(a==='descendre-exo') this.deplacerExo(ji, ei, +1);
       else if(a==='ajouter-jour') this.ajouterJour();
       else if(a==='suppr-jour') this.supprimerJour(ji);
       else if(a==='nouveau-programme') this.nouveauProgramme();
@@ -317,6 +323,8 @@ export class MuscuModule {
         ${objectif}
         ${histoPanel}
         <div class="exo-controls">
+          <button class="chip-mini ordre" data-action="exo-monter" data-ei="${ei}" aria-label="Monter l'exercice"${ei===0?' disabled':''}>↑</button>
+          <button class="chip-mini ordre" data-action="exo-descendre" data-ei="${ei}" aria-label="Descendre l'exercice"${ei===jour.exercices.length-1?' disabled':''}>↓</button>
           <button class="chip-mini uni-toggle${uni?' actif':''}" data-action="toggle-uni-seance" aria-pressed="${uni}">Unilatéral · charge d'un côté</button>
         </div>
         ${lastLine}
@@ -630,6 +638,8 @@ export class MuscuModule {
           <button class="suppr" aria-label="Supprimer l'exercice" data-action="suppr-exo" data-ji="${ji}" data-ei="${ei}">✕</button>
         </div>
         <div class="ed-exo-opts">
+          <button class="chip-mini ordre" data-action="monter-exo" data-ji="${ji}" data-ei="${ei}" aria-label="Monter l'exercice"${ei===0?' disabled':''}>↑</button>
+          <button class="chip-mini ordre" data-action="descendre-exo" data-ji="${ji}" data-ei="${ei}" aria-label="Descendre l'exercice"${ei===j.exercices.length-1?' disabled':''}>↓</button>
           <button class="chip-mini${ex.gainage?' actif':''}" data-action="toggle-flag" data-ji="${ji}" data-ei="${ei}" data-flag="gainage">Gainage</button>
           <button class="chip-mini${ex.unilateral?' actif':''}" data-action="toggle-flag" data-ji="${ji}" data-ei="${ei}" data-flag="unilateral">Unilatéral</button>
           <button class="chip-mini${ex.contraction2s?' actif':''}" data-action="toggle-flag" data-ji="${ji}" data-ei="${ei}" data-flag="contraction2s">Contraction 2 s</button>
@@ -679,6 +689,30 @@ export class MuscuModule {
   }
   ajouterExo(ji){ this.programmeActif().jours[ji].exercices.push({nom:'', series:3, reps:'10-12'}); this.store.sauver(); this.afficherEditeur(); }
   supprimerExo(ji, ei){ this.programmeActif().jours[ji].exercices.splice(ei,1); this.store.sauver(); this.afficherEditeur(); this.renderSeanceForm(); }
+
+  /* ---- réordonner les exercices d'une séance (machine prise, exo ajouté…) ----
+     permute ei↔ei+dir dans le programme ; déplace aussi le brouillon en cours (blocs/unis
+     sont indexés par position) pour ne pas raccrocher des séries au mauvais exercice. */
+  _permuterExo(jour, ei, dir){
+    const exos = jour.exercices;
+    const j = ei + dir;
+    if(j < 0 || j >= exos.length) return false;
+    const swap = a => { if(Array.isArray(a)){ const t = a[ei]; a[ei] = a[j]; a[j] = t; } };
+    swap(exos);
+    const d = this.etat.brouillons[jour.id];
+    if(d){ swap(d.blocs); swap(d.unis); }
+    this.store.sauver();
+    return true;
+  }
+  deplacerExoSeance(ei, dir){
+    const jour = this.jourCourant(); if(!jour) return;
+    this.sauverBrouillon();                 /* fige la saisie DOM en cours AVANT de permuter */
+    if(this._permuterExo(jour, ei, dir)) this.renderSeanceForm();
+  }
+  deplacerExo(ji, ei, dir){
+    const jour = this.programmeActif().jours[ji]; if(!jour) return;
+    if(this._permuterExo(jour, ei, dir)){ this.afficherEditeur(); this.renderSeanceForm(); }
+  }
   ajouterJour(){ this.programmeActif().jours.push({id:'j'+Date.now(), nom:'Nouvelle séance', exercices:[]}); this.store.sauver(); this.render(); }
   async supprimerJour(ji){
     const prog = this.programmeActif();

@@ -24,6 +24,10 @@ export function fusionnerEtat(etat, imp){
   /* objectif kcal : l'entrant gagne s'il est présent */
   if(typeof imp.objectifKcal === 'number') etat.objectifKcal = imp.objectifKcal;
 
+  /* plan de repas éditable (déplacement d'aliments) : l'entrant gagne s'il est valide
+     (assaini ci-dessus → null si corrompu). Pas de fusion fine : c'est une structure unique. */
+  if(Array.isArray(imp.plan)) etat.plan = imp.plan;
+
   /* repas du jour : fusion OR (coché sur un appareil = coché) */
   if(imp.repas && imp.repas.jour === jourLocal()){
     if(etat.repas.jour !== jourLocal()){ etat.repas = {jour:jourLocal(), coches:{}}; }

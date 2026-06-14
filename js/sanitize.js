@@ -6,8 +6,26 @@
    Règle d'or : ne JAMAIS lever d'exception. On laisse tomber les entrées
    invalides et on renvoie des données propres, pour que le rendu ne crashe jamais. */
 
+import { ALIMENTS } from './data.js';
+
 export function estNombre(x){ return typeof x === 'number' && isFinite(x); }
 export function estChaine(x){ return typeof x === 'string'; }
+
+/* ---- plan de repas éditable : [{id, nom, items:[[cle,qté],…]}] ----
+   On ne garde que les aliments connus (cle ∈ ALIMENTS) et les quantités numériques.
+   Renvoie null si rien d'exploitable → Store/Import retombe sur le plan par défaut. */
+export function assainirRepasPlan(arr){
+  if(!Array.isArray(arr)) return null;
+  const repas = arr
+    .filter(r => r && typeof r === 'object' && estChaine(r.id) && Array.isArray(r.items))
+    .map(r => ({
+      ...r,
+      items: r.items
+        .filter(it => Array.isArray(it) && it.length >= 2 && estChaine(it[0]) && ALIMENTS[it[0]] && estNombre(it[1]))
+        .map(([cle, q]) => [cle, q]),
+    }));
+  return repas.length ? repas : null;
+}
 
 /* ---- entrées datées (pesées, mensurations) : la clé de fusion est `date` ---- */
 export function assainirDates(arr){
@@ -76,6 +94,9 @@ export function assainirEtat(etat){
   if('mensurations' in etat)  etat.mensurations = assainirDates(etat.mensurations);
   if('seances' in etat)       etat.seances      = assainirSeances(etat.seances);
   if('journalRepas' in etat)  etat.journalRepas = assainirJournalRepas(etat.journalRepas);
+  if('plan' in etat)          etat.plan         = assainirRepasPlan(etat.plan);   /* null → Store re-défaut */
+  if(etat.repas && typeof etat.repas === 'object' && 'planJour' in etat.repas)
+    etat.repas.planJour = assainirRepasPlan(etat.repas.planJour);                  /* null → pas de surcharge */
   if(Array.isArray(etat.programmes)) etat.programmes = assainirProgrammes(etat.programmes);
   if(etat.courses && typeof etat.courses === 'object' && 'items' in etat.courses)
     etat.courses.items = assainirCoursesItems(etat.courses.items);
