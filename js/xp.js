@@ -17,8 +17,13 @@
 import { e1rm } from './stats.js';
 
 /* XP d'une série au poids du corps (charge nulle) : on valorise quand même l'effort,
-   à raison de N points par rep (gainage, tractions lestées non, pompes, etc.). */
+   à raison de N points par rep (tractions non lestées, pompes, etc.). */
 export const XP_REP_POIDS_CORPS = 10;
+
+/* Gainage / isométrie : pas de charge, donc le « volume » est le TEMPS SOUS TENSION —
+   durée d'un maintien (s) × nombre de reps, valorisé à N points la seconde. Calibré
+   pour qu'une série de gainage pèse dans le même ordre de grandeur qu'une série légère. */
+export const XP_SEC_GAINAGE = 2;
 
 /* Courbe de niveaux : XP cumulé requis pour ATTEINDRE le niveau L = BASE·(L-1)^EXP.
    EXP > 1 ⇒ chaque palier demande davantage que le précédent (la pente s'accentue),
@@ -42,11 +47,24 @@ export function xpSerie(charge, reps){
   return r * XP_REP_POIDS_CORPS;
 }
 
+/* XP d'une série de gainage : temps sous tension (durée × reps) × forfait/seconde. */
+export function xpSerieGainage(duree, reps){
+  const d = Number(duree), r = Number(reps);
+  if(!Number.isFinite(d) || d <= 0 || !Number.isFinite(r) || r <= 0) return 0;
+  return d * r * XP_SEC_GAINAGE;
+}
+
+/* XP d'une série, gainage (a une `duree`) ou charge — aiguillage sur la nature de la série. */
+export function xpDeSerie(s){
+  if(!s) return 0;
+  return s.duree != null ? xpSerieGainage(s.duree, s.reps) : xpSerie(s.charge, s.reps);
+}
+
 /* XP d'un exercice d'une séance. L'unilatéral compte les DEUX côtés (×2), cohérent
    avec le calcul de volume de la courbe de progression. */
 export function xpExercice(ex){
   if(!ex || !Array.isArray(ex.series)) return 0;
-  const v = ex.series.reduce((a, s) => a + xpSerie(s.charge, s.reps), 0);
+  const v = ex.series.reduce((a, s) => a + xpDeSerie(s), 0);
   return ex.unilateral ? v * 2 : v;
 }
 
@@ -60,7 +78,7 @@ export function xpSeance(exercices){
 /* volume brut d'un tableau de séries (sans le ×2 unilatéral : il s'annule de toute
    façon dans une comparaison, et la charge d'un côté reste comparable d'une fois sur l'autre). */
 function volumeBrut(series){
-  return Array.isArray(series) ? series.reduce((a, s) => a + xpSerie(s.charge, s.reps), 0) : 0;
+  return Array.isArray(series) ? series.reduce((a, s) => a + xpDeSerie(s), 0) : 0;
 }
 /* meilleur 1RM estimé du tableau (Epley borné, cf. stats.js) */
 function meilleurE1rm(series){

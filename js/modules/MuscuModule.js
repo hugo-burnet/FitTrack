@@ -5,7 +5,7 @@ import { optCommun } from '../charts.js';
 import { RestTimer } from '../RestTimer.js';
 import {
   parseFourchette, recommander, reposRecommande, fmtRepos,
-  meilleurE1rm, meilleureCharge, PAS_DEFAUT
+  meilleurE1rm, meilleureCharge, meilleurTemps, tempsSousTension, PAS_DEFAUT
 } from '../progression.js';
 import { xpTotal, xpGagneExercice, xpExerciceTotal, infosNiveau, niveauPourXp, fmtXp, XP_BASE_EXO } from '../xp.js';
 
@@ -118,6 +118,16 @@ export class MuscuModule {
   fmtPerf(series, unilateral){
     if(!series || !series.length) return '';
     const cote = unilateral ? '/côté' : '';
+    /* gainage : on affiche des temps de maintien, pas des charges (« 30 s · 3/3/3 ») */
+    if(series[0] && series[0].duree!=null){
+      const durees = series.map(s=>s.duree);
+      const memeDuree = durees.every(d=>d===durees[0]);
+      if(memeDuree){
+        const d = durees[0];
+        return (d!=null ? d+' s'+(cote?' '+cote:'')+' · ' : '') + series.map(s=>s.reps).join('/');
+      }
+      return series.map(s=>(s.duree!=null ? s.duree+'s×' : '') + s.reps).join(' · ') + (unilateral ? ' /côté' : '');
+    }
     const charges = series.map(s=>s.charge);
     const memeCharge = charges.every(c=>c===charges[0]);
     if(memeCharge){
@@ -196,7 +206,9 @@ export class MuscuModule {
     const blocs = [], unis = [];
     jour.exercices.forEach((ex,ei)=>{
       const last = this.dernierePerf(ex.nom);
-      blocs[ei] = last ? last.series.map(s=>({ charge: s.charge!=null?String(s.charge):'', reps: s.reps!=null?String(s.reps):'' })) : [];
+      blocs[ei] = last ? last.series.map(s=>({
+        charge: ex.gainage ? (s.duree!=null?String(s.duree):'') : (s.charge!=null?String(s.charge):''),
+        reps: s.reps!=null?String(s.reps):'' })) : [];
       unis[ei] = last && last.unilateral!=null ? !!last.unilateral : !!ex.unilateral;
     });
     const dateEl = $('muscu-date');
@@ -251,7 +263,9 @@ export class MuscuModule {
       html += `<button class="btn btn-2" data-action="prefill-derniere" style="margin-bottom:6px">↩ Comme la dernière fois</button>`;
 
     html += jour.exercices.map((ex,ei)=>{
-      const presc = `${ex.series} × ${ex.reps}${ex.note?' · '+ex.note:''}`;
+      const presc = ex.gainage
+        ? `${ex.series} × maintien${ex.dureeCible?' '+ex.dureeCible+' s':''}${ex.note?' · '+ex.note:''}`
+        : `${ex.series} × ${ex.reps}${ex.note?' · '+ex.note:''}`;
       const last = this.dernierePerf(ex.nom);
       const reco = recommander(ex, last ? last.series : null);
       const xpExo = xpExerciceTotal(this.etat.seances, ex.nom);
@@ -263,6 +277,7 @@ export class MuscuModule {
       const uni = draft && draft.unis && draft.unis[ei]!=null ? draft.unis[ei] : !!ex.unilateral;
 
       const badges = [];
+      if(ex.gainage)       badges.push('<span class="exo-badge b-gain">Gainage · temps</span>');
       if(uni)              badges.push('<span class="exo-badge b-uni">Unilatéral · 1 côté</span>');
       if(ex.contraction2s) badges.push('<span class="exo-badge b-tempo">Contraction 2 s</span>');
       badges.push(`<span class="exo-badge b-repos">⏱ ${fmtRepos(repos)}</span>`);
@@ -281,14 +296,17 @@ export class MuscuModule {
       let rows='';
       for(let i=0;i<nRows;i++){
         const ph = last && last.series[i] ? last.series[i] : null;
-        const phC = ph && ph.charge!=null ? ph.charge+' kg'+(uni?'/côté':'') : (ex.gainage?'—':(uni?'kg/côté':'kg'));
+        let phC;
+        if(ex.gainage) phC = ph && ph.duree!=null ? ph.duree+' s' : (ex.dureeCible ? ex.dureeCible+' s' : 's');
+        else           phC = ph && ph.charge!=null ? ph.charge+' kg'+(uni?'/côté':'') : (uni?'kg/côté':'kg');
         const phR = ph ? ph.reps+' reps' : (uni?'reps/côté':'reps');
         const dv = dBloc && dBloc[i] ? dBloc[i] : null;
         const vc = dv && dv.charge!=='' && dv.charge!=null ? ` value="${echap(dv.charge)}"` : '';
         const vr = dv && dv.reps!=='' && dv.reps!=null ? ` value="${echap(dv.reps)}"` : '';
+        const stepAttr = ex.gainage ? 'step="1" inputmode="numeric"' : 'step="0.5" inputmode="decimal"';
         rows += `<div class="set-ligne">
           <span class="set-n">${i+1}</span>
-          <input class="in-charge" type="number" step="0.5" inputmode="decimal" placeholder="${phC}"${vc}>
+          <input class="in-charge" type="number" ${stepAttr} placeholder="${phC}"${vc}>
           <input class="in-reps" type="number" inputmode="numeric" placeholder="${phR}"${vr}>
           <button class="set-del" data-action="set-del" aria-label="Supprimer la série">✕</button>
         </div>`;
@@ -314,12 +332,16 @@ export class MuscuModule {
   }
 
   ajouterSetLigne(btn){
-    const sets = btn.closest('.exo-bloc').querySelector('.sets');
+    const bloc = btn.closest('.exo-bloc');
+    const jour = this.jourCourant();
+    const ex = jour && jour.exercices[+bloc.dataset.exo];
+    const gainage = !!(ex && ex.gainage);
+    const sets = bloc.querySelector('.sets');
     const n = sets.children.length + 1;
     const div = document.createElement('div');
     div.className = 'set-ligne';
     div.innerHTML = `<span class="set-n">${n}</span>
-      <input class="in-charge" type="number" step="0.5" inputmode="decimal" placeholder="kg">
+      <input class="in-charge" type="number" ${gainage?'step="1" inputmode="numeric"':'step="0.5" inputmode="decimal"'} placeholder="${gainage?'s':'kg'}">
       <input class="in-reps" type="number" inputmode="numeric" placeholder="reps">
       <button class="set-del" data-action="set-del" aria-label="Supprimer la série">✕</button>`;
     sets.appendChild(div);
@@ -376,12 +398,19 @@ export class MuscuModule {
       const uni = t ? t.classList.contains('actif') : !!ex.unilateral;  /* unilatéral DÉCLARÉ pour cette séance */
       const series=[];
       bloc.querySelectorAll('.set-ligne').forEach(row=>{
-        const charge = parseFloat(row.querySelector('.in-charge').value);
+        const v1 = row.querySelector('.in-charge').value;
         const reps = parseInt(row.querySelector('.in-reps').value,10);
-        if(!isNaN(reps)) series.push({ charge: isNaN(charge)?null:charge, reps });
+        if(isNaN(reps)) return;
+        if(ex.gainage){
+          const duree = parseInt(v1,10);                 /* le 1er champ = temps de maintien (s) */
+          series.push({ duree: isNaN(duree)?null:duree, reps });
+        } else {
+          const charge = parseFloat(v1);
+          series.push({ charge: isNaN(charge)?null:charge, reps });
+        }
       });
       if(series.length) exercices.push({ nom:ex.nom, presc:`${ex.series}×${ex.reps}`, series,
-        unilateral:uni, contraction2s:!!ex.contraction2s });
+        unilateral:uni, contraction2s:!!ex.contraction2s, gainage:!!ex.gainage });
     });
     if(!exercices.length){ toast('Note au moins une série (reps) sur un exercice.', 'erreur'); return; }
 
@@ -405,6 +434,16 @@ export class MuscuModule {
     const lignes = exercices.map(exo=>{
       const perf = this.fmtPerf(exo.series, exo.unilateral);   /* détail réel des séries (charges variables incluses) */
       const prev = this.perfPrecedente(date, exo.nom);
+      /* gainage : on compare le temps de maintien et le temps sous tension, pas une charge */
+      if(exo.gainage){
+        const tNow = meilleurTemps(exo.series), tutNow = tempsSousTension(exo.series);
+        if(!prev) return { nom:exo.nom, gainage:true, statut:'nouveau', perf };
+        const tPrev = meilleurTemps(prev.series), tutPrev = tempsSousTension(prev.series);
+        const dT = (tNow!=null && tPrev!=null) ? tNow - tPrev : null;
+        let ton = 'flat';
+        if(tutNow > tutPrev + 1e-9) ton='up'; else if(tutNow < tutPrev - 1e-9) ton='down';
+        return { nom:exo.nom, gainage:true, statut:'compare', perf, dT, ton };
+      }
       const e1Now = meilleurE1rm(exo.series), cNow = meilleureCharge(exo.series);
       if(!prev) return { nom:exo.nom, statut:'nouveau', perf, cNow, e1Now };
       const e1Prev = meilleurE1rm(prev.series), cPrev = meilleureCharge(prev.series);
@@ -443,9 +482,10 @@ export class MuscuModule {
       /* NB: progression (▲) en vert (.down) ; régression (▼) en rouge (.up) — cohérent avec le reste de l'app */
     };
     const lignes = r.lignes.map(l=>{
-      const delta = l.statut==='nouveau'
-        ? '<span class="flat">nouvel exo</span>'
-        : `${arrow(l.dE1,'kg 1RM')}${l.dC!=null && Math.abs(l.dC)>=0.1 ? ' · '+arrow(l.dC,'kg') : ''}`;
+      let delta;
+      if(l.statut==='nouveau') delta = l.gainage ? '<span class="flat">nouveau gainage</span>' : '<span class="flat">nouvel exo</span>';
+      else if(l.gainage)       delta = arrow(l.dT, 's');
+      else                     delta = `${arrow(l.dE1,'kg 1RM')}${l.dC!=null && Math.abs(l.dC)>=0.1 ? ' · '+arrow(l.dC,'kg') : ''}`;
       return `<li>
         <div class="rc-tete"><span class="rc-nom">${echap(l.nom)}</span><span class="rc-delta">${delta}</span></div>
         <div class="rc-perf mono">${echap(l.perf)}</div>
@@ -529,32 +569,41 @@ export class MuscuModule {
   }
   dessinerProgression(nom){
     this.exoProgressionSel = nom;
+    /* gainage : la courbe suit le temps de maintien (s) et le temps sous tension, pas un 1RM */
+    const estGainage = this.etat.seances.some(s=>{ const e=s.exercices.find(x=>x.nom===nom); return e && e.series.some(se=>se.duree!=null); });
     const pts = [];
     this.etat.seances.forEach(s=>{
       const ex = s.exercices.find(e=>e.nom===nom);
       if(!ex) return;
       let best=null, vol=0;
       ex.series.forEach(se=>{
-        vol += (se.charge||0)*se.reps;
-        const e = e1rm(se.charge, se.reps);  /* 1RM estimé = par côté pour l'unilatéral (charge d'un côté) */
-        if(e!=null && (best==null || e>best)) best=e;
+        if(se.duree!=null){                            /* gainage : meilleur temps + temps sous tension */
+          vol += se.duree*(se.reps||0);
+          if(best==null || se.duree>best) best=se.duree;
+        } else {
+          vol += (se.charge||0)*se.reps;
+          const e = e1rm(se.charge, se.reps);  /* 1RM estimé = par côté pour l'unilatéral (charge d'un côté) */
+          if(e!=null && (best==null || e>best)) best=e;
+        }
       });
       if(ex.unilateral) vol *= 2;            /* volume total = les deux côtés */
       pts.push({ date:s.date, e1rm:best, vol });
     });
     pts.sort((a,b)=>a.date.localeCompare(b.date));
-    /* couleur des points : vert si le 1RM monte vs point précédent, rouge s'il baisse (réductions visibles) */
+    /* couleur des points : vert si la mesure monte vs point précédent, rouge si elle baisse */
     const couleursPts = pts.map((p,i)=>{
       if(i===0 || p.e1rm==null || pts[i-1].e1rm==null) return '#4d7ef0';
       if(p.e1rm > pts[i-1].e1rm + 0.05) return '#4cb784';
       if(p.e1rm < pts[i-1].e1rm - 0.05) return '#e07a63';
       return '#4d7ef0';
     });
+    const labelMesure = estGainage ? 'Temps max (s)' : '1RM estimé (kg)';
+    const labelVol = estGainage ? 'Temps sous tension (s·reps)' : 'Volume (kg·reps)';
     const ctx = $('graph-prog');
     if(this.chProg) this.chProg.destroy();
     this.chProg = new Chart(ctx,{type:'line',data:{labels:pts.map(p=>fmtDate(p.date)),datasets:[
-      {label:'1RM estimé (kg)', data:pts.map(p=>p.e1rm!=null?Math.round(p.e1rm*10)/10:null), borderColor:'#4d7ef0',backgroundColor:couleursPts,pointBackgroundColor:couleursPts,borderWidth:2.5,pointRadius:5,tension:.25,spanGaps:true},
-      {label:'Volume (kg·reps)', data:pts.map(p=>Math.round(p.vol)), borderColor:'#9aa1ab',backgroundColor:'#9aa1ab',borderWidth:1.5,pointRadius:3,tension:.25,yAxisID:'y2',spanGaps:true}
+      {label:labelMesure, data:pts.map(p=>p.e1rm!=null?Math.round(p.e1rm*10)/10:null), borderColor:'#4d7ef0',backgroundColor:couleursPts,pointBackgroundColor:couleursPts,borderWidth:2.5,pointRadius:5,tension:.25,spanGaps:true},
+      {label:labelVol, data:pts.map(p=>Math.round(p.vol)), borderColor:'#9aa1ab',backgroundColor:'#9aa1ab',borderWidth:1.5,pointRadius:3,tension:.25,yAxisID:'y2',spanGaps:true}
     ]},options:{...optCommun,scales:{...optCommun.scales,
       y2:{position:'right',ticks:{color:'#9aa1ab',font:{family:'Inter, system-ui, sans-serif',size:11}},grid:{display:false}}
     }}});
@@ -581,9 +630,12 @@ export class MuscuModule {
           <button class="suppr" aria-label="Supprimer l'exercice" data-action="suppr-exo" data-ji="${ji}" data-ei="${ei}">✕</button>
         </div>
         <div class="ed-exo-opts">
+          <button class="chip-mini${ex.gainage?' actif':''}" data-action="toggle-flag" data-ji="${ji}" data-ei="${ei}" data-flag="gainage">Gainage</button>
           <button class="chip-mini${ex.unilateral?' actif':''}" data-action="toggle-flag" data-ji="${ji}" data-ei="${ei}" data-flag="unilateral">Unilatéral</button>
           <button class="chip-mini${ex.contraction2s?' actif':''}" data-action="toggle-flag" data-ji="${ji}" data-ei="${ei}" data-flag="contraction2s">Contraction 2 s</button>
-          <label class="ed-pas">Pas <input type="number" step="0.5" min="0.5" value="${ex.pas!=null?ex.pas:PAS_DEFAUT}" data-action="maj-exo" data-ji="${ji}" data-ei="${ei}" data-champ="pas"> kg</label>
+          ${ex.gainage
+            ? `<label class="ed-pas">Cible <input type="number" step="1" min="1" value="${ex.dureeCible!=null?ex.dureeCible:''}" data-action="maj-exo" data-ji="${ji}" data-ei="${ei}" data-champ="dureeCible"> s</label>`
+            : `<label class="ed-pas">Pas <input type="number" step="0.5" min="0.5" value="${ex.pas!=null?ex.pas:PAS_DEFAUT}" data-action="maj-exo" data-ji="${ji}" data-ei="${ei}" data-champ="pas"> kg</label>`}
         </div>`).join('');
       return `<div class="ed-jour">
         <div class="ed-jour-tete">
@@ -610,6 +662,7 @@ export class MuscuModule {
     const ex = this.programmeActif().jours[ji].exercices[ei];
     if(champ==='series') ex.series = Math.max(1, parseInt(v,10)||1);
     else if(champ==='pas'){ const n = parseFloat(v); ex.pas = (isNaN(n)||n<=0) ? undefined : n; }
+    else if(champ==='dureeCible'){ const n = parseInt(v,10); ex.dureeCible = (isNaN(n)||n<=0) ? undefined : n; }
     else ex[champ] = v.trim();
     this.store.sauver();
     /* le formulaire suit (nom, objectif, repos dépendent de nom/reps/pas) sans toucher

@@ -69,6 +69,7 @@ export class Store extends EventTarget {
     /* nouveaux modules : journal repas, muscu, courses */
     if(!Array.isArray(etat.journalRepas)) etat.journalRepas = [];
     if(!Array.isArray(etat.programmes) || !etat.programmes.length) etat.programmes = cloneProfond(PROG_DEFAUT);
+    this._migrerMcGill(etat);   /* l'ancien « Circuit McGill big 3 » devient 3 gainages distincts */
     if(!etat.programmeActif || !etat.programmes.some(p=>p.id===etat.programmeActif)) etat.programmeActif = etat.programmes[0].id;
     if(!Array.isArray(etat.seances)) etat.seances = [];
     if(!etat.courses || typeof etat.courses !== 'object') etat.courses = { items:[], coches:{}, maj:null };
@@ -79,6 +80,22 @@ export class Store extends EventTarget {
     /* brouillons de séance (saisie en cours, non encore enregistrée) par id de jour */
     if(!etat.brouillons || typeof etat.brouillons !== 'object') etat.brouillons = {};
     if(typeof etat.autoExport !== 'boolean') etat.autoExport = false;
+  }
+
+  /* migration : le « Circuit McGill big 3 » (une ligne, comptée en charge) est remplacé
+     in situ par ses 3 mouvements, chacun en gainage (temps + reps). Idempotent : après
+     remplacement le nom ne matche plus. N'altère pas l'historique des séances déjà notées. */
+  _migrerMcGill(etat){
+    const splits = [
+      {nom:'Curl-up (McGill big 3)',    series:3, reps:'tours', gainage:true, dureeCible:10},
+      {nom:'Side plank (McGill big 3)', series:2, reps:'tours', gainage:true, dureeCible:10, unilateral:true},
+      {nom:'Bird-dog (McGill big 3)',   series:3, reps:'tours', gainage:true, dureeCible:10},
+    ];
+    (etat.programmes||[]).forEach(p=>(p.jours||[]).forEach(j=>{
+      if(!Array.isArray(j.exercices)) return;
+      const i = j.exercices.findIndex(e=>e && e.nom==='Circuit McGill big 3');
+      if(i>=0) j.exercices.splice(i, 1, ...cloneProfond(splits));
+    }));
   }
 
   _localStorageDispo(){

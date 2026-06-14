@@ -15,11 +15,11 @@ export function assainirDates(arr){
   return arr.filter(x => x && typeof x === 'object' && estChaine(x.date));
 }
 
-/* ---- série de muscu : {charge: number|null, reps: number} ---- */
+/* ---- série de muscu : charge {charge:number|null, reps} OU gainage {duree:number|null, reps} ---- */
 export function serieValide(s){
-  return s && typeof s === 'object'
-    && (s.charge === null || estNombre(s.charge))
-    && estNombre(s.reps);
+  if(!s || typeof s !== 'object' || !estNombre(s.reps)) return false;
+  if('duree' in s) return s.duree === null || estNombre(s.duree);   /* gainage : temps de maintien */
+  return s.charge === null || estNombre(s.charge);                  /* charge classique */
 }
 
 /* ---- une séance : date + exercices[] dont chaque exercice a des séries valides ---- */
@@ -30,7 +30,7 @@ export function assainirSeance(s){
     .filter(e => e && typeof e === 'object' && estChaine(e.nom) && Array.isArray(e.series))
     .map(e => ({
       ...e,
-      series: e.series.filter(serieValide).map(x => ({ charge: x.charge, reps: x.reps })),
+      series: e.series.filter(serieValide).map(x => 'duree' in x ? { duree: x.duree, reps: x.reps } : { charge: x.charge, reps: x.reps }),
     }))
     .filter(e => e.series.length);          /* un exercice sans série valide est vide → écarté */
   if(!exercices.length) return null;        /* une séance sans exercice valide est inutile */

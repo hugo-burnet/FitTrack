@@ -49,7 +49,9 @@ export const PROG_DEFAUT = [{
       {nom:'Leg curl assis', series:3, reps:'10-12'},
       {nom:'Leg extension', series:3, reps:'12-15'},
       {nom:'Mollets assis', series:3, reps:'12-15'},
-      {nom:'Circuit McGill big 3', series:2, reps:'tours', gainage:true},
+      {nom:'Curl-up (McGill big 3)',    series:3, reps:'tours', gainage:true, dureeCible:10},
+      {nom:'Side plank (McGill big 3)', series:2, reps:'tours', gainage:true, dureeCible:10, unilateral:true},
+      {nom:'Bird-dog (McGill big 3)',   series:3, reps:'tours', gainage:true, dureeCible:10},
     ]},
     {id:'upper', nom:'Upper', exercices:[
       {nom:'Développé incliné haltères', series:3, reps:'10-12'},
@@ -65,7 +67,9 @@ export const PROG_DEFAUT = [{
       {nom:'Leg curl allongé', series:3, reps:'12-15'},
       {nom:'Mollets assis', series:3, reps:'15'},
       {nom:'Fentes bulgares haltères', series:2, reps:'12/jambe', unilateral:true},
-      {nom:'Circuit McGill big 3', series:2, reps:'tours', gainage:true},
+      {nom:'Curl-up (McGill big 3)',    series:3, reps:'tours', gainage:true, dureeCible:10},
+      {nom:'Side plank (McGill big 3)', series:2, reps:'tours', gainage:true, dureeCible:10, unilateral:true},
+      {nom:'Bird-dog (McGill big 3)',   series:3, reps:'tours', gainage:true, dureeCible:10},
     ]},
   ]
 }];

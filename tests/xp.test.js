@@ -1,10 +1,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  xpSerie, xpExercice, xpSeance, xpTotal, xpExerciceTotal,
+  xpSerie, xpSerieGainage, xpDeSerie, xpExercice, xpSeance, xpTotal, xpExerciceTotal,
   xpCumulNiveau, niveauPourXp, titreNiveau, infosNiveau,
   seanceAmelioree, xpGagneExercice,
-  XP_REP_POIDS_CORPS, XP_BASE_EXO,
+  XP_REP_POIDS_CORPS, XP_SEC_GAINAGE, XP_BASE_EXO,
 } from '../js/xp.js';
 
 test('xpSerie : volume charge×reps, forfait au poids du corps, séries invalides nulles', () => {
@@ -14,6 +14,32 @@ test('xpSerie : volume charge×reps, forfait au poids du corps, séries invalide
   assert.equal(xpSerie(50, 0), 0);
   assert.equal(xpSerie(50, NaN), 0);
   assert.equal(xpSerie(50, -3), 0);
+});
+
+test('gainage : XP = temps sous tension (durée × reps), pas de charge', () => {
+  assert.equal(xpSerieGainage(30, 3), 30 * 3 * XP_SEC_GAINAGE);
+  assert.equal(xpSerieGainage(0, 3), 0);
+  assert.equal(xpSerieGainage(30, 0), 0);
+  assert.equal(xpSerieGainage(NaN, 3), 0);
+  // xpDeSerie aiguille sur la nature de la série
+  assert.equal(xpDeSerie({ duree:30, reps:3 }), 30 * 3 * XP_SEC_GAINAGE);
+  assert.equal(xpDeSerie({ charge:50, reps:10 }), 500);
+  // un exercice de gainage agrège ses temps sous tension, ×2 si unilatéral
+  const series = [{ duree:30, reps:3 }, { duree:20, reps:3 }];   // (90+60)×2 = 300
+  assert.equal(xpExercice({ series }), 300);
+  assert.equal(xpExercice({ series, unilateral:true }), 600);
+});
+
+test('gainage : progression jugée sur le temps sous tension', () => {
+  const prev = { series:[{ duree:30, reps:3 }] };               // TUT 90
+  const plusLong = { series:[{ duree:35, reps:3 }] };           // TUT 105 → mieux
+  const plusDeReps = { series:[{ duree:30, reps:4 }] };         // TUT 120 → mieux
+  const pareil = { series:[{ duree:30, reps:3 }] };             // identique
+  assert.equal(seanceAmelioree(plusLong.series, prev.series), true);
+  assert.equal(seanceAmelioree(plusDeReps.series, prev.series), true);
+  assert.equal(seanceAmelioree(pareil.series, prev.series), false);
+  assert.equal(xpGagneExercice(plusLong, prev), xpExercice(plusLong));
+  assert.equal(xpGagneExercice(pareil, prev), 0);
 });
 
 test('xpExercice : somme des séries, unilatéral compté des deux côtés', () => {

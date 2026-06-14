@@ -386,6 +386,7 @@ select{-webkit-appearance:none;appearance:none}
 .exo-badge.mini{font-size:9px;padding:1px 5px;vertical-align:middle}
 .b-uni{color:var(--accent-soft);border-color:var(--laiton)}
 .b-tempo{color:#c79be0;border-color:#5a4a70}
+.b-gain{color:#7fc8c0;border-color:#3d6460}
 .b-repos{color:var(--craie-2);border-color:var(--trait)}
 .b-niv{color:var(--accent-soft);border-color:var(--laiton);background:var(--plaque-2)}
 

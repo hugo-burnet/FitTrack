@@ -58,8 +58,41 @@ export function statsExo(seances, nom){
   return { sessions, niveau, record: record===-Infinity ? null : record };
 }
 
+/* gainage : meilleur temps de maintien (s) et temps sous tension total (s·reps) d'un tableau */
+export function meilleurTemps(series){
+  let best = null;
+  (Array.isArray(series) ? series : []).forEach(s=>{ if(s.duree!=null && (best==null || s.duree>best)) best = s.duree; });
+  return best;
+}
+export function tempsSousTension(series){
+  return (Array.isArray(series) ? series : []).reduce((a,s)=> a + (s.duree!=null ? s.duree*(s.reps||0) : 0), 0);
+}
+
+/* recommandation gainage : pas de charge, on pilote le TEMPS de maintien vers une cible. */
+function recommanderGainage(ex, lastSeries){
+  const cible = ex && ex.dureeCible;
+  if(!lastSeries || !lastSeries.length){
+    return { statut:'demarrer', ton:'neutre', xp:0, cible:null,
+      message: cible ? `Première fois : tiens la position proprement, vise ${cible} s par série.`
+                     : `Première fois : tiens la position le plus longtemps possible, propre.` };
+  }
+  const best = meilleurTemps(lastSeries);
+  if(!cible || best==null){
+    return { statut:'neutre', ton:'neutre', xp:null, cible:null,
+      message: 'Gainage : ajoute du temps ou une rép. à chaque fois.' };
+  }
+  const xp = Math.max(0, Math.min(100, Math.round(100 * best / cible)));
+  if(best >= cible){
+    return { statut:'monter', ton:'up', xp:100, cible:null,
+      message: `🔥 Cible tenue (${best} s) — allonge encore le maintien ou ajoute une rép.` };
+  }
+  return { statut:'temps', ton:'neutre', xp, cible:null,
+    message: `Tiens plus longtemps : ${best} s → vise ${cible} s par série.` };
+}
+
 /* recommandation pour la prochaine série, à partir de la dernière perf (tableau de séries) */
 export function recommander(ex, lastSeries){
+  if(ex && ex.gainage) return recommanderGainage(ex, lastSeries);
   const f = parseFourchette(ex && ex.reps);
   const pas = (ex && ex.pas) || PAS_DEFAUT;
 

@@ -1,7 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  parseFourchette, recommander, statsExo, meilleurE1rm, meilleureCharge, PAS_DEFAUT,
+  parseFourchette, recommander, statsExo, meilleurE1rm, meilleureCharge,
+  meilleurTemps, tempsSousTension, PAS_DEFAUT,
 } from '../js/progression.js';
 
 test('parseFourchette : intervalle, valeur seule, gainage', () => {
@@ -56,6 +57,29 @@ test('recommander : reps quand séries droites mais pas encore au max', () => {
   assert.equal(r.statut, 'reps');
   assert.equal(r.cible.charge, 50);
   assert.equal(r.cible.reps, 12);
+});
+
+test('gainage : meilleurTemps et tempsSousTension', () => {
+  const series = [{ duree:30, reps:3 }, { duree:45, reps:2 }];
+  assert.equal(meilleurTemps(series), 45);
+  assert.equal(tempsSousTension(series), 30*3 + 45*2);   // 180
+  assert.equal(meilleurTemps([]), null);
+  assert.equal(tempsSousTension([]), 0);
+});
+
+test('recommander gainage : démarrer, viser la cible, cible tenue', () => {
+  const ex = { gainage:true, dureeCible:30, reps:'tours' };
+  assert.equal(recommander(ex, []).statut, 'demarrer');
+  const sousCible = recommander(ex, [{ duree:20, reps:3 }]);
+  assert.equal(sousCible.statut, 'temps');
+  assert.equal(sousCible.ton, 'neutre');
+  assert.ok(sousCible.xp > 0 && sousCible.xp < 100);
+  const atteint = recommander(ex, [{ duree:35, reps:3 }]);
+  assert.equal(atteint.statut, 'monter');
+  assert.equal(atteint.ton, 'up');
+  assert.equal(atteint.xp, 100);
+  // sans cible définie : message neutre « au ressenti »
+  assert.equal(recommander({ gainage:true }, [{ duree:30, reps:3 }]).statut, 'neutre');
 });
 
 test('statsExo : niveau gagné à chaque PR de charge, record = meilleure charge', () => {
