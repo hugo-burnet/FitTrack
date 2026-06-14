@@ -17,6 +17,23 @@ export class RestTimer {
       else if(a==='add') this.add(15);
       else if(a==='skip') this.stop();
     });
+
+    // L'audio mobile (iOS surtout) doit être débloqué par un geste utilisateur.
+    // On débloque le contexte audio au tout premier tap/clic n'importe où.
+    const unlock = () => { this.unlockAudio(); };
+    document.addEventListener('pointerdown', unlock, { once: true });
+    document.addEventListener('touchend', unlock, { once: true });
+    document.addEventListener('click', unlock, { once: true });
+  }
+
+  /* Contexte audio unique, créé/réveillé lors d'un geste utilisateur. */
+  unlockAudio(){
+    try{
+      const Ctx = window.AudioContext || window.webkitAudioContext; if(!Ctx) return null;
+      if(!this.actx) this.actx = new Ctx();
+      if(this.actx.state === 'suspended') this.actx.resume();
+      return this.actx;
+    }catch(e){ return null; }
   }
 
   fmt(s){ s = Math.max(0, s); const m = Math.floor(s/60), sec = s%60; return `${m}:${String(sec).padStart(2,'0')}`; }
@@ -24,6 +41,7 @@ export class RestTimer {
   hide(){ this.root.classList.add('cache'); }
 
   start(seconds, label){
+    this.unlockAudio();
     this.stopTick();
     this.total = seconds; this.remaining = seconds; this.running = true; this.finished = false;
     if(this.elLabel) this.elLabel.textContent = label ? 'Repos · ' + label : 'Repos';
@@ -75,15 +93,17 @@ export class RestTimer {
 
   beep({ freq = 880, dur = 0.45, vol = 0.3 } = {}){
     try{
-      const Ctx = window.AudioContext || window.webkitAudioContext; if(!Ctx) return;
-      const ctx = new Ctx();
+      const ctx = this.unlockAudio(); if(!ctx) return;
+      // Le contexte peut être encore « suspended » après mise en veille de l'écran.
+      if(ctx.state === 'suspended') ctx.resume();
+      const t0 = ctx.currentTime;
       const o = ctx.createOscillator(), g = ctx.createGain();
       o.connect(g); g.connect(ctx.destination);
       o.type = 'sine'; o.frequency.value = freq;
-      g.gain.setValueAtTime(0.0001, ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(vol, ctx.currentTime + 0.02);
-      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + dur);
-      o.start(); o.stop(ctx.currentTime + dur + 0.02);
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.exponentialRampToValueAtTime(vol, t0 + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      o.start(t0); o.stop(t0 + dur + 0.02);
     }catch(e){ /* audio indisponible : tant pis */ }
   }
   vibrate(pattern = [120,60,120]){ try{ if(navigator.vibrate) navigator.vibrate(pattern); }catch(e){} }
